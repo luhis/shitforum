@@ -1,0 +1,50 @@
+﻿@page
+@model ShitForum.Pages.ThreadModel
+@{
+    ViewData["Title"] = "Post";
+}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-page="Index">Home</a></li>
+        <li class="breadcrumb-item"><a asp-page="Board" asp-route-id="@Model.Board.Id">@Model.Board.BoardName</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Thread.ThreadId - @Model.Thread.Subject</li>
+    </ol>
+</nav>
+
+    @{
+        foreach (var post in Model.Thread.Posts)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    @post.Name
+                    @post.Created
+                    No. <a asp-route-id="@Model.Thread.ThreadId" asp-route-replyto="@post.Id">@post.Id</a>
+                </div>
+            </div>
+            @if (post.File != null)
+            {
+                <a asp-controller="Images" asp-action="GetPostImage" asp-route-id="@post.Id">
+                    <img src="@Url.Action("GetPostThumbnail", "Images", new {id = post.Id})" />
+                </a>
+            }
+            <div class="row">
+
+                <div class="col-md-12">
+                    @post.Comment
+                </div>
+            </div>
+            <hr />
+        }
+    }
+
+    Add a new Post
+
+    <div asp-validation-summary="All"></div>
+    <form method="post" enctype="multipart/form-data">
+        <div class="form-group">Name: <input class="form-control" asp-for="Post.Name" /></div>
+        <div class="form-group">Options: <input class="form-control" asp-for="Post.Options" /></div>
+        <div class="form-group">Comment: <textarea class="form-control" asp-for="Post.Comment"></textarea></div>
+        <div class="form-group">File: <input asp-for="Post.File" type="file" /></div>
+        <input asp-for="Post.ThreadId" type="hidden" />
+        <input type="submit" class="btn btn-primary" value="Post" />
+    </form>

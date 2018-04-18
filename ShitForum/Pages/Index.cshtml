@@ -1,0 +1,22 @@
+﻿@page
+@using ShitForum.Pages
+@model ShitForum.Pages.IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active">Home</li>
+    </ol>
+</nav>
+@{
+    foreach (var board in Model.Boards)
+    {
+        <div class="row">
+            <div class="col-md-3">
+                <a asp-page="Board" asp-route-id="@board.Id">@board.BoardName</a>
+            </div>
+        </div>
+        <hr />
+    }
+}

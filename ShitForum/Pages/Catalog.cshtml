@@ -1,0 +1,34 @@
+﻿@page
+@model ShitForum.Pages.CatalogModel
+@{
+    ViewData["Title"] = "Board";
+}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-page="Index">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.BoardName</li>
+    </ol>
+</nav>
+<div class="row">
+    @{
+        foreach (var thread in Model.Threads)
+        {
+            <div class="col-sm-4">
+                <div class="card" style="width: 18rem;">
+                    <a asp-page="Thread" asp-route-id="@thread.ThreadId">
+                        <img class="card-img-top" src="@Url.Action("GetPostThumbnail", "Images", new { id = thread.FirstPost.Id })" alt="@thread.Subject">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            @thread.Subject
+                            @thread.FirstPost.Name
+                            @thread.FirstPost.Created
+                            No. <a asp-page="Thread" asp-route-id="@thread.ThreadId">@thread.ThreadId</a>
+                        </h5>
+                        <p class="card-text">@thread.FirstPost.Comment</p>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    </div>
