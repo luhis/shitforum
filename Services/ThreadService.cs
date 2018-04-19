@@ -41,7 +41,8 @@ namespace Services
 
         async Task<Option<ThreadOverViewSet>> IThreadService.GetOrderedThreads(Guid boardId, Option<string> filter, int pageSize, int pageNumber)
         {
-            var latestThreads = this.postsRepository.GetAll().Where(a => !a.IsSage && (a.Comment.Contains(filter.ValueOr(string.Empty)))).OrderBy(a => a.Created).Select(a => a.ThreadId).Distinct()
+            var threadIds = this.threadsRepository.GetAll().Where(a => a.Posts.OrderBy(p => p.Created).First().Comment.Contains(filter.ValueOr(string.Empty))).Select(t => t.Id);
+            var latestThreads = this.postsRepository.GetAll().Where(a => !a.IsSage && threadIds.Contains(a.ThreadId)).OrderBy(a => a.Created).Select(a => a.ThreadId).Distinct()
                 .Skip(pageSize * pageNumber).Take(pageSize).ToArray();
             var board = await this.boardRepository.GetById(boardId);
             var l = await Task.WhenAll(latestThreads.Select(async threadId =>

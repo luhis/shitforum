@@ -32,5 +32,10 @@ namespace Persistence.Repositories
         {
             return this.client.Threads.Where(a => a.Id == threadId).SingleAsync();
         }
+
+        IQueryable<Thread> IThreadRepository.GetAll()
+        {
+            return this.client.Threads;
+        }
     }
 }
