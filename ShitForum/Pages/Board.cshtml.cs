@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Domain;
 using EnsureThat;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Optional;
 using Services;
 using Services.Dtos;
 using ShitForum.ApiControllers;
@@ -42,15 +44,19 @@ namespace ShitForum.Pages
             this.validateImage = validateImage;
         }
 
-        public async Task<IActionResult> OnGet(Guid id)
+        private static Option<T> ToOption<T>(T t) where T : class => t == null ? Option.None<T>() : Option.Some(t);
+
+        public async Task<IActionResult> OnGet(Guid id, string filter)
         {
             EnsureArg.IsNotEmpty(id, nameof(id));
-            var t = await this.threadService.GetOrderedThreads(id, 100, 0);
+            this.Filter = filter;
+            var filterOption = ToOption(filter);
+            var t = await this.threadService.GetOrderedThreads(id, filterOption, 100, 0);
             return t.Match(ts =>
             {
                 this.Threads = ts.Threads;
                 this.Thread = new AddThread() { BoardId = id, Name = cookieStorage.ReadName(this.Request) };
-                this.BoardName = ts.Board.BoardName;
+                this.Board = ts.Board;
                 return Page().ToIAR();
             },
             () => new NotFoundResult().ToIAR());
@@ -59,11 +65,13 @@ namespace ShitForum.Pages
         public IEnumerable<ThreadOverView> Threads { get; private set; }
 
         [BindProperty] public AddThread Thread { get; set; }
-        public string BoardName { get; private set; }
+        public Board Board { get; private set; }
+        public string Filter { get; private set; }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string filter)
         {
             var ip = this.getIp.GetIp(this.Request);
+            var filterOption = ToOption(filter);
             var ipHash = this.ipHasher.Hash(ip);
             await validateImage.ValidateAsync(
                 UploadMapper.ExtractData(this.Thread.File),
@@ -73,11 +81,11 @@ namespace ShitForum.Pages
 
             if (!ModelState.IsValid)
             {
-                var t = await this.threadService.GetOrderedThreads(this.Thread.BoardId, 100, 0);
+                var t = await this.threadService.GetOrderedThreads(this.Thread.BoardId, filterOption, 100, 0);
                 return t.Match(some =>
                 {
                     this.Threads = some.Threads;
-                    this.BoardName = some.Board.BoardName;
+                    this.Board = some.Board;
                     return Page().ToIAR();
                 }, () => new NotFoundResult());
             }

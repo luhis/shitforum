@@ -7,9 +7,15 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-page="Index">Home</a></li>
-        <li class="breadcrumb-item active" aria-current="page">@Model.BoardName</li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Board.BoardName</li>
     </ol>
 </nav>
+<form asp-page="Board" method="get">
+    <input type="hidden" value="@Model.Board.Id" name="id" />
+    <input placeholder="Search OPs..." name="filter" value="@Model.Filter" type="text" />
+    <input type="submit" />
+</form>
+[<a asp-page="Catalog" asp-route-id="@Model.Board.Id">Catalog</a>]
 
 @{
     foreach (var thread in Model.Threads)

@@ -6,9 +6,10 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-page="Index">Home</a></li>
-        <li class="breadcrumb-item active" aria-current="page">@Model.BoardName</li>
+        <li class="breadcrumb-item active" aria-current="page">Catalog @Model.Board.BoardName</li>
     </ol>
 </nav>
+[<a asp-page="Board" asp-route-id="@Model.Board.Id">Return</a>]
 <div class="row">
     @{
         foreach (var thread in Model.Threads)
@@ -31,4 +32,4 @@
             </div>
         }
     }
-    </div>
+</div>

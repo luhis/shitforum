@@ -55,14 +55,14 @@ namespace UnitTests.Pages
         {
             var boardId = Guid.NewGuid();
 
-            this.threadService.Setup(a => a.GetOrderedThreads(boardId, 100, 0)).Returns(
+            this.threadService.Setup(a => a.GetOrderedThreads(boardId, Option.None<string>(), 100, 0)).Returns(
                 Task.FromResult(Option.Some(
                     new ThreadOverViewSet(
                         new Board(boardId, "random", "bee"), 
                         new List<ThreadOverView>() { new ThreadOverView(Guid.NewGuid(), "subject", new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", null, false, "127.0.0.1"), new List<PostOverView>() { } , 1, 1) }))));
 
             this.cookieStorage.Setup(a => a.ReadName(It.IsAny<HttpRequest>())).Returns("Matt");
-            board.OnGet(boardId).Wait();
+            board.OnGet(boardId, null).Wait();
 
             this.repo.VerifyAll();
         }
@@ -78,7 +78,7 @@ namespace UnitTests.Pages
             this.postService.Setup(a => a.AddThread(It.IsAny<Guid>(), It.IsAny<Guid>(), boardId, "subject", It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IpHash>(), Option.None<File>())).Returns(Task.FromResult<OneOf<Success, Banned>>(new Success()));
             this.validateImage.Setup(a => a.ValidateAsync(Option.None<byte[]>(), IPAddress.Loopback, It.IsAny<IpHash>(), It.IsAny<Action<string>>())).Returns(Task.CompletedTask);
 
-            board.OnPostAsync().Wait();
+            board.OnPostAsync(null).Wait();
 
             this.repo.VerifyAll();
         }
@@ -92,7 +92,7 @@ namespace UnitTests.Pages
             board.Thread = new AddThread(boardId, "Matt", "sage", "subject", "comment", file);
             this.getIp.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
             this.cookieStorage.Setup(a => a.SetNameCookie(It.IsAny<HttpResponse>(), "Matt"));
-            board.OnPostAsync().Wait();
+            board.OnPostAsync(null).Wait();
 
             this.repo.VerifyAll();
         }
@@ -106,7 +106,7 @@ namespace UnitTests.Pages
             board.ModelState.AddModelError("file", "blah");
 
             this.getIp.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
-            this.threadService.Setup(a => a.GetOrderedThreads(boardId, 100, 0)).Returns(
+            this.threadService.Setup(a => a.GetOrderedThreads(boardId, Option.None<string>(), 100, 0)).Returns(
                Task.FromResult(Option.Some(
                    new ThreadOverViewSet(
                        new Board(boardId, "random", "bee"),
@@ -114,7 +114,7 @@ namespace UnitTests.Pages
             this.validateImage.Setup(a => a.ValidateAsync(Option.None<byte[]>(), IPAddress.Loopback, It.IsAny<IpHash>(), It.IsAny<Action<string>>())).Returns(Task.CompletedTask);
 
 
-            board.OnPostAsync().Wait();
+            board.OnPostAsync(null).Wait();
 
             this.repo.VerifyAll();
         }

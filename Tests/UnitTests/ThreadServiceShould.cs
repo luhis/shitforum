@@ -67,7 +67,19 @@ namespace UnitTests
             var boardId = Guid.NewGuid();
             this.postRepository.Setup(a => a.GetAll()).Returns(new Domain.Post[] { }.AsQueryable());
             this.boardRepository.Setup(a => a.GetById(boardId)).Returns(Task.FromResult(Option.Some(new Board(boardId, "b", "bbb"))));
-            var r = ts.GetOrderedThreads(boardId, 100, 0).Result;
+            var r = ts.GetOrderedThreads(boardId, Option.None<string>(), 100, 0).Result;
+            r.Should().NotBeNull();
+
+            repo.VerifyAll();
+        }
+
+        [Fact]
+        public void GetOrderedThreadsFiltered()
+        {
+            var boardId = Guid.NewGuid();
+            this.postRepository.Setup(a => a.GetAll()).Returns(new Domain.Post[] { }.AsQueryable());
+            this.boardRepository.Setup(a => a.GetById(boardId)).Returns(Task.FromResult(Option.Some(new Board(boardId, "b", "bbb"))));
+            var r = ts.GetOrderedThreads(boardId, Option.Some("matt"), 100, 0).Result;
             r.Should().NotBeNull();
 
             repo.VerifyAll();

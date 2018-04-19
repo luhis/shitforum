@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Domain;
 using EnsureThat;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -26,7 +27,7 @@ namespace ShitForum.Pages
             return t.Match(threads =>
             {
                 this.Threads = threads.Threads;
-                this.BoardName = threads.Board.BoardName;
+                this.Board = threads.Board;
                 return Page().ToIAR();
             },
             () => new NotFoundResult().ToIAR());
@@ -34,6 +35,6 @@ namespace ShitForum.Pages
 
         public IEnumerable<CatalogThreadOverView> Threads { get; private set; }
         
-        public string BoardName { get; private set; }
+        public Board Board { get; private set; }
     }
 }

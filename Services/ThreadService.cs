@@ -39,9 +39,9 @@ namespace Services
             return board.Match(some => Option.Some(new CatalogThreadOverViewSet(some, threads)), () => Option.None<CatalogThreadOverViewSet>());
         }
 
-        async Task<Option<ThreadOverViewSet>> IThreadService.GetOrderedThreads(Guid boardId, int pageSize, int pageNumber)
+        async Task<Option<ThreadOverViewSet>> IThreadService.GetOrderedThreads(Guid boardId, Option<string> filter, int pageSize, int pageNumber)
         {
-            var latestThreads = this.postsRepository.GetAll().Where(a => !a.IsSage).OrderBy(a => a.Created).Select(a => a.ThreadId).Distinct()
+            var latestThreads = this.postsRepository.GetAll().Where(a => !a.IsSage && (a.Comment.Contains(filter.ValueOr(string.Empty)))).OrderBy(a => a.Created).Select(a => a.ThreadId).Distinct()
                 .Skip(pageSize * pageNumber).Take(pageSize).ToArray();
             var board = await this.boardRepository.GetById(boardId);
             var l = await Task.WhenAll(latestThreads.Select(async threadId =>
