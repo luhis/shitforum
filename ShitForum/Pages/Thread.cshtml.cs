@@ -44,6 +44,9 @@ namespace ShitForum.Pages
         public ViewThread Thread { get; private set; }
         public Board Board { get; private set; }
 
+        [BindProperty]
+        public AddPost Post { get; set; }
+
         public async Task<IActionResult> OnGet(Guid id, Guid replyTo)
         {
             EnsureArg.IsNotEmpty(id, nameof(id));
@@ -58,9 +61,7 @@ namespace ShitForum.Pages
             }, () => new NotFoundResult().ToIAR());
         }
 
-        [BindProperty]
-        public AddPost Post { get; set; }
-
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPostAsync()
         {
             var ip = this.getIp.GetIp(this.Request);

@@ -68,6 +68,7 @@ namespace ShitForum.Pages
         public Board Board { get; private set; }
         public string Filter { get; private set; }
 
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPostAsync(string filter)
         {
             var ip = this.getIp.GetIp(this.Request);
