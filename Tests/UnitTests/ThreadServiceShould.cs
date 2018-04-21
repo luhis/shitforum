@@ -55,7 +55,6 @@ namespace UnitTests
             var boardId = Guid.NewGuid();
             this.postRepository.Setup(a => a.GetAll()).Returns(new Domain.Post[] { }.AsQueryable());
             this.boardRepository.Setup(a => a.GetById(boardId)).Returns(Task.FromResult(Option.Some(new Board(boardId, "b", "bbb"))));
-            this.threadRepository.Setup(a => a.GetAll()).Returns(new List<Thread>().AsQueryable());
             var r = ts.GetOrderedCatalogThreads(boardId, 100, 0).Result;
             r.Should().NotBeNull();
 

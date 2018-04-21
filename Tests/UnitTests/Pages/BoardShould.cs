@@ -30,6 +30,7 @@ namespace UnitTests.Pages
         private readonly Mock<IPostService> postService;
         private readonly Mock<IValidateImage> validateImage;
         private readonly Mock<IRecaptchaVerifier> recaptchaVerifier;
+        private readonly Mock<IGetCaptchaValue> getCaptchaValue;
 
         public BoardShould()
         {
@@ -41,6 +42,7 @@ namespace UnitTests.Pages
             this.postService = this.repo.Create<IPostService>();
             this.validateImage = this.repo.Create<IValidateImage>();
             this.recaptchaVerifier = this.repo.Create<IRecaptchaVerifier>();
+            this.getCaptchaValue = this.repo.Create<IGetCaptchaValue>();
 
             this.board = new BoardModel(
                 new IpHasherFactory(conf),
@@ -50,7 +52,8 @@ namespace UnitTests.Pages
                 this.threadService.Object,
                 this.postService.Object,
                 this.validateImage.Object,
-                this.recaptchaVerifier.Object)
+                this.recaptchaVerifier.Object,
+                this.getCaptchaValue.Object)
             { PageContext = new Microsoft.AspNetCore.Mvc.RazorPages.PageContext(), };
         }
 
@@ -82,6 +85,8 @@ namespace UnitTests.Pages
             this.cookieStorage.Setup(a => a.SetNameCookie(It.IsAny<HttpResponse>(), "Matt"));
             this.postService.Setup(a => a.AddThread(It.IsAny<Guid>(), It.IsAny<Guid>(), boardId, "subject", It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IpHash>(), Option.None<File>())).Returns(Task.FromResult<OneOf<Success, Banned>>(new Success()));
             this.validateImage.Setup(a => a.ValidateAsync(Option.None<byte[]>(), IPAddress.Loopback, It.IsAny<IpHash>(), It.IsAny<Action<string>>())).Returns(Task.CompletedTask);
+            this.getCaptchaValue.Setup(a => a.Get(It.IsAny<HttpRequest>())).Returns("captcha");
+            this.recaptchaVerifier.Setup(a => a.IsValid("captcha", IPAddress.Loopback)).Returns(Task.FromResult(true));
 
             board.OnPostAsync(null).Wait();
 
@@ -118,7 +123,8 @@ namespace UnitTests.Pages
                        new List<ThreadOverView>() { new ThreadOverView(Guid.NewGuid(), "subject", 
                        new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", Option.None<File>(), false, "127.0.0.1"), new List<PostOverView>() { }, 1, 1) }))));
             this.validateImage.Setup(a => a.ValidateAsync(Option.None<byte[]>(), IPAddress.Loopback, It.IsAny<IpHash>(), It.IsAny<Action<string>>())).Returns(Task.CompletedTask);
-
+            this.getCaptchaValue.Setup(a => a.Get(It.IsAny<HttpRequest>())).Returns("captcha");
+            this.recaptchaVerifier.Setup(a => a.IsValid("captcha", IPAddress.Loopback)).Returns(Task.FromResult(true));
 
             board.OnPostAsync(null).Wait();
 

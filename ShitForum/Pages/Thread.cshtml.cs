@@ -24,6 +24,7 @@ namespace ShitForum.Pages
         private readonly IPostService postService;
         private readonly IValidateImage validateImage;
         private readonly IRecaptchaVerifier recaptchaVerifier;
+        private readonly IGetCaptchaValue getCaptchaValue;
 
         public ThreadModel(
             IpHasherFactory ipHasherFactory, 
@@ -33,7 +34,8 @@ namespace ShitForum.Pages
             IThreadService threadService,
             IPostService postService,
             IValidateImage validateImage,
-            IRecaptchaVerifier recaptchaVerifier)
+            IRecaptchaVerifier recaptchaVerifier,
+            IGetCaptchaValue getCaptchaValue)
         {
             this.ipHasher = ipHasherFactory.GetHasher();
             this.tripCodeHasher = tripCodeHasher;
@@ -43,6 +45,7 @@ namespace ShitForum.Pages
             this.postService = postService;
             this.validateImage = validateImage;
             this.recaptchaVerifier = recaptchaVerifier;
+            this.getCaptchaValue = getCaptchaValue;
         }
 
         public ViewThread Thread { get; private set; }
@@ -76,7 +79,7 @@ namespace ShitForum.Pages
                 ipHash,
                 s => this.ModelState.AddModelError(nameof(this.Post.File), s));
 
-            var recaptcha = this.Request.HttpContext.Request.Form["g-recaptcha-response"];
+            var recaptcha = this.getCaptchaValue.Get(this.Request);
             if (!await this.recaptchaVerifier.IsValid(recaptcha, ip))
             {
                 this.ModelState.AddModelError(string.Empty, "Recaptcha is invalid");
