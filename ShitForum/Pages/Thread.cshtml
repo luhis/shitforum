@@ -1,5 +1,6 @@
 ﻿@page
 @model ShitForum.Pages.ThreadModel
+@inject ReCaptchaCore.RecaptchaSettings RecaptchaSettings
 @{
     ViewData["Title"] = "Post";
 }
@@ -40,11 +41,11 @@
     Add a new Post
 
     <div asp-validation-summary="All"></div>
-    <form method="post" enctype="multipart/form-data">
+    <form id="post-form" method="post" enctype="multipart/form-data">
         <div class="form-group">Name: <input class="form-control" asp-for="Post.Name" /></div>
         <div class="form-group">Options: <input class="form-control" asp-for="Post.Options" /></div>
         <div class="form-group">Comment: <textarea class="form-control" asp-for="Post.Comment"></textarea></div>
         <div class="form-group">File: <input asp-for="Post.File" type="file" /></div>
         <input asp-for="Post.ThreadId" type="hidden" />
-        <input type="submit" class="btn btn-primary" value="Post" />
+        <button class="btn btn-primary g-recaptcha" data-callback="onSubmit" data-sitekey="@RecaptchaSettings.PublicKey">Post</button>
     </form>

@@ -4,6 +4,7 @@ using Domain;
 using EnsureThat;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using ReCaptchaCore;
 using Services;
 using ShitForum.ApiControllers;
 using ShitForum.Hasher;
@@ -22,6 +23,7 @@ namespace ShitForum.Pages
         private readonly IThreadService threadService;
         private readonly IPostService postService;
         private readonly IValidateImage validateImage;
+        private readonly IRecaptchaVerifier recaptchaVerifier;
 
         public ThreadModel(
             IpHasherFactory ipHasherFactory, 
@@ -30,7 +32,8 @@ namespace ShitForum.Pages
             IGetIp getIp,
             IThreadService threadService,
             IPostService postService,
-            IValidateImage validateImage)
+            IValidateImage validateImage,
+            IRecaptchaVerifier recaptchaVerifier)
         {
             this.ipHasher = ipHasherFactory.GetHasher();
             this.tripCodeHasher = tripCodeHasher;
@@ -39,6 +42,7 @@ namespace ShitForum.Pages
             this.threadService = threadService;
             this.postService = postService;
             this.validateImage = validateImage;
+            this.recaptchaVerifier = recaptchaVerifier;
         }
 
         public ViewThread Thread { get; private set; }
@@ -71,6 +75,12 @@ namespace ShitForum.Pages
                 ip, 
                 ipHash,
                 s => this.ModelState.AddModelError(nameof(this.Post.File), s));
+
+            var recaptcha = this.Request.HttpContext.Request.Form["g-recaptcha-response"];
+            if (!await this.recaptchaVerifier.IsValid(recaptcha, ip))
+            {
+                this.ModelState.AddModelError(string.Empty, "Recaptcha is invalid");
+            }
 
             if (!this.ModelState.IsValid)
             {

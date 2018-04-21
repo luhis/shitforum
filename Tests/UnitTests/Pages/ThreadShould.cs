@@ -17,6 +17,7 @@ using ShitForum.ImageValidation;
 using Services.Results;
 using OneOf;
 using System.IO;
+using ReCaptchaCore;
 
 namespace UnitTests.Pages
 {
@@ -29,6 +30,7 @@ namespace UnitTests.Pages
         private readonly Mock<IThreadService> threadService;
         private readonly Mock<IPostService> postService;
         private readonly Mock<IValidateImage> validateImage;
+        private readonly Mock<IRecaptchaVerifier> recaptchaVerifier;
 
         public ThreadShould()
         {
@@ -39,6 +41,7 @@ namespace UnitTests.Pages
             this.threadService = this.repo.Create<IThreadService>();
             this.postService = this.repo.Create<IPostService>();
             this.validateImage = this.repo.Create<IValidateImage>();
+            this.recaptchaVerifier = this.repo.Create<IRecaptchaVerifier>();
 
             this.thread = new ThreadModel(
                 new IpHasherFactory(conf),
@@ -47,7 +50,8 @@ namespace UnitTests.Pages
                 this.getIp.Object,
                 this.threadService.Object,
                 this.postService.Object,
-                this.validateImage.Object)
+                this.validateImage.Object,
+                recaptchaVerifier.Object)
             { PageContext = new Microsoft.AspNetCore.Mvc.RazorPages.PageContext(), };
         }
 

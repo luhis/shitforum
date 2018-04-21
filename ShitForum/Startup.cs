@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Persistence;
 using Persistence.Repositories;
-using Services;
 using ShitForum.Hasher;
 using ShitForum.ImageValidation;
 using System;
@@ -29,6 +28,7 @@ namespace ShitForum
         {
             Persistence.DIModule.Add(services);
             Services.DIModule.Add(services);
+            ReCaptchaCore.DIModule.Add(services);
             services.AddSingleton<IFileRepository, FileRepository>();
             services.AddSingleton<IValidateImage, ValidateImage>();
             services.AddSingleton<ICookieStorage, CookieStorage>();
@@ -58,7 +58,12 @@ namespace ShitForum
                 app.UseHsts(a => a.MaxAge(365));
             }
 
-            app.UseCsp(a => a.DefaultSources(b => b.Self()).ImageSources(c => c.Self()).StyleSources(c => c.Self().UnsafeInline()));
+            app.UseCsp(a => a.
+                DefaultSources(b => b.Self()).
+                ImageSources(c => c.Self()).
+                StyleSources(c => c.Self().UnsafeInline()).
+                ScriptSources(s => s.Self().CustomSources("https://www.google.com", "https://www.gstatic.com")).
+                FrameSources(c => c.Self().CustomSources("https://www.google.com")));
             app.UseReferrerPolicy(opts => opts.NoReferrer());
             app.UseStaticFiles();
             app.UseRedirectValidation();

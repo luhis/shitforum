@@ -6,6 +6,7 @@ using EnsureThat;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Optional;
+using ReCaptchaCore;
 using Services;
 using Services.Dtos;
 using ShitForum.ApiControllers;
@@ -25,6 +26,7 @@ namespace ShitForum.Pages
         private readonly IThreadService threadService;
         private readonly IPostService postService;
         private readonly IValidateImage validateImage;
+        private readonly IRecaptchaVerifier recaptchaVerifier;
 
         public BoardModel(
             IpHasherFactory ipHasherFactory, 
@@ -33,7 +35,8 @@ namespace ShitForum.Pages
             IGetIp getIp, 
             IThreadService threadService,
             IPostService postService,
-            IValidateImage validateImage)
+            IValidateImage validateImage,
+            IRecaptchaVerifier recaptchaVerifier)
         {
             this.ipHasher = ipHasherFactory.GetHasher();
             this.tripCodeHasher = tripCodeHasher;
@@ -42,6 +45,7 @@ namespace ShitForum.Pages
             this.threadService = threadService;
             this.postService = postService;
             this.validateImage = validateImage;
+            this.recaptchaVerifier = recaptchaVerifier;
         }
 
         private static Option<T> ToOption<T>(T t) where T : class => t == null ? Option.None<T>() : Option.Some(t);
@@ -64,8 +68,11 @@ namespace ShitForum.Pages
 
         public IEnumerable<ThreadOverView> Threads { get; private set; }
 
-        [BindProperty] public AddThread Thread { get; set; }
+        [BindProperty]
+        public AddThread Thread { get; set; }
+
         public Board Board { get; private set; }
+
         public string Filter { get; private set; }
 
         [ValidateAntiForgeryToken]
@@ -79,6 +86,12 @@ namespace ShitForum.Pages
                 ip,
                 ipHash,
                 s => this.ModelState.AddModelError(nameof(this.Thread.File), s));
+
+            var recaptcha = this.Request.HttpContext.Request.Form["g-recaptcha-response"];
+            if (!await this.recaptchaVerifier.IsValid(recaptcha, ip))
+            {
+                this.ModelState.AddModelError(string.Empty, "Recaptcha is invalid");
+            }
 
             if (!ModelState.IsValid)
             {
