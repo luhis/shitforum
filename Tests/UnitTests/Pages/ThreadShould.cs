@@ -62,7 +62,8 @@ namespace UnitTests.Pages
             var boardId = Guid.NewGuid();
 
             this.threadService.Setup(a => a.GetThread(threadId)).Returns(
-                Task.FromResult(Option.Some(new ThreadDetailView(threadId, "subject", new Board(boardId, "random", "bee"), new List<PostOverView>() { new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", null, false, "myip") }))));
+                Task.FromResult(Option.Some(new ThreadDetailView(threadId, "subject", new Board(boardId, "random", "bee"), new List<PostOverView>() {
+                    new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", Option.None<Domain.File>(), false, "myip") }))));
             this.cookieStorage.Setup(a => a.ReadName(It.IsAny<HttpRequest>())).Returns("Matt");
             thread.OnGet(threadId, Guid.NewGuid()).Wait();
 
@@ -116,7 +117,8 @@ namespace UnitTests.Pages
 
             this.getIp.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
             this.threadService.Setup(a => a.GetThread(threadId)).Returns(
-                Task.FromResult(Option.Some(new ThreadDetailView(threadId, "subject", new Board(boardId, "random", "bee"), new List<PostOverView>() { new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", null, false, "myip") }))));
+                Task.FromResult(Option.Some(new ThreadDetailView(threadId, "subject", new Board(boardId, "random", "bee"), new List<PostOverView>() {
+                    new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", Option.None<Domain.File>(), false, "myip") }))));
             this.validateImage.Setup(a => a.ValidateAsync(Option.None<byte[]>(), IPAddress.Loopback, It.IsAny<IpHash>(), It.IsAny<Action<string>>())).Returns(Task.CompletedTask);
 
             thread.OnPostAsync().Wait();

@@ -33,7 +33,7 @@
                 <a asp-page="Thread" asp-route-id="@thread.ThreadId">@thread.Subject</a>
             </div>
         </div>
-        @if (thread.FirstPost.File != null)
+        @if (thread.FirstPost.File.HasValue)
         {<a asp-page="Thread" asp-route-id="@thread.ThreadId">
                 <img src="@Url.Action("GetPostThumbnail", "Images", new { id = thread.FirstPost.Id })" />
             </a>

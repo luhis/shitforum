@@ -63,7 +63,8 @@ namespace UnitTests.Pages
                 Task.FromResult(Option.Some(
                     new ThreadOverViewSet(
                         new Board(boardId, "random", "bee"), 
-                        new List<ThreadOverView>() { new ThreadOverView(Guid.NewGuid(), "subject", new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", null, false, "127.0.0.1"), new List<PostOverView>() { } , 1, 1) }))));
+                        new List<ThreadOverView>() { new ThreadOverView(Guid.NewGuid(), "subject", 
+                        new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", Option.None<Domain.File>(), false, "127.0.0.1"), new List<PostOverView>() { } , 1, 1) }))));
 
             this.cookieStorage.Setup(a => a.ReadName(It.IsAny<HttpRequest>())).Returns("Matt");
             board.OnGet(boardId, null).Wait();
@@ -114,7 +115,8 @@ namespace UnitTests.Pages
                Task.FromResult(Option.Some(
                    new ThreadOverViewSet(
                        new Board(boardId, "random", "bee"),
-                       new List<ThreadOverView>() { new ThreadOverView(Guid.NewGuid(), "subject", new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", null, false, "127.0.0.1"), new List<PostOverView>() { }, 1, 1) }))));
+                       new List<ThreadOverView>() { new ThreadOverView(Guid.NewGuid(), "subject", 
+                       new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", Option.None<File>(), false, "127.0.0.1"), new List<PostOverView>() { }, 1, 1) }))));
             this.validateImage.Setup(a => a.ValidateAsync(Option.None<byte[]>(), IPAddress.Loopback, It.IsAny<IpHash>(), It.IsAny<Action<string>>())).Returns(Task.CompletedTask);
 
 
