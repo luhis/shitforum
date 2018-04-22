@@ -22,8 +22,8 @@
     {
         <div class="row">
             <div class="col">
-                @thread.FirstPost.Name
-                @thread.FirstPost.Created
+                @thread.OP.Name
+                @thread.OP.Created
                 No. <a asp-page="Thread" asp-route-id="@thread.ThreadId">@thread.ThreadId</a>
             </div>
         </div>
@@ -33,14 +33,14 @@
                 <a asp-page="Thread" asp-route-id="@thread.ThreadId">@thread.Subject</a>
             </div>
         </div>
-        @if (thread.FirstPost.File.HasValue)
+        @if (thread.OP.File.HasValue)
         {<a asp-page="Thread" asp-route-id="@thread.ThreadId">
-                <img src="@Url.Action("GetPostThumbnail", "Images", new { id = thread.FirstPost.Id })" />
+                <img src="@Url.Action("GetPostThumbnail", "Images", new { id = thread.OP.Id })" />
             </a>
         }
         <div class="row">
             <div class="col-md-12">
-                @thread.FirstPost.Comment
+                @thread.OP.Comment
             </div>
         </div>
         <div class="row">

@@ -20,6 +20,6 @@ namespace Domain.Repositories
 
         IQueryable<Post> GetAll();
 
-        Task Delete(Guid postId);
+        Task Delete(Post post);
     }
 }

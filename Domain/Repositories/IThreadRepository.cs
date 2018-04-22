@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Optional;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,8 +12,9 @@ namespace Domain.Repositories
 
         Task Add(Thread thread);
 
-        Task<Thread> GetById(Guid threadId);
+        Task<Option<Thread>> GetById(Guid threadId);
 
         IQueryable<Thread> GetAll();
+        Task Delete(Thread thread);
     }
 }

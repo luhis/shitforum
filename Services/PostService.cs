@@ -76,9 +76,20 @@ namespace Services
             return this.postRepository.GetById(id);
         }
 
-        Task IPostService.DeletePost(Guid id)
+        async Task<bool> IPostService.DeletePost(Guid id)
         {
-            return this.postRepository.Delete(id);
+            var p = await this.postRepository.GetById(id);
+            return await p.Match(async post =>
+            {
+                var postCount = await this.postRepository.GetThreadPostCount(post.ThreadId);
+                await this.postRepository.Delete(post);
+                if (postCount == 1)
+                {
+                    var thread = await this.threadRepository.GetById(post.ThreadId);
+                    await thread.Match(some => this.threadRepository.Delete(some), () => Task.CompletedTask);
+                }
+                return true;
+            }, () => Task.FromResult(false));
         }
     }
 }

@@ -50,11 +50,10 @@ namespace Persistence.Repositories
             return this.client.Posts.Where(a => a.ThreadId == threadId).CountAsync();
         }
 
-        async Task IPostRepository.Delete(Guid postId)
+        Task IPostRepository.Delete(Post post)
         {
-            var post = await this.client.Posts.Where(a => a.Id == postId).SingleAsync();
             this.client.Posts.Remove(post);
-            await this.client.SaveChangesAsync();
+            return this.client.SaveChangesAsync();
         }
     }
 }

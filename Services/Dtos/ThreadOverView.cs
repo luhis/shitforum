@@ -10,17 +10,17 @@ namespace Services.Dtos
         {
             this.ThreadId = EnsureArg.IsNotEmpty(threadId, nameof(threadId));
             Subject = EnsureArg.IsNotNull(subject, nameof(subject));
-            FirstPost = EnsureArg.IsNotNull(firstPost, nameof(firstPost));
+            OP = EnsureArg.IsNotNull(firstPost, nameof(firstPost));
             FinalPosts = EnsureArg.IsNotNull(finalPosts, nameof(finalPosts));
-            PostCount = EnsureArg.IsGte(postCount, 1, nameof(PostCount));
-            ImageCount = EnsureArg.IsGte(imageCount, 1, nameof(ImageCount));
+            PostCount = EnsureArg.IsGte(postCount, -1, nameof(PostCount));
+            ImageCount = EnsureArg.IsGte(imageCount, -1, nameof(ImageCount));
         }
 
         public Guid ThreadId { get; }
 
         public string Subject { get; }
 
-        public PostOverView FirstPost { get; }
+        public PostOverView OP { get; }
 
         public IReadOnlyList<PostOverView> FinalPosts { get; }
 

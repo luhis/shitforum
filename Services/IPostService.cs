@@ -13,6 +13,6 @@ namespace Services
         Task<OneOf<Success, Banned, ImageCountExceeded, PostCountExceeded>> Add(Guid postId, Guid threadId, TripCodedName name, string comment, bool isSage, IpHash ipAddress, Option<File> file);
         Task<Option<Post>> GetById(Guid id);
         Task<OneOf<Success, Banned>> AddThread(Guid postId, Guid threadId, Guid boardId, string subject, TripCodedName name, string comment, bool isSage, IpHash ipAddress, Option<File> file);
-        Task DeletePost(Guid id);
+        Task<bool> DeletePost(Guid id);
     }
 }

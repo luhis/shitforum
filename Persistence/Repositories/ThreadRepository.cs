@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Domain;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Optional;
 
 namespace Persistence.Repositories
 {
@@ -22,20 +23,27 @@ namespace Persistence.Repositories
             return (await this.client.Threads.Where(a => a.BoardId == boardId).ToListAsync()).AsEnumerable();
         }
 
-        async Task IThreadRepository.Add(Thread thread)
+        Task IThreadRepository.Add(Thread thread)
         {
             this.client.Add(thread);
-            await this.client.SaveChangesAsync();
+            return this.client.SaveChangesAsync();
         }
 
-        Task<Thread> IThreadRepository.GetById(Guid threadId)
+        async Task<Option<Thread>> IThreadRepository.GetById(Guid threadId)
         {
-            return this.client.Threads.Where(a => a.Id == threadId).SingleAsync();
+            var r = await this.client.Threads.Where(a => a.Id == threadId).SingleOrDefaultAsync();
+            return r == null ? Option.None<Thread>(): Option.Some(r);
         }
 
         IQueryable<Thread> IThreadRepository.GetAll()
         {
             return this.client.Threads;
+        }
+
+        Task IThreadRepository.Delete(Thread thread)
+        {
+            this.client.Threads.Remove(thread);
+            return this.client.SaveChangesAsync();
         }
     }
 }
