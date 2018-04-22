@@ -70,5 +70,15 @@ namespace Services
 
             return new Success();
         }
+
+        Task<Option<Post>> IPostService.GetById(Guid id)
+        {
+            return this.postRepository.GetById(id);
+        }
+
+        Task IPostService.DeletePost(Guid id)
+        {
+            return this.postRepository.Delete(id);
+        }
     }
 }

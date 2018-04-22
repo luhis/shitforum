@@ -2,7 +2,7 @@
 @model ShitForum.Pages.ThreadModel
 @inject ReCaptchaCore.RecaptchaSettings RecaptchaSettings
 @{
-    ViewData["Title"] = "Post";
+    ViewData["Title"] = "Thread";
 }
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -20,6 +20,7 @@
                     @post.Name
                     @post.Created
                     No. <a asp-route-id="@Model.Thread.ThreadId" asp-route-replyto="@post.Id">@post.Id</a>
+                    <a asp-route-id="@post.Id" asp-page="DeletePost">[Delete]</a>
                 </div>
             </div>
             @if (post.File.HasValue)

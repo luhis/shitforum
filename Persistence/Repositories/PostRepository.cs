@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Domain;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Optional;
 
 namespace Persistence.Repositories
 {
@@ -22,10 +23,10 @@ namespace Persistence.Repositories
             return (await this.client.Posts.Where(a => a.ThreadId == threadId).ToListAsync()).AsEnumerable();
         }
 
-        async Task IPostRepository.Add(Post post)
+        Task IPostRepository.Add(Post post)
         {
             this.client.Add(post);
-            await this.client.SaveChangesAsync();
+            return this.client.SaveChangesAsync();
         }
 
         IQueryable<Post> IPostRepository.GetAll()
@@ -33,9 +34,10 @@ namespace Persistence.Repositories
             return this.client.Posts;
         }
 
-        Task<Post> IPostRepository.GetById(Guid postId)
+        async Task<Option<Post>> IPostRepository.GetById(Guid postId)
         {
-            return this.client.Posts.Where(a => a.Id == postId).SingleAsync();
+            var r = await this.client.Posts.Where(a => a.Id == postId).SingleOrDefaultAsync();
+            return r == null ? Option.None<Post>() : Option.Some(r);
         }
 
         Task<Post> IPostRepository.GetFirstPost(Guid threadId)
@@ -46,6 +48,13 @@ namespace Persistence.Repositories
         Task<int> IPostRepository.GetThreadPostCount(Guid threadId)
         {
             return this.client.Posts.Where(a => a.ThreadId == threadId).CountAsync();
+        }
+
+        async Task IPostRepository.Delete(Guid postId)
+        {
+            var post = await this.client.Posts.Where(a => a.Id == postId).SingleAsync();
+            this.client.Posts.Remove(post);
+            await this.client.SaveChangesAsync();
         }
     }
 }
