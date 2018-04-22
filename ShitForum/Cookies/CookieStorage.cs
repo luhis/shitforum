@@ -18,7 +18,14 @@ namespace ShitForum.Cookies
 
         void ICookieStorage.SetNameCookie(HttpResponse r,string name)
         {
-            r.Cookies.Append(CookieName, name, new CookieOptions() {HttpOnly = true, Secure=(!env.IsDevelopment()) });
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                r.Cookies.Delete(CookieName);
+            }
+            else
+            {
+                r.Cookies.Append(CookieName, name, new CookieOptions() {HttpOnly = true, Secure=(!env.IsDevelopment()) });
+            }
         }
 
         string ICookieStorage.ReadName(HttpRequest r) => r.Cookies[CookieName];
