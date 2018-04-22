@@ -50,7 +50,7 @@ namespace Services
                 var thread = await this.threadsRepository.GetById(threadId);
                 var posts = await this.postsRepository.GetAll(threadId);
                 var firstPost = await GetFirstPostAsync(posts);
-                var lastPosts = await Task.WhenAll(posts.OrderByDescending(a => a.Created).Take(5).Select(async p =>
+                var lastPosts = await Task.WhenAll(posts.Skip(1).OrderByDescending(a => a.Created).Take(5).Select(async p =>
                 {
                     var file = await this.fileRepository.GetPostFile(p.Id);
                     return PostMapper.Map(p, file);

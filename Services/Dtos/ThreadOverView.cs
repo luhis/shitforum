@@ -12,8 +12,8 @@ namespace Services.Dtos
             Subject = EnsureArg.IsNotNull(subject, nameof(subject));
             OP = EnsureArg.IsNotNull(firstPost, nameof(firstPost));
             FinalPosts = EnsureArg.IsNotNull(finalPosts, nameof(finalPosts));
-            PostCount = EnsureArg.IsGte(postCount, -1, nameof(PostCount));
-            ImageCount = EnsureArg.IsGte(imageCount, -1, nameof(ImageCount));
+            PostCount = EnsureArg.IsGte(postCount, 0, nameof(PostCount));
+            ImageCount = EnsureArg.IsGte(imageCount, 0, nameof(ImageCount));
         }
 
         public Guid ThreadId { get; }

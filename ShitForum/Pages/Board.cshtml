@@ -49,6 +49,15 @@
                 <a asp-page="Thread" asp-route-id="@thread.ThreadId">Click here</a> to view.
             </div>
         </div>
+        @foreach (var p in thread.FinalPosts)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    @p.Comment
+                </div>
+            </div>
+
+        }
         <hr />
     }
 }

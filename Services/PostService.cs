@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Services.Dtos;
 using OneOf;
 using Services.Results;
-using System.Linq;
 
 namespace Services
 {
