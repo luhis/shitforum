@@ -17,6 +17,8 @@ using Xunit;
 using Services.Results;
 using OneOf;
 using ReCaptchaCore;
+using ShitForum.Cookies;
+using ShitForum.GetIp;
 
 namespace UnitTests.Pages
 {

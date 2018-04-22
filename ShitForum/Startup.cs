@@ -10,6 +10,8 @@ using Persistence.Repositories;
 using ShitForum.Hasher;
 using ShitForum.ImageValidation;
 using System;
+using ShitForum.Cookies;
+using ShitForum.GetIp;
 
 namespace ShitForum
 {
@@ -32,7 +34,7 @@ namespace ShitForum
             services.AddSingleton<IFileRepository, FileRepository>();
             services.AddSingleton<IValidateImage, ValidateImage>();
             services.AddSingleton<ICookieStorage, CookieStorage>();
-            services.AddSingleton<IGetIp, GetIp>();
+            services.AddSingleton<IGetIp, GetIp.GetIp>();
             services.AddSingleton<ForumContext>();
             services.AddSingleton<IpHasherFactory>();
             services.AddSingleton<TripCodeHasher>();

@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using System;
 
-namespace ShitForum
+namespace ShitForum.Cookies
 {
     public class CookieStorage : ICookieStorage
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
 
-namespace ShitForum
+namespace ShitForum.Cookies
 {
     public interface ICookieStorage
     {

@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Net;
+﻿using System.Net;
+using Microsoft.AspNetCore.Http;
 
-namespace ShitForum
+namespace ShitForum.GetIp
 {
     public interface IGetIp
     {

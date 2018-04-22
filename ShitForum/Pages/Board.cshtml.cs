@@ -10,6 +10,8 @@ using ReCaptchaCore;
 using Services;
 using Services.Dtos;
 using ShitForum.ApiControllers;
+using ShitForum.Cookies;
+using ShitForum.GetIp;
 using ShitForum.Hasher;
 using ShitForum.ImageValidation;
 using ShitForum.Mappers;
