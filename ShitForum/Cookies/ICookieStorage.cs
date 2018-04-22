@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using Microsoft.AspNetCore.Http;
 
 namespace ShitForum
 {
@@ -6,5 +7,7 @@ namespace ShitForum
     {
         void SetNameCookie(HttpResponse r, string name);
         string ReadName(HttpRequest r);
+        Guid ReadAdmin(HttpRequest r);
+        void SetAdminCookie(HttpResponse r, Guid key);
     }
 }

@@ -36,6 +36,7 @@ namespace ShitForum
             services.AddSingleton<ForumContext>();
             services.AddSingleton<IpHasherFactory>();
             services.AddSingleton<TripCodeHasher>();
+            services.AddSingleton<AdminSettings>();
 
             services.Configure<RouteOptions>(options => {
                 options.LowercaseUrls = true;

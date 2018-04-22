@@ -1,0 +1,13 @@
+﻿@page
+@model ShitForum.Pages.AdminModel
+@{
+    ViewData["Title"] = "Admin";
+}
+
+<h2>Admin</h2>
+@Model.Message
+<div asp-validation-summary="All"></div>
+<form method="post">
+    <input name="key" placeholder="Key" />
+    <input type="submit" />
+</form>

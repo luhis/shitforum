@@ -51,13 +51,11 @@ namespace ShitForum.Pages
             this.getCaptchaValue = getCaptchaValue;
         }
 
-        private static Option<T> ToOption<T>(T t) where T : class => t == null ? Option.None<T>() : Option.Some(t);
-
         public async Task<IActionResult> OnGet(Guid id, string filter)
         {
             EnsureArg.IsNotEmpty(id, nameof(id));
             this.Filter = filter;
-            var filterOption = ToOption(filter);
+            var filterOption = NullableMapper.ToOption(filter);
             var t = await this.threadService.GetOrderedThreads(id, filterOption, 100, 0);
             return t.Match(ts =>
             {
@@ -82,7 +80,7 @@ namespace ShitForum.Pages
         public async Task<IActionResult> OnPostAsync(string filter)
         {
             var ip = this.getIp.GetIp(this.Request);
-            var filterOption = ToOption(filter);
+            var filterOption = NullableMapper.ToOption(filter);
             var ipHash = this.ipHasher.Hash(ip);
             await validateImage.ValidateAsync(
                 UploadMapper.ExtractData(this.Thread.File),
