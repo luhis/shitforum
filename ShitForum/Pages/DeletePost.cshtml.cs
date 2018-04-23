@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Services;
 using Services.Dtos;
-using ShitForum.ApiControllers;
 using ShitForum.Cookies;
 
 namespace ShitForum.Pages
@@ -40,7 +39,7 @@ namespace ShitForum.Pages
                     this.Post = post;
                     return Page().ToIAR();
                 }, () => new NotFoundResult().ToIAR());
-            }, () => Task.FromResult(new NotFoundResult().ToIAR()));
+            }, () => new NotFoundResult().ToIART());
         }
 
         public async Task<IActionResult> OnPostAsync(Guid id)
@@ -53,7 +52,7 @@ namespace ShitForum.Pages
                 {
                     await postService.DeletePost(post.Id);
                     return new RedirectToPageResult("Thread", new { id = post.ThreadId }).ToIAR();
-                }, () => Task.FromResult(new StatusCodeResult(StatusCodes.Status500InternalServerError).ToIAR()));
+                }, () => new StatusCodeResult(StatusCodes.Status500InternalServerError).ToIART());
             }
             else
             {

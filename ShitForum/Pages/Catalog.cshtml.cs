@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Services;
 using Services.Dtos;
-using ShitForum.ApiControllers;
 
 namespace ShitForum.Pages
 {

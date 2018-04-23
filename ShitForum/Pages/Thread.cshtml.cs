@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReCaptchaCore;
 using Services;
-using ShitForum.ApiControllers;
 using ShitForum.Cookies;
 using ShitForum.GetIp;
 using ShitForum.Hasher;
@@ -29,9 +28,9 @@ namespace ShitForum.Pages
         private readonly IGetCaptchaValue getCaptchaValue;
 
         public ThreadModel(
-            IpHasherFactory ipHasherFactory, 
-            TripCodeHasher tripCodeHasher, 
-            ICookieStorage cookieStorage, 
+            IpHasherFactory ipHasherFactory,
+            TripCodeHasher tripCodeHasher,
+            ICookieStorage cookieStorage,
             IGetIp getIp,
             IThreadService threadService,
             IPostService postService,
@@ -53,8 +52,7 @@ namespace ShitForum.Pages
         public ViewThread Thread { get; private set; }
         public Board Board { get; private set; }
 
-        [BindProperty]
-        public AddPost Post { get; set; }
+        [BindProperty] public AddPost Post { get; set; }
 
         public async Task<IActionResult> OnGet(Guid id, Guid replyTo)
         {
@@ -64,7 +62,12 @@ namespace ShitForum.Pages
             {
                 this.Thread = new ViewThread(thread.ThreadId, thread.Subject, thread.Posts);
                 var newComm = replyTo == Guid.Empty ? string.Empty : $">>{replyTo}\n";
-                this.Post = new AddPost() { ThreadId = id, Name = this.cookieStorage.ReadName(this.Request), Comment = newComm };
+                this.Post = new AddPost()
+                {
+                    ThreadId = id,
+                    Name = this.cookieStorage.ReadName(this.Request),
+                    Comment = newComm
+                };
                 this.Board = thread.Board;
                 return Page().ToIAR();
             }, () => new NotFoundResult().ToIAR());
@@ -76,8 +79,8 @@ namespace ShitForum.Pages
             var ip = this.getIp.GetIp(this.Request);
             var ipHash = this.ipHasher.Hash(ip);
             await this.validateImage.ValidateAsync(
-                UploadMapper.ExtractData(this.Post.File), 
-                ip, 
+                UploadMapper.ExtractData(this.Post.File),
+                ip,
                 ipHash,
                 s => this.ModelState.AddModelError(nameof(this.Post.File), s));
 
@@ -87,45 +90,49 @@ namespace ShitForum.Pages
                 this.ModelState.AddModelError(string.Empty, "Recaptcha is invalid");
             }
 
-            if (!this.ModelState.IsValid)
+            var t = await this.threadService.GetThread(this.Post.ThreadId).ConfigureAwait(false);
+            return await t.Match(async thread =>
             {
-                var t = await this.threadService.GetThread(this.Post.ThreadId).ConfigureAwait(false);
-                return t.Match(thread =>
+                if (!this.ModelState.IsValid)
                 {
                     this.Thread = new ViewThread(thread.ThreadId, thread.Subject, thread.Posts);
                     this.Board = thread.Board;
                     return this.Page().ToIAR();
-                }, () => new NotFoundResult().ToIAR());
-            }
-
-            var trip = tripCodeHasher.Hash(StringFuncs.MapString(this.Post.Name, "anonymous"));
-            var options = OptionsMapper.Map(this.Post.Options);
-            var postId = Guid.NewGuid();
-            var f = UploadMapper.Map(this.Post.File, postId);
-            var result = await this.postService.Add(postId, this.Post.ThreadId, trip, this.Post.Comment, options.Sage, ipHash, f);
-            return await result.Match(
-                async _ =>
+                }
+                else
                 {
-                    this.cookieStorage.SetNameCookie(this.Response, this.Post.Name);
-                    if (options.NoNoko)
-                    {
-                        var t = await this.threadService.GetThread(this.Post.ThreadId);
-                        return t.Match(some => RedirectToPage("Board", new { id = some.Board.Id }), () => new NotFoundResult().ToIAR());
-                    }
-                    else
-                    {
-                        return RedirectToPage("Thread", new { id = this.Post.ThreadId }).ToIAR();
-                    }
-                }, 
-                _ => Task.FromResult(RedirectToPage("Banned").ToIAR()), 
-                _ => {
-                    this.ModelState.AddModelError(string.Empty, "Image count exceeded");
-                    return Task.FromResult(Page().ToIAR());
-                },
-                _ => {
-                    this.ModelState.AddModelError(string.Empty, "Post count exceeded");
-                    return Task.FromResult(Page().ToIAR());
-                });
+                    var trip = tripCodeHasher.Hash(StringFuncs.MapString(this.Post.Name, "anonymous"));
+                    var options = OptionsMapper.Map(this.Post.Options);
+                    var postId = Guid.NewGuid();
+                    var f = UploadMapper.Map(this.Post.File, postId);
+                    var result = await this.postService.Add(postId, this.Post.ThreadId, trip, this.Post.Comment, options.Sage,
+                        ipHash, f);
+                    return result.Match(
+                        _ =>
+                        {
+                            this.cookieStorage.SetNameCookie(this.Response, this.Post.Name);
+                            if (options.NoNoko)
+                            {
+                                return RedirectToPage("Board", new {id = thread.Board.Id});
+                            }
+                            else
+                            {
+                                return RedirectToPage("Thread", new { id = this.Post.ThreadId }).ToIAR();
+                            }
+                        },
+                        _ => RedirectToPage("Banned").ToIAR(),
+                        _ =>
+                        {
+                            this.ModelState.AddModelError(string.Empty, "Image count exceeded");
+                            return Page().ToIAR();
+                        },
+                        _ =>
+                        {
+                            this.ModelState.AddModelError(string.Empty, "Post count exceeded");
+                            return Page().ToIAR();
+                        });
+                }
+            }, () => new NotFoundResult().ToIART());
         }
     }
 }

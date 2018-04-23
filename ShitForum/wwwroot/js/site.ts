@@ -1,4 +1,4 @@
-﻿function onSubmit(token)
+﻿function onSubmit()
 {
 	document.getElementById("post-form").submit();
 }

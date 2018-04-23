@@ -5,11 +5,9 @@ using Domain;
 using EnsureThat;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Optional;
 using ReCaptchaCore;
 using Services;
 using Services.Dtos;
-using ShitForum.ApiControllers;
 using ShitForum.Cookies;
 using ShitForum.GetIp;
 using ShitForum.Hasher;
@@ -96,39 +94,40 @@ namespace ShitForum.Pages
                 this.ModelState.AddModelError(string.Empty, "Recaptcha is invalid");
             }
 
-            if (!ModelState.IsValid)
+            var t = await this.threadService.GetOrderedThreads(this.Thread.BoardId, filterOption, 100, 0);
+            return await t.Match(async thread =>
             {
-                var t = await this.threadService.GetOrderedThreads(this.Thread.BoardId, filterOption, 100, 0);
-                return t.Match(some =>
+                if (!ModelState.IsValid)
                 {
-                    this.Threads = some.Threads;
-                    this.Board = some.Board;
+                    this.Threads = thread.Threads;
+                    this.Board = thread.Board;
                     return Page().ToIAR();
-                }, () => new NotFoundResult());
-            }
+                }
 
-            var threadId = Guid.NewGuid();
-            var postId = Guid.NewGuid();
-            var trip = tripCodeHasher.Hash(StringFuncs.MapString(this.Thread.Name, "anonymous"));
-            var options = OptionsMapper.Map(this.Thread.Options);
-            var f = UploadMapper.Map(this.Thread.File, postId);
+                var threadId = Guid.NewGuid();
+                var postId = Guid.NewGuid();
+                var trip = tripCodeHasher.Hash(StringFuncs.MapString(this.Thread.Name, "anonymous"));
+                var options = OptionsMapper.Map(this.Thread.Options);
+                var f = UploadMapper.Map(this.Thread.File, postId);
 
-            var result = await this.postService.AddThread(postId, threadId, this.Thread.BoardId, this.Thread.Subject ?? string.Empty, trip, this.Thread.Comment, options.Sage, ipHash, f);
+                var result = await this.postService.AddThread(postId, threadId, this.Thread.BoardId, this.Thread.Subject ?? string.Empty, trip, this.Thread.Comment, options.Sage, ipHash, f);
 
-            return result.Match(
-               _ =>
-               {
-                   this.cookieStorage.SetNameCookie(this.Response, this.Thread.Name);
-                   if (options.NoNoko)
-                   {
-                       return RedirectToPage("Board", new { id = this.Thread.BoardId }).ToIAR();
-                   }
-                   else
-                   {
-                       return RedirectToPage("Thread", new { id = threadId }).ToIAR();
-                   }
-               },
-               _ => RedirectToPage("Banned").ToIAR());
+                return result.Match(
+                    _ =>
+                    {
+                        this.cookieStorage.SetNameCookie(this.Response, this.Thread.Name);
+                        if (options.NoNoko)
+                        {
+                            return RedirectToPage("Board", new { id = this.Thread.BoardId }).ToIAR();
+                        }
+                        else
+                        {
+                            return RedirectToPage("Thread", new { id = threadId }).ToIAR();
+                        }
+                    },
+                    _ => RedirectToPage("Banned").ToIAR());
+
+            }, () => new NotFoundResult().ToIART());
         }
     }
 }
