@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
+using Optional;
 
 namespace ShitForum.Cookies
 {
@@ -7,7 +8,7 @@ namespace ShitForum.Cookies
     {
         void SetNameCookie(HttpResponse r, string name);
         string ReadName(HttpRequest r);
-        Guid ReadAdmin(HttpRequest r);
+        Option<Guid> ReadAdmin(HttpRequest r);
         void SetAdminCookie(HttpResponse r, Guid key);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Optional;
 
 namespace ShitForum.Cookies
 {
@@ -35,7 +36,17 @@ namespace ShitForum.Cookies
             r.Cookies.Append(CookieAdmin, key.ToString(), new CookieOptions() { HttpOnly = true, Secure = (!env.IsDevelopment()) });
         }
 
-        Guid ICookieStorage.ReadAdmin(HttpRequest r) => new Guid(r.Cookies[CookieAdmin]);
-
+        Option<Guid> ICookieStorage.ReadAdmin(HttpRequest r)
+        {
+            var c = r.Cookies[CookieAdmin];
+            if (!string.IsNullOrWhiteSpace(c))
+            {
+                return  Option.Some(new Guid(c));
+            }
+            else
+            {
+                return Option.None<Guid>();
+            }
+        }
     }
 }

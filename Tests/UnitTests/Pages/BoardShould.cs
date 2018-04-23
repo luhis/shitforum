@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Http;
 using Moq;
 using Optional;
 using Services;
-using ShitForum;
 using ShitForum.Hasher;
 using ShitForum.ImageValidation;
 using ShitForum.Models;
 using ShitForum.Pages;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Services.Dtos;
@@ -83,12 +83,14 @@ namespace UnitTests.Pages
             var boardId = Guid.NewGuid();
 
             board.Thread = new AddThread(boardId, "Matt", "sage", "subject", "comment", null);
-            this.getIp.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
             this.cookieStorage.Setup(a => a.SetNameCookie(It.IsAny<HttpResponse>(), "Matt"));
+            this.getIp.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
             this.postService.Setup(a => a.AddThread(It.IsAny<Guid>(), It.IsAny<Guid>(), boardId, "subject", It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IpHash>(), Option.None<File>())).Returns(Task.FromResult<OneOf<Success, Banned>>(new Success()));
             this.validateImage.Setup(a => a.ValidateAsync(Option.None<byte[]>(), IPAddress.Loopback, It.IsAny<IpHash>(), It.IsAny<Action<string>>())).Returns(Task.CompletedTask);
             this.getCaptchaValue.Setup(a => a.Get(It.IsAny<HttpRequest>())).Returns("captcha");
             this.recaptchaVerifier.Setup(a => a.IsValid("captcha", IPAddress.Loopback)).Returns(Task.FromResult(true));
+            this.threadService.Setup(a => a.GetOrderedThreads(boardId, Option.None<string>(), 100, 0))
+                .Returns(Task.FromResult(Option.Some(new ThreadOverViewSet(new Board(boardId, "bbbb", "b"), new List<ThreadOverView>()))));
 
             board.OnPostAsync(null).Wait();
 

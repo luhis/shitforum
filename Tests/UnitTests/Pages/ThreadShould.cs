@@ -88,6 +88,7 @@ namespace UnitTests.Pages
             this.validateImage.Setup(a => a.ValidateAsync(Option.None<byte[]>(), IPAddress.Loopback, It.IsAny<IpHash>(), It.IsAny<Action<string>>())).Returns(Task.CompletedTask);
             this.getCaptchaValue.Setup(a => a.Get(It.IsAny<HttpRequest>())).Returns("captcha");
             this.recaptchaVerifier.Setup(a => a.IsValid("captcha", IPAddress.Loopback)).Returns(Task.FromResult(true));
+            this.threadService.Setup(a => a.GetThread(threadId)).Returns(Task.FromResult(Option.Some(new ThreadDetailView(threadId, "aaa", new Board(Guid.NewGuid(), "bbbb", "b"), new List<PostOverView>() ))));
 
             thread.OnPostAsync().Wait();
 

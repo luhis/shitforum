@@ -95,12 +95,12 @@ namespace ShitForum.Pages
             }
 
             var t = await this.threadService.GetOrderedThreads(this.Thread.BoardId, filterOption, 100, 0);
-            return await t.Match(async thread =>
+            return await t.Match(async threads =>
             {
                 if (!ModelState.IsValid)
                 {
-                    this.Threads = thread.Threads;
-                    this.Board = thread.Board;
+                    this.Threads = threads.Threads;
+                    this.Board = threads.Board;
                     return Page().ToIAR();
                 }
 

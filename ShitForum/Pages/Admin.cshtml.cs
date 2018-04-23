@@ -19,11 +19,14 @@ namespace ShitForum.Pages
         public IActionResult OnGet()
         {
             var authCookie = cookieStorage.ReadAdmin(this.HttpContext.Request);
-            var res = adminSettings.IsValid(authCookie);
-            return res.Match(_ =>
+            return authCookie.Match(some =>
             {
-                this.Message = "You are already logged in";
-                return Page();
+                var res = adminSettings.IsValid(some);
+                return res.Match(_ =>
+                {
+                    this.Message = "You are already logged in";
+                    return Page();
+                }, Page);
             }, Page);
         }
 

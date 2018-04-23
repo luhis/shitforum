@@ -10,6 +10,8 @@ using Persistence.Repositories;
 using ShitForum.Hasher;
 using ShitForum.ImageValidation;
 using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using ShitForum.Cookies;
 using ShitForum.GetIp;
 
@@ -45,6 +47,16 @@ namespace ShitForum
                 options.AppendTrailingSlash = false;
             });
             services.AddMvc();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.Events.OnRedirectToLogin = context =>
+                    {
+                        context.Response.Headers["Location"] = context.RedirectUri;
+                        context.Response.StatusCode = 401;
+                        return Task.CompletedTask;
+                    };
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
