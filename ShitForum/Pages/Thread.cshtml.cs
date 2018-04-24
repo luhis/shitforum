@@ -9,7 +9,6 @@ using ShitForum.Attributes;
 using ShitForum.Cookies;
 using ShitForum.GetIp;
 using ShitForum.Hasher;
-using ShitForum.ImageValidation;
 using ShitForum.Mappers;
 using ShitForum.Models;
 
@@ -24,7 +23,7 @@ namespace ShitForum.Pages
         private readonly IGetIp getIp;
         private readonly IThreadService threadService;
         private readonly IPostService postService;
-        private readonly IValidateImage validateImage;
+        private readonly IBannedImageLogger bannedImageLogger;
 
         public ThreadModel(
             IpHasherFactory ipHasherFactory,
@@ -33,7 +32,7 @@ namespace ShitForum.Pages
             IGetIp getIp,
             IThreadService threadService,
             IPostService postService,
-            IValidateImage validateImage)
+            IBannedImageLogger bannedImageLogger)
         {
             this.ipHasher = ipHasherFactory.GetHasher();
             this.tripCodeHasher = tripCodeHasher;
@@ -41,7 +40,7 @@ namespace ShitForum.Pages
             this.getIp = getIp;
             this.threadService = threadService;
             this.postService = postService;
-            this.validateImage = validateImage;
+            this.bannedImageLogger = bannedImageLogger;
         }
 
         public ViewThread Thread { get; private set; }
@@ -74,11 +73,9 @@ namespace ShitForum.Pages
         {
             var ip = this.getIp.GetIp(this.Request);
             var ipHash = this.ipHasher.Hash(ip);
-            await this.validateImage.ValidateAsync(
-                UploadMapper.ExtractData(this.Post.File),
-                ip,
-                ipHash,
-                s => this.ModelState.AddModelError(nameof(this.Post.File), s));
+
+            var key = $"{nameof(this.Post)}.{nameof(this.Post.File)}";
+            this.bannedImageLogger.Log(this.ModelState[key], ip, ipHash);
 
             var t = await this.threadService.GetThread(this.Post.ThreadId).ConfigureAwait(false);
             return await t.Match(async thread =>

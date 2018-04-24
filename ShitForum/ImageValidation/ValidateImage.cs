@@ -50,21 +50,51 @@ namespace ShitForum.ImageValidation
             return new Pass();
         }
 
-        private static Option<string> MapToErrorString(ResType r) =>
+        public static readonly string BannedImageString = "Banned image";
+
+        Option<string> IValidateImage.MapToErrorString(ResType r) =>
             r.Match(
                 _ => Option.None<string>(),
                 s => Option.Some<string>($"Image must not exceed {s.MaxSize} bytes"),
                 _ => Option.Some<string>("Invalid image format"),
-                _ => Option.Some<string>("Banned image"));
+                _ => Option.Some<string>(BannedImageString));
 
-        private readonly Action doNothing = () => { };
-        Task IValidateImage.ValidateAsync(Option<byte[]> data, IPAddress ip, IpHash hash, Action<string> addError)
+        ////private readonly Action doNothing = () => { };
+        ////Task IValidateImage.ValidateAsync(Option<byte[]> data, IPAddress ip, IpHash hash, Action<string> addError)
+        ////{
+        ////    return data.Match(async some =>
+        ////    {
+        ////        var imageValidationResult = await this.ValidateAsync(ip, hash, some);
+        ////        MapToErrorString(imageValidationResult).Match(addError, doNothing);
+        ////    }, () => Task.CompletedTask);
+        ////}
+
+
+        Task<ResType> IValidateImage.ValidateAsync(Option<byte[]> data)
         {
             return data.Match(async some =>
             {
-                var imageValidationResult = await this.ValidateAsync(ip, hash, some);
-                ValidateImage.MapToErrorString(imageValidationResult).Match(addError, doNothing);
-            }, () => Task.CompletedTask);
+                if (some.Length > ImageMaxSize)
+                {
+                    return (ResType)new SizeExceeded(ImageMaxSize);
+                }
+                var hash = ImageHasher.Hash(some);
+                if (await this.bannedImages.IsBanned(hash))
+                {
+                    return new BannedImage();
+                }
+
+                try
+                {
+                    Image.Load(some);
+                }
+                catch (Exception)
+                {
+                    return new InvalidImage();
+                }
+
+                return new Pass();
+            }, () => Task.FromResult<ResType>(new Pass()));
         }
     }
 }

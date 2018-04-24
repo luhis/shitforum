@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
+using ShitForum.Attributes;
 
 namespace ShitForum.Models
 {
@@ -28,6 +28,8 @@ namespace ShitForum.Models
         public string Subject { get; set; }
         [Required]
         public string Comment { get; set; }
+
+        [ImageValidation]
         [Required]
         public IFormFile File { get; set; }
     }

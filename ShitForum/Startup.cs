@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ShitForum.Cookies;
 using ShitForum.GetIp;
+using ShitForum.Pages;
 
 namespace ShitForum
 {
@@ -36,6 +37,7 @@ namespace ShitForum
             services.AddSingleton<IFileRepository, FileRepository>();
             services.AddSingleton<IValidateImage, ValidateImage>();
             services.AddSingleton<ICookieStorage, CookieStorage>();
+            services.AddSingleton<IBannedImageLogger, BannedImageLogger>();
             services.AddSingleton<IGetIp, GetIp.GetIp>();
             services.AddSingleton<ForumContext>();
             services.AddSingleton<IpHasherFactory>();

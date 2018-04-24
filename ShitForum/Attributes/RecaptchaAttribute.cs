@@ -19,6 +19,7 @@ namespace ShitForum.Attributes
                 var getCaptchaValue = context.HttpContext.RequestServices.GetService<IGetCaptchaValue>();
                 var recaptchaVerifier = context.HttpContext.RequestServices.GetService<IRecaptchaVerifier>();
                 var getIp = context.HttpContext.RequestServices.GetService<IGetIp>();
+
                 var ip = getIp.GetIp(context.HttpContext.Request);
                 var recaptcha = getCaptchaValue.Get(context.HttpContext.Request);
                 if (!await recaptchaVerifier.IsValid(recaptcha, ip))

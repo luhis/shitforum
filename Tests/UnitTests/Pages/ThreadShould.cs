@@ -6,18 +6,16 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain;
 using Xunit;
-using ShitForum;
 using Microsoft.AspNetCore.Http;
 using ShitForum.Models;
 using System.Net;
 using Optional;
 using Services;
 using Services.Dtos;
-using ShitForum.ImageValidation;
 using Services.Results;
 using OneOf;
 using System.IO;
-using ReCaptchaCore;
+using ShitForum;
 using ShitForum.Cookies;
 using ShitForum.GetIp;
 
@@ -31,7 +29,7 @@ namespace UnitTests.Pages
         private readonly Mock<IGetIp> getIp;
         private readonly Mock<IThreadService> threadService;
         private readonly Mock<IPostService> postService;
-        private readonly Mock<IValidateImage> validateImage;
+        private readonly Mock<IBannedImageLogger> bannedImageLogger;
 
         public ThreadShould()
         {
@@ -41,7 +39,7 @@ namespace UnitTests.Pages
             this.getIp = this.repo.Create<IGetIp>();
             this.threadService = this.repo.Create<IThreadService>();
             this.postService = this.repo.Create<IPostService>();
-            this.validateImage = this.repo.Create<IValidateImage>();
+            this.bannedImageLogger = this.repo.Create<IBannedImageLogger>();
 
             this.thread = new ThreadModel(
                 new IpHasherFactory(conf),
@@ -50,7 +48,7 @@ namespace UnitTests.Pages
                 this.getIp.Object,
                 this.threadService.Object,
                 this.postService.Object,
-                this.validateImage.Object)
+                this.bannedImageLogger.Object)
             { PageContext = new Microsoft.AspNetCore.Mvc.RazorPages.PageContext(), };
         }
 
@@ -79,8 +77,8 @@ namespace UnitTests.Pages
             this.cookieStorage.Setup(a => a.SetNameCookie(It.IsAny<HttpResponse>(), "Matt"));
             this.postService.Setup(a => a.Add(It.IsAny<Guid>(), threadId, It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IpHash>(), Option.None<Domain.File>())).Returns(
                 Task.FromResult<OneOf<Success, Banned, ImageCountExceeded, PostCountExceeded>>(new Success()));
-            this.validateImage.Setup(a => a.ValidateAsync(Option.None<byte[]>(), IPAddress.Loopback, It.IsAny<IpHash>(), It.IsAny<Action<string>>())).Returns(Task.CompletedTask);
             this.threadService.Setup(a => a.GetThread(threadId)).Returns(Task.FromResult(Option.Some(new ThreadDetailView(threadId, "aaa", new Board(Guid.NewGuid(), "bbbb", "b"), new List<PostOverView>() ))));
+            this.bannedImageLogger.Setup(a => a.Log(null, IPAddress.Loopback, It.IsAny<IpHash>()));
 
             thread.OnPostAsync().Wait();
 
@@ -99,7 +97,7 @@ namespace UnitTests.Pages
             thread.Post = new AddPost(threadId, "Matt", "sage", "comment", file.Object);
             this.getIp.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
             this.cookieStorage.Setup(a => a.SetNameCookie(It.IsAny<HttpResponse>(), "Matt"));
-            this.validateImage.Setup(a => a.ValidateAsync(It.IsAny<Option<byte[]>>(), IPAddress.Loopback, It.IsAny<IpHash>(), It.IsAny<Action<string>>())).Returns(Task.FromResult(true));
+            
             thread.OnPostAsync().Wait();
 
             this.repo.VerifyAll();
@@ -118,7 +116,7 @@ namespace UnitTests.Pages
             this.threadService.Setup(a => a.GetThread(threadId)).Returns(
                 Task.FromResult(Option.Some(new ThreadDetailView(threadId, "subject", new Board(boardId, "random", "bee"), new List<PostOverView>() {
                     new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", Option.None<Domain.File>(), false, "myip") }))));
-            this.validateImage.Setup(a => a.ValidateAsync(Option.None<byte[]>(), IPAddress.Loopback, It.IsAny<IpHash>(), It.IsAny<Action<string>>())).Returns(Task.CompletedTask);
+            this.bannedImageLogger.Setup(a => a.Log(null, IPAddress.Loopback, It.IsAny<IpHash>()));
 
             thread.OnPostAsync().Wait();
 

@@ -11,12 +11,12 @@ using ShitForum.Attributes;
 using ShitForum.Cookies;
 using ShitForum.GetIp;
 using ShitForum.Hasher;
-using ShitForum.ImageValidation;
 using ShitForum.Mappers;
 using ShitForum.Models;
 
 namespace ShitForum.Pages
 {
+    [Recaptcha]
     public class BoardModel : PageModel
     {
         private readonly IIpHasher ipHasher;
@@ -25,7 +25,7 @@ namespace ShitForum.Pages
         private readonly IGetIp getIp;
         private readonly IThreadService threadService;
         private readonly IPostService postService;
-        private readonly IValidateImage validateImage;
+        private readonly IBannedImageLogger bannedImageLogger;
 
         public BoardModel(
             IpHasherFactory ipHasherFactory, 
@@ -34,7 +34,7 @@ namespace ShitForum.Pages
             IGetIp getIp, 
             IThreadService threadService,
             IPostService postService,
-            IValidateImage validateImage)
+            IBannedImageLogger bannedImageLogger)
         {
             this.ipHasher = ipHasherFactory.GetHasher();
             this.tripCodeHasher = tripCodeHasher;
@@ -42,7 +42,7 @@ namespace ShitForum.Pages
             this.getIp = getIp;
             this.threadService = threadService;
             this.postService = postService;
-            this.validateImage = validateImage;
+            this.bannedImageLogger = bannedImageLogger;
         }
 
         public async Task<IActionResult> OnGet(Guid id, string filter)
@@ -75,13 +75,11 @@ namespace ShitForum.Pages
         public async Task<IActionResult> OnPostAsync(string filter)
         {
             var ip = this.getIp.GetIp(this.Request);
-            var filterOption = NullableMapper.ToOption(filter);
             var ipHash = this.ipHasher.Hash(ip);
-            await validateImage.ValidateAsync(
-                UploadMapper.ExtractData(this.Thread.File),
-                ip,
-                ipHash,
-                s => this.ModelState.AddModelError(nameof(this.Thread.File), s));
+
+            this.bannedImageLogger.Log(this.ModelState[nameof(this.Thread.File)], ip, ipHash);
+
+            var filterOption = NullableMapper.ToOption(filter);
 
             var t = await this.threadService.GetOrderedThreads(this.Thread.BoardId, filterOption, 100, 0);
             return await t.Match(async threads =>
