@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Domain;
 using Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repositories
 {
@@ -23,7 +23,7 @@ namespace Persistence.Repositories
 
         Task<bool> IBannedIpRepository.IsBanned(IpHash hash)
         {
-            return Task.FromResult(this.client.BannedImages.Where(a => a.Hash == hash.Val).Any());
+            return this.client.BannedImages.AnyAsync(a => a.Hash == hash.Val);
         }
     }
 }

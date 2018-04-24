@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
-using Services;
 using Services.Dtos;
 
 namespace ShitForum.Hasher

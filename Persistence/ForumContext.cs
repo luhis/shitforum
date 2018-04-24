@@ -1,7 +1,6 @@
 ﻿using Domain;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Setup;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Persistence

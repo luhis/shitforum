@@ -10,7 +10,7 @@ namespace ReCaptchaCore
     {
         private readonly RecaptchaSettings settings;
 
-        private readonly static string Api = "https://www.google.com/recaptcha/api/siteverify";
+        private static readonly string Api = "https://www.google.com/recaptcha/api/siteverify";
 
         public RecaptchaVerifier(RecaptchaSettings settings)
         {

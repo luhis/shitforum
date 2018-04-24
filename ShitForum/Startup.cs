@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ShitForum.Cookies;
 using ShitForum.GetIp;
-using ShitForum.Pages;
 
 namespace ShitForum
 {
@@ -26,7 +25,7 @@ namespace ShitForum
             logger.LogInformation($"Starting up ShitForum {DateTime.UtcNow}");
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
