@@ -6,14 +6,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ShitForum.Attributes
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class CookieAuthAttribute : Attribute, IPageFilter
     {
-        public void OnPageHandlerSelected(PageHandlerSelectedContext context)
+        void IPageFilter.OnPageHandlerSelected(PageHandlerSelectedContext context)
         {
         }
 
-        public void OnPageHandlerExecuting(PageHandlerExecutingContext context)
+        void IPageFilter.OnPageHandlerExecuting(PageHandlerExecutingContext context)
         {
             var adminSettings = context.HttpContext.RequestServices.GetService<AdminSettings>();
             var cookieStorage = context.HttpContext.RequestServices.GetService<ICookieStorage>();
@@ -33,7 +33,7 @@ namespace ShitForum.Attributes
             }, () => context.Result = new ForbidResult());
         }
 
-        public void OnPageHandlerExecuted(PageHandlerExecutedContext context)
+        void IPageFilter.OnPageHandlerExecuted(PageHandlerExecutedContext context)
         {
         }
     }

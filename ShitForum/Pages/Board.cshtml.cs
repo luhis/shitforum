@@ -5,9 +5,9 @@ using Domain;
 using EnsureThat;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using ReCaptchaCore;
 using Services;
 using Services.Dtos;
+using ShitForum.Attributes;
 using ShitForum.Cookies;
 using ShitForum.GetIp;
 using ShitForum.Hasher;
@@ -26,8 +26,6 @@ namespace ShitForum.Pages
         private readonly IThreadService threadService;
         private readonly IPostService postService;
         private readonly IValidateImage validateImage;
-        private readonly IRecaptchaVerifier recaptchaVerifier;
-        private readonly IGetCaptchaValue getCaptchaValue;
 
         public BoardModel(
             IpHasherFactory ipHasherFactory, 
@@ -36,9 +34,7 @@ namespace ShitForum.Pages
             IGetIp getIp, 
             IThreadService threadService,
             IPostService postService,
-            IValidateImage validateImage,
-            IRecaptchaVerifier recaptchaVerifier,
-            IGetCaptchaValue getCaptchaValue)
+            IValidateImage validateImage)
         {
             this.ipHasher = ipHasherFactory.GetHasher();
             this.tripCodeHasher = tripCodeHasher;
@@ -47,8 +43,6 @@ namespace ShitForum.Pages
             this.threadService = threadService;
             this.postService = postService;
             this.validateImage = validateImage;
-            this.recaptchaVerifier = recaptchaVerifier;
-            this.getCaptchaValue = getCaptchaValue;
         }
 
         public async Task<IActionResult> OnGet(Guid id, string filter)
@@ -76,6 +70,7 @@ namespace ShitForum.Pages
 
         public string Filter { get; private set; }
 
+        [Recaptcha]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPostAsync(string filter)
         {
@@ -87,12 +82,6 @@ namespace ShitForum.Pages
                 ip,
                 ipHash,
                 s => this.ModelState.AddModelError(nameof(this.Thread.File), s));
-
-            var recaptcha = this.getCaptchaValue.Get(this.Request);
-            if (!await this.recaptchaVerifier.IsValid(recaptcha, ip))
-            {
-                this.ModelState.AddModelError(string.Empty, "Recaptcha is invalid");
-            }
 
             var t = await this.threadService.GetOrderedThreads(this.Thread.BoardId, filterOption, 100, 0);
             return await t.Match(async threads =>
@@ -126,7 +115,6 @@ namespace ShitForum.Pages
                         }
                     },
                     _ => RedirectToPage("Banned").ToIAR());
-
             }, () => new NotFoundResult().ToIART());
         }
     }

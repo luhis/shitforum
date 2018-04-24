@@ -4,8 +4,8 @@ using Domain;
 using EnsureThat;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using ReCaptchaCore;
 using Services;
+using ShitForum.Attributes;
 using ShitForum.Cookies;
 using ShitForum.GetIp;
 using ShitForum.Hasher;
@@ -15,6 +15,7 @@ using ShitForum.Models;
 
 namespace ShitForum.Pages
 {
+    [Recaptcha]
     public class ThreadModel : PageModel
     {
         private readonly IIpHasher ipHasher;
@@ -24,8 +25,6 @@ namespace ShitForum.Pages
         private readonly IThreadService threadService;
         private readonly IPostService postService;
         private readonly IValidateImage validateImage;
-        private readonly IRecaptchaVerifier recaptchaVerifier;
-        private readonly IGetCaptchaValue getCaptchaValue;
 
         public ThreadModel(
             IpHasherFactory ipHasherFactory,
@@ -34,9 +33,7 @@ namespace ShitForum.Pages
             IGetIp getIp,
             IThreadService threadService,
             IPostService postService,
-            IValidateImage validateImage,
-            IRecaptchaVerifier recaptchaVerifier,
-            IGetCaptchaValue getCaptchaValue)
+            IValidateImage validateImage)
         {
             this.ipHasher = ipHasherFactory.GetHasher();
             this.tripCodeHasher = tripCodeHasher;
@@ -45,8 +42,6 @@ namespace ShitForum.Pages
             this.threadService = threadService;
             this.postService = postService;
             this.validateImage = validateImage;
-            this.recaptchaVerifier = recaptchaVerifier;
-            this.getCaptchaValue = getCaptchaValue;
         }
 
         public ViewThread Thread { get; private set; }
@@ -73,6 +68,7 @@ namespace ShitForum.Pages
             }, () => new NotFoundResult().ToIAR());
         }
 
+        [Recaptcha]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPostAsync()
         {
@@ -83,12 +79,6 @@ namespace ShitForum.Pages
                 ip,
                 ipHash,
                 s => this.ModelState.AddModelError(nameof(this.Post.File), s));
-
-            var recaptcha = this.getCaptchaValue.Get(this.Request);
-            if (!await this.recaptchaVerifier.IsValid(recaptcha, ip))
-            {
-                this.ModelState.AddModelError(string.Empty, "Recaptcha is invalid");
-            }
 
             var t = await this.threadService.GetThread(this.Post.ThreadId).ConfigureAwait(false);
             return await t.Match(async thread =>

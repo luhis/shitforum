@@ -32,8 +32,6 @@ namespace UnitTests.Pages
         private readonly Mock<IThreadService> threadService;
         private readonly Mock<IPostService> postService;
         private readonly Mock<IValidateImage> validateImage;
-        private readonly Mock<IRecaptchaVerifier> recaptchaVerifier;
-        private readonly Mock<IGetCaptchaValue> getCaptchaValue;
 
         public ThreadShould()
         {
@@ -44,8 +42,6 @@ namespace UnitTests.Pages
             this.threadService = this.repo.Create<IThreadService>();
             this.postService = this.repo.Create<IPostService>();
             this.validateImage = this.repo.Create<IValidateImage>();
-            this.recaptchaVerifier = this.repo.Create<IRecaptchaVerifier>();
-            this.getCaptchaValue = this.repo.Create<IGetCaptchaValue>();
 
             this.thread = new ThreadModel(
                 new IpHasherFactory(conf),
@@ -54,9 +50,7 @@ namespace UnitTests.Pages
                 this.getIp.Object,
                 this.threadService.Object,
                 this.postService.Object,
-                this.validateImage.Object,
-                recaptchaVerifier.Object,
-                this.getCaptchaValue.Object)
+                this.validateImage.Object)
             { PageContext = new Microsoft.AspNetCore.Mvc.RazorPages.PageContext(), };
         }
 
@@ -86,8 +80,6 @@ namespace UnitTests.Pages
             this.postService.Setup(a => a.Add(It.IsAny<Guid>(), threadId, It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IpHash>(), Option.None<Domain.File>())).Returns(
                 Task.FromResult<OneOf<Success, Banned, ImageCountExceeded, PostCountExceeded>>(new Success()));
             this.validateImage.Setup(a => a.ValidateAsync(Option.None<byte[]>(), IPAddress.Loopback, It.IsAny<IpHash>(), It.IsAny<Action<string>>())).Returns(Task.CompletedTask);
-            this.getCaptchaValue.Setup(a => a.Get(It.IsAny<HttpRequest>())).Returns("captcha");
-            this.recaptchaVerifier.Setup(a => a.IsValid("captcha", IPAddress.Loopback)).Returns(Task.FromResult(true));
             this.threadService.Setup(a => a.GetThread(threadId)).Returns(Task.FromResult(Option.Some(new ThreadDetailView(threadId, "aaa", new Board(Guid.NewGuid(), "bbbb", "b"), new List<PostOverView>() ))));
 
             thread.OnPostAsync().Wait();
@@ -127,8 +119,6 @@ namespace UnitTests.Pages
                 Task.FromResult(Option.Some(new ThreadDetailView(threadId, "subject", new Board(boardId, "random", "bee"), new List<PostOverView>() {
                     new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", Option.None<Domain.File>(), false, "myip") }))));
             this.validateImage.Setup(a => a.ValidateAsync(Option.None<byte[]>(), IPAddress.Loopback, It.IsAny<IpHash>(), It.IsAny<Action<string>>())).Returns(Task.CompletedTask);
-            this.getCaptchaValue.Setup(a => a.Get(It.IsAny<HttpRequest>())).Returns("captcha");
-            this.recaptchaVerifier.Setup(a => a.IsValid("captcha", IPAddress.Loopback)).Returns(Task.FromResult(true));
 
             thread.OnPostAsync().Wait();
 
