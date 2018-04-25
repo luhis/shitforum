@@ -21,6 +21,7 @@
                     @post.Created
                     No. <a asp-route-id="@Model.Thread.ThreadId" asp-route-replyto="@post.Id">@post.Id</a>
                     <a asp-route-id="@post.Id" asp-page="DeletePost">[Delete]</a>
+                    <a asp-route-iphash="@post.IpAddress" asp-page="BanUser">[Ban]</a>
                 </div>
             </div>
             @if (post.File.HasValue)

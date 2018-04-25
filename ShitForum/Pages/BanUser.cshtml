@@ -1,0 +1,15 @@
+﻿@page
+@model ShitForum.Pages.BanUserModel
+@{
+    ViewData["Title"] = "BanUser";
+}
+
+<h2>BanUser</h2>
+
+<form method="post">
+    <div class="form-group">
+        Rason:
+    <input class="form-control" asp-for="Reason" type="text" placeholder="reason" />
+    </div>
+        <input class="btn btn-primary" type="submit" />
+</form>
