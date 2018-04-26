@@ -9,6 +9,8 @@ namespace Services
             services.AddSingleton<IThreadService, ThreadService>();
             services.AddSingleton<IPostService, PostService>();
             services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<IFileService, FileService>();
+            services.AddSingleton<IBoardService, BoardService>();
         }
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Services;
 using ShitForum.Attributes;
+using ShitForum.BannedImageLogger;
 using ShitForum.Cookies;
 using ShitForum.GetIp;
 using ShitForum.Hasher;

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Domain;
+using Domain.IpHash;
 using Domain.Repositories;
 
 namespace Services
@@ -13,7 +14,7 @@ namespace Services
             this.bannedIpRepository = bannedIpRepository;
         }
 
-        Task IUserService.BanUser(IpHash hash, string reason)
+        Task IUserService.BanUser(IIpHash hash, string reason)
         {
             return this.bannedIpRepository.Ban(hash, reason);
         }

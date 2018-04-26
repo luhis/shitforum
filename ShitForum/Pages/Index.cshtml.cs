@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain;
-using Domain.Repositories;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Services;
 
 namespace ShitForum.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly IBoardRepository boardRepository;
+        private readonly IBoardService boardRepository;
+
         public IEnumerable<Board> Boards { get; private set; }
 
-        public IndexModel(IBoardRepository boardRepository)
+        public IndexModel(IBoardService boardRepository)
         {
             this.boardRepository = boardRepository;
         }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net;
-using Domain;
+using Domain.IpHash;
 
 namespace ShitForum.Hasher
 {
@@ -13,6 +13,6 @@ namespace ShitForum.Hasher
             this.salt = salt;
         }
 
-        IpHash IIpHasher.Hash(IPAddress ip) => new IpHash(Sha256Hasher.Hash(salt.ToString() + ip));
+        IIpHash IIpHasher.Hash(IPAddress ip) => new IpHash(Sha256Hasher.Hash(salt.ToString() + ip));
     }
 }

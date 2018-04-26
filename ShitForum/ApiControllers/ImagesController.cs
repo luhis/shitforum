@@ -1,25 +1,25 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Services;
 
 namespace ShitForum.ApiControllers
 {
     [Route("api/[controller]")]
     public class ImagesController : Controller
     {
-        private readonly IFileRepository postRepository;
+        private readonly IFileService fileRepository;
 
-        public ImagesController(IFileRepository postRepository)
+        public ImagesController(IFileService postRepository)
         {
-            this.postRepository = postRepository;
+            this.fileRepository = postRepository;
         }
 
         [HttpGet]
         [Route("[action]")]
         public async Task<IActionResult> GetPostThumbnail(Guid id)
         {
-            var post = await this.postRepository.GetPostFile(id).ConfigureAwait(false);
+            var post = await this.fileRepository.GetPostFile(id).ConfigureAwait(false);
             return post.Match(some => File(some.ThumbNailJpeg, "image/jpeg").ToIAR(), () => new NotFoundResult());
         }
 
@@ -27,7 +27,7 @@ namespace ShitForum.ApiControllers
         [Route("[action]")]
         public async Task<IActionResult> GetPostImage(Guid id)
         {
-            var post = await this.postRepository.GetPostFile(id).ConfigureAwait(false);
+            var post = await this.fileRepository.GetPostFile(id).ConfigureAwait(false);
             return post.Match(some => File(some.Data, some.MimeType).ToIAR(), () => new NotFoundResult());
         }
     }

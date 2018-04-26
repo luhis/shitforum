@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
-using Domain;
+using Domain.IpHash;
 
 namespace Services
 {
     public interface IUserService
     {
-        Task BanUser(IpHash hash, string reason);
+        Task BanUser(IIpHash hash, string reason);
     }
 }

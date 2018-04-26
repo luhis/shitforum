@@ -5,6 +5,7 @@ using Optional;
 using Services;
 using System;
 using System.Threading.Tasks;
+using Domain.IpHash;
 using Services.Dtos;
 using Xunit;
 using FluentAssertions;

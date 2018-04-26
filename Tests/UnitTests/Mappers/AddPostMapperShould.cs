@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using Domain;
+using Domain.IpHash;
 using FluentAssertions;
 using Services;
 using Services.Dtos;

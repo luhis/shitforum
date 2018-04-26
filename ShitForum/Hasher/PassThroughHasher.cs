@@ -1,10 +1,10 @@
 ﻿using System.Net;
-using Domain;
+using Domain.IpHash;
 
 namespace ShitForum.Hasher
 {
     public class PassThroughHasher : IIpHasher
     {
-        IpHash IIpHasher.Hash(IPAddress ip) => new IpHash(ip.ToString());
+        IIpHash IIpHasher.Hash(IPAddress ip) => new IpUnHashed(ip.ToString());
     }
 }

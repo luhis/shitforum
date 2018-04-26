@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 using Domain;
+using Domain.IpHash;
 using Domain.Repositories;
 using Microsoft.Extensions.Logging;
 using Optional;

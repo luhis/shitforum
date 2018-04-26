@@ -3,6 +3,7 @@ using Domain.Repositories;
 using Optional;
 using System;
 using System.Threading.Tasks;
+using Domain.IpHash;
 using Services.Dtos;
 using OneOf;
 using Services.Results;
@@ -30,7 +31,7 @@ namespace Services
         private Task<int> GetImageCount(Guid threadId) => this.fileRepository.GetImageCount(threadId);
         private Task<int> GetPostCountAsync(Guid threadId) => this.postRepository.GetThreadPostCount(threadId);
 
-        async Task<OneOf<Success, Banned, ImageCountExceeded, PostCountExceeded>> IPostService.Add(Guid postId, Guid threadId, TripCodedName name, string comment, bool isSage, IpHash ipAddress, Option<File> file)
+        async Task<OneOf<Success, Banned, ImageCountExceeded, PostCountExceeded>> IPostService.Add(Guid postId, Guid threadId, TripCodedName name, string comment, bool isSage, IIpHash ipAddress, Option<File> file)
         {
             if (await this.bannedIpRepository.IsBanned(ipAddress))
             {
@@ -54,7 +55,7 @@ namespace Services
             return new Success();
         }
 
-        async Task<OneOf<Success, Banned>> IPostService.AddThread(Guid postId, Guid threadId, Guid boardId, string subject, TripCodedName name, string comment, bool isSage, IpHash ipAddress, Option<File> file)
+        async Task<OneOf<Success, Banned>> IPostService.AddThread(Guid postId, Guid threadId, Guid boardId, string subject, TripCodedName name, string comment, bool isSage, IIpHash ipAddress, Option<File> file)
         { 
             if (await this.bannedIpRepository.IsBanned(ipAddress))
             {

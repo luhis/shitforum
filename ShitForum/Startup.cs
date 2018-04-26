@@ -12,6 +12,7 @@ using ShitForum.ImageValidation;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using ShitForum.BannedImageLogger;
 using ShitForum.Cookies;
 using ShitForum.GetIp;
 
@@ -36,7 +37,7 @@ namespace ShitForum
             services.AddSingleton<IFileRepository, FileRepository>();
             services.AddSingleton<IValidateImage, ValidateImage>();
             services.AddSingleton<ICookieStorage, CookieStorage>();
-            services.AddSingleton<IBannedImageLogger, BannedImageLogger>();
+            services.AddSingleton<IBannedImageLogger, BannedImageLogger.BannedImageLogger>();
             services.AddSingleton<IGetIp, GetIp.GetIp>();
             services.AddSingleton<ForumContext>();
             services.AddSingleton<IpHasherFactory>();

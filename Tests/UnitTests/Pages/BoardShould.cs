@@ -10,12 +10,14 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using Domain.IpHash;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Services.Dtos;
 using Xunit;
 using Services.Results;
 using OneOf;
 using ShitForum;
+using ShitForum.BannedImageLogger;
 using ShitForum.Cookies;
 using ShitForum.GetIp;
 

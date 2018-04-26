@@ -1,5 +1,6 @@
 ﻿using System;
 using Domain;
+using Domain.IpHash;
 using Services.Dtos;
 using ShitForum.Models;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Domain;
+using Domain.IpHash;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,13 +16,13 @@ namespace Persistence.Repositories
             this.client = client;
         }
 
-        Task IBannedIpRepository.Ban(IpHash hash, string reason)
+        Task IBannedIpRepository.Ban(IIpHash hash, string reason)
         {
             this.client.BannedIp.Add(new BannedIp(Guid.NewGuid(), hash.Val, reason));
             return this.client.SaveChangesAsync();
         }
 
-        Task<bool> IBannedIpRepository.IsBanned(IpHash hash)
+        Task<bool> IBannedIpRepository.IsBanned(IIpHash hash)
         {
             return this.client.BannedImages.AnyAsync(a => a.Hash == hash.Val);
         }
