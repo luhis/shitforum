@@ -5,8 +5,7 @@
     "outputFileName": "wwwroot/css/bootstrap.min.css",
     // An array of relative input file paths. Globbing patterns supported
     "inputFiles": [
-      "node_modules/bootstrap/dist/css/bootstrap.css",
-      "node_modules/bootstrap/dist/css/bootstrap-grid.css"
+      "node_modules/bootstrap/dist/css/bootstrap.css"
     ]
   },
   {

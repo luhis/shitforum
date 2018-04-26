@@ -29,7 +29,7 @@ namespace Services
         {
             var threadIds = this.threadsRepository.GetAll().Where(t => t.BoardId == boardId).Select(t => t.Id);
             var latestThreads = this.postsRepository.GetAll().Where(a => !a.IsSage && threadIds.Contains(a.ThreadId)).OrderBy(a => a.Created).Select(a => a.ThreadId).Distinct()
-                .Skip(pageSize * pageNumber).Take(pageSize).ToArray();
+                .Skip(pageSize * pageNumber).Take(pageSize);
             var threads = await this.threadsRepository.GetAll().Where(a => latestThreads.Contains(a.Id)).ToListAsync();
             var board = await this.boardRepository.GetById(boardId);
             return await board.Match(async some =>

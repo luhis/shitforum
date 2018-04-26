@@ -13,34 +13,34 @@
 </nav>
 
 
-    @foreach (var post in Model.Thread.Posts)
-    {
-        <div class="row">
-            <div class="col-12">
-                @post.Name
-                @post.Created
-                No. <a asp-route-id="@Model.Thread.ThreadId" asp-route-replyto="@post.Id">@post.Id</a>
-                <a asp-route-id="@post.Id" asp-page="DeletePost">[Delete]</a>
-                <a asp-route-iphash="@post.IpAddress" asp-page="BanUser">[Ban]</a>
-            </div>
+@foreach (var post in Model.Thread.Posts)
+{
+    <div class="row">
+        <div class="col-12">
+            @post.Name
+            @post.Created
+            No. <a asp-route-id="@Model.Thread.ThreadId" asp-route-replyto="@post.Id">@post.Id</a>
+            <a asp-route-id="@post.Id" asp-page="DeletePost">[Delete]</a>
+            <a asp-route-iphash="@post.IpAddress" asp-page="BanUser">[Ban]</a>
         </div>
-        <div class="row post">
-            <div class="col-2">
-                @if (post.File.HasValue)
-                {
-                    <a asp-controller="Images" asp-action="GetPostImage" asp-route-id="@post.Id">
-                        <img src="@Url.Action("GetPostThumbnail", "Images", new {id = post.Id})" />
-                    </a>
-                }
-            </div>
-            <div class="col-10">
-                <p class="post-comment">@post.Comment</p>
-            </div>
+    </div>
+    <div class="row post no-gutters">
+        <div class="col-3">
+            @if (post.File.HasValue)
+            {
+                <a asp-controller="Images" asp-action="GetPostImage" asp-route-id="@post.Id">
+                    <img src="@Url.Action("GetPostThumbnail", "Images", new {id = post.Id})" />
+                </a>
+            }
         </div>
-        <hr />
-    }
+        <div class="col-9">
+            <p class="post-comment">@post.Comment</p>
+        </div>
+    </div>
+}
 
-    <h5>Add a new Post</h5>
+<hr />
+<h5>Add a new Post</h5>
 
 <div asp-validation-summary="All"></div>
 <form id="post-form" method="post" enctype="multipart/form-data">
