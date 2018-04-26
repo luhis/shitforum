@@ -11,7 +11,7 @@ using System;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ForumContext))]
-    [Migration("20180417222144_InitialCreate")]
+    [Migration("20180426200755_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,6 +38,8 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.BannedIp", b =>
                 {
                     b.Property<Guid>("Id");
+
+                    b.Property<DateTime>("Expiry");
 
                     b.Property<string>("IpHash")
                         .IsRequired();

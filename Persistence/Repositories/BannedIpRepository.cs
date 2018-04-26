@@ -16,9 +16,9 @@ namespace Persistence.Repositories
             this.client = client;
         }
 
-        Task IBannedIpRepository.Ban(IIpHash hash, string reason)
+        Task IBannedIpRepository.Ban(IIpHash hash, string reason, DateTime expiry)
         {
-            this.client.BannedIp.Add(new BannedIp(Guid.NewGuid(), hash.Val, reason));
+            this.client.BannedIp.Add(new BannedIp(Guid.NewGuid(), hash.Val, reason, expiry));
             return this.client.SaveChangesAsync();
         }
 

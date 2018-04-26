@@ -38,8 +38,11 @@
             }
         </div>
         <div class="col-10 post-comment">
-            <p><a asp-page="Thread" asp-route-id="@thread.ThreadId">@thread.Subject</a></p>
-            @thread.OP.Comment
+            @if (!string.IsNullOrWhiteSpace(thread.Subject))
+            {
+                <p><a asp-page="Thread" asp-route-id="@thread.ThreadId">@thread.Subject</a></p>
+            }
+            <p>@thread.OP.Comment</p>
         </div>
     </div>
     <div class="row">

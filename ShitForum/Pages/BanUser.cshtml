@@ -4,12 +4,16 @@
     ViewData["Title"] = "BanUser";
 }
 
-<h2>BanUser</h2>
+<h2>Ban User</h2>
 
 <form method="post">
     <div class="form-group">
-        Rason:
-    <input class="form-control" asp-for="Reason" type="text" placeholder="reason" />
+        Reason:
+        <input class="form-control" asp-for="Reason" type="text" placeholder="reason" />
     </div>
-        <input class="btn btn-primary" type="submit" />
+    <div class="form-group">
+        Expiry:
+        <input class="form-control" asp-for="Expiry" type="date" placeholder="reason"/>
+    </div>
+    <input class="btn btn-primary" type="submit" />
 </form>

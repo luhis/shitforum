@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Domain.IpHash;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -20,6 +21,9 @@ namespace ShitForum.Pages
         [BindProperty]
         public string Reason { get; set; }
 
+        [BindProperty]
+        public DateTime Expiry { get; set; }
+
         public void OnGet(string ipHash)
         {
 
@@ -27,7 +31,7 @@ namespace ShitForum.Pages
 
         public async Task<IActionResult> OnPostAsync(string ipHash)
         {
-            await userService.BanUser(new IpHash(ipHash), Reason);
+            await userService.BanUser(new IpHash(ipHash), Reason, Expiry);
             return RedirectToPage("Index");
         }
     }

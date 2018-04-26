@@ -26,6 +26,7 @@ namespace Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    Expiry = table.Column<DateTime>(nullable: false),
                     IpHash = table.Column<string>(nullable: false),
                     Reason = table.Column<string>(nullable: false)
                 },

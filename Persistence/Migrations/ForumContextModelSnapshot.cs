@@ -38,6 +38,8 @@ namespace Persistence.Migrations
                 {
                     b.Property<Guid>("Id");
 
+                    b.Property<DateTime>("Expiry");
+
                     b.Property<string>("IpHash")
                         .IsRequired();
 
