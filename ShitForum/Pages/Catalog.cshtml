@@ -9,27 +9,27 @@
         <li class="breadcrumb-item active" aria-current="page">Catalog @Model.Board.BoardName</li>
     </ol>
 </nav>
+<hr/>
 [<a asp-page="Board" asp-route-id="@Model.Board.Id">Return</a>]
+<hr />
 <div class="row">
-    @{
-        foreach (var thread in Model.Threads)
-        {
-            <div class="col-sm-4">
-                <div class="card" style="width: 18rem;">
-                    <a asp-page="Thread" asp-route-id="@thread.ThreadId">
-                        <img class="card-img-top" src="@Url.Action("GetPostThumbnail", "Images", new { id = thread.FirstPost.Id })" alt="@thread.Subject">
-                    </a>
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            @thread.Subject
-                            @thread.FirstPost.Name
-                            @thread.FirstPost.Created
-                            No. <a asp-page="Thread" asp-route-id="@thread.ThreadId">@thread.ThreadId</a>
-                        </h5>
-                        <p class="card-text">@thread.FirstPost.Comment</p>
-                    </div>
+    @foreach (var thread in Model.Threads)
+    {
+        <div class="col-sm-4">
+            <div class="card" style="width: 18rem;">
+                <a asp-page="Thread" asp-route-id="@thread.ThreadId">
+                    <img class="card-img-top" src="@Url.Action("GetPostThumbnail", "Images", new { id = thread.FirstPost.Id })" alt="@thread.Subject">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">
+                        @thread.Subject
+                        @thread.FirstPost.Name
+                        @thread.FirstPost.Created
+                        No. <a asp-page="Thread" asp-route-id="@thread.ThreadId">@thread.ThreadId</a>
+                    </h5>
+                    <p class="card-text">@thread.FirstPost.Comment</p>
                 </div>
             </div>
-        }
+        </div>
     }
 </div>

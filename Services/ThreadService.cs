@@ -26,7 +26,8 @@ namespace Services
 
         async Task<Option<CatalogThreadOverViewSet>> IThreadService.GetOrderedCatalogThreads(Guid boardId, int pageSize, int pageNumber)
         {
-            var latestThreads = this.postsRepository.GetAll().Where(a => !a.IsSage).OrderBy(a => a.Created).Select(a => a.ThreadId).Distinct()
+            var threadIds = this.threadsRepository.GetAll().Where(t => t.BoardId == boardId).Select(t => t.Id);
+            var latestThreads = this.postsRepository.GetAll().Where(a => !a.IsSage && threadIds.Contains(a.ThreadId)).OrderBy(a => a.Created).Select(a => a.ThreadId).Distinct()
                 .Skip(pageSize * pageNumber).Take(pageSize).ToArray();
             var board = await this.boardRepository.GetById(boardId);
             var threads = await Task.WhenAll(latestThreads.Select(async threadId =>
@@ -41,7 +42,7 @@ namespace Services
 
         async Task<Option<ThreadOverViewSet>> IThreadService.GetOrderedThreads(Guid boardId, Option<string> filter, int pageSize, int pageNumber)
         {
-            var threadIds = this.threadsRepository.GetAll().Where(a => a.Posts.OrderBy(p => p.Created).First().Comment.Contains(filter.ValueOr(string.Empty))).Select(t => t.Id);
+            var threadIds = this.threadsRepository.GetAll().Where(t => t.BoardId == boardId).Where(a => a.Posts.OrderBy(p => p.Created).First().Comment.Contains(filter.ValueOr(string.Empty))).Select(t => t.Id);
             var latestThreads = this.postsRepository.GetAll().Where(a => !a.IsSage && threadIds.Contains(a.ThreadId)).OrderBy(a => a.Created).Select(a => a.ThreadId).Distinct()
                 .Skip(pageSize * pageNumber).Take(pageSize).ToArray();
             var board = await this.boardRepository.GetById(boardId);
