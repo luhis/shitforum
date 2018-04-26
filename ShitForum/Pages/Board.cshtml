@@ -11,58 +11,61 @@
         <li class="breadcrumb-item active" aria-current="page">@Model.Board.BoardName</li>
     </ol>
 </nav>
+<hr />
 <form asp-page="Board" method="get">
     <input type="hidden" value="@Model.Board.Id" name="id" />
     <input placeholder="Search OPs..." name="filter" value="@Model.Filter" type="text" />
+    <span>[<a asp-page="Catalog" asp-route-id="@Model.Board.Id">Catalog</a>]</span>
 </form>
-[<a asp-page="Catalog" asp-route-id="@Model.Board.Id">Catalog</a>]
+<hr />
 
-@{
-    foreach (var thread in Model.Threads)
+@foreach (var thread in Model.Threads)
+{
+    <div class="row">
+        <div class="col">
+            @thread.OP.Name
+            @thread.OP.Created
+            No. <a asp-page="Thread" asp-route-id="@thread.ThreadId">@thread.ThreadId</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-2">
+            @if (thread.OP.File.HasValue)
+            {
+                <a asp-page="Thread" asp-route-id="@thread.ThreadId">
+                    <img src="@Url.Action("GetPostThumbnail", "Images", new {id = thread.OP.Id})"/>
+                </a>
+            }
+        </div>
+        <div class="col-10 post-comment">
+            <p><a asp-page="Thread" asp-route-id="@thread.ThreadId">@thread.Subject</a></p>
+            @thread.OP.Comment
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            @($"{thread.PostCount} replies and {thread.ImageCount} images omitted.")
+            <a asp-page="Thread" asp-route-id="@thread.ThreadId">Click here</a> to view.
+        </div>
+    </div>
+    @foreach (var p in thread.FinalPosts)
     {
-        <div class="row">
-            <div class="col">
-                @thread.OP.Name
-                @thread.OP.Created
-                No. <a asp-page="Thread" asp-route-id="@thread.ThreadId">@thread.ThreadId</a>
+        <div class="row post">
+            <div class="col-2">
+                @if (p.File.HasValue)
+                {
+                    <img src="@Url.Action("GetPostThumbnail", "Images", new {id = p.Id})" />
+                }
+            </div>
+            <div class="col-10">
+                <p class="post-comment">@p.Comment</p>
             </div>
         </div>
-        <div class="row">
-
-            <div class="col-md-3">
-                <a asp-page="Thread" asp-route-id="@thread.ThreadId">@thread.Subject</a>
-            </div>
-        </div>
-        @if (thread.OP.File.HasValue)
-        {<a asp-page="Thread" asp-route-id="@thread.ThreadId">
-                <img src="@Url.Action("GetPostThumbnail", "Images", new { id = thread.OP.Id })" />
-            </a>
-        }
-        <div class="row">
-            <div class="col-md-12">
-                @thread.OP.Comment
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                @($"{thread.PostCount} replies and {thread.ImageCount} images omitted.")
-                <a asp-page="Thread" asp-route-id="@thread.ThreadId">Click here</a> to view.
-            </div>
-        </div>
-        @foreach (var p in thread.FinalPosts)
-        {
-            <div class="row">
-                <div class="col-md-12">
-                    @p.Comment
-                </div>
-            </div>
-
-        }
-        <hr />
     }
+    <hr />
 }
 
-    Add a new thread
+    <h5>Add a new thread</h5>
 
 <div asp-validation-summary="All"></div>
 <form id="post-form" method="post" enctype="multipart/form-data">

@@ -2,12 +2,6 @@ body {
     padding-bottom: 20px;
 }
 
-/* Wrapping element */
-/* Set some basic padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
-}
 
 /* Carousel */
 .carousel-caption p {
@@ -31,4 +25,19 @@ body {
     .carousel-caption {
         display: none;
     }
+}
+
+
+.post {
+    background-color: lightblue;
+}
+
+.row.post {
+    margin-bottom: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.post-comment {
+    white-space: pre;
 }

@@ -12,42 +12,42 @@
     </ol>
 </nav>
 
-    @{
-        foreach (var post in Model.Thread.Posts)
-        {
-            <div class="row">
-                <div class="col-md-12">
-                    @post.Name
-                    @post.Created
-                    No. <a asp-route-id="@Model.Thread.ThreadId" asp-route-replyto="@post.Id">@post.Id</a>
-                    <a asp-route-id="@post.Id" asp-page="DeletePost">[Delete]</a>
-                    <a asp-route-iphash="@post.IpAddress" asp-page="BanUser">[Ban]</a>
-                </div>
-            </div>
-            @if (post.File.HasValue)
-            {
-                <a asp-controller="Images" asp-action="GetPostImage" asp-route-id="@post.Id">
-                    <img src="@Url.Action("GetPostThumbnail", "Images", new {id = post.Id})" />
-                </a>
-            }
-            <div class="row">
 
-                <div class="col-md-12">
-                    @post.Comment
-                </div>
+    @foreach (var post in Model.Thread.Posts)
+    {
+        <div class="row">
+            <div class="col-12">
+                @post.Name
+                @post.Created
+                No. <a asp-route-id="@Model.Thread.ThreadId" asp-route-replyto="@post.Id">@post.Id</a>
+                <a asp-route-id="@post.Id" asp-page="DeletePost">[Delete]</a>
+                <a asp-route-iphash="@post.IpAddress" asp-page="BanUser">[Ban]</a>
             </div>
-            <hr />
-        }
+        </div>
+        <div class="row post">
+            <div class="col-3">
+                @if (post.File.HasValue)
+                {
+                    <a asp-controller="Images" asp-action="GetPostImage" asp-route-id="@post.Id">
+                        <img src="@Url.Action("GetPostThumbnail", "Images", new {id = post.Id})" />
+                    </a>
+                }
+            </div>
+            <div class="col-9">
+                <p class="post-comment">@post.Comment</p>
+            </div>
+        </div>
+        <hr />
     }
 
-    Add a new Post
+    <h5>Add a new Post</h5>
 
-    <div asp-validation-summary="All"></div>
-    <form id="post-form" method="post" enctype="multipart/form-data">
-        <div class="form-group">Name: <input class="form-control" asp-for="Post.Name" /></div>
-        <div class="form-group">Options: <input class="form-control" asp-for="Post.Options" /></div>
-        <div class="form-group">Comment: <textarea class="form-control" asp-for="Post.Comment"></textarea></div>
-        <div class="form-group">File: <input class="form-control" asp-for="Post.File" type="file" /></div>
-        <input asp-for="Post.ThreadId" type="hidden" />
-        <button class="btn btn-primary g-recaptcha" data-callback="onSubmit" data-sitekey="@RecaptchaSettings.PublicKey">Post</button>
-    </form>
+<div asp-validation-summary="All"></div>
+<form id="post-form" method="post" enctype="multipart/form-data">
+    <div class="form-group">Name: <input class="form-control" asp-for="Post.Name" /></div>
+    <div class="form-group">Options: <input class="form-control" asp-for="Post.Options" /></div>
+    <div class="form-group">Comment: <textarea class="form-control" asp-for="Post.Comment"></textarea></div>
+    <div class="form-group">File: <input class="form-control" asp-for="Post.File" type="file" /></div>
+    <input asp-for="Post.ThreadId" type="hidden" />
+    <button class="btn btn-primary g-recaptcha" data-callback="onSubmit" data-sitekey="@RecaptchaSettings.PublicKey">Post</button>
+</form>
