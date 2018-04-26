@@ -14,8 +14,6 @@ namespace Domain.Repositories
 
         Task<Option<Post>> GetById(Guid postId);
 
-        Task<Post> GetFirstPost(Guid threadId);
-
         Task<int> GetThreadPostCount(Guid threadId);
 
         IQueryable<Post> GetAll();

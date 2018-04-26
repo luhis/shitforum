@@ -71,10 +71,7 @@ namespace Services
             return new Success();
         }
 
-        Task<Option<Post>> IPostService.GetById(Guid id)
-        {
-            return this.postRepository.GetById(id);
-        }
+        Task<Option<Post>> IPostService.GetById(Guid id) => this.postRepository.GetById(id);
 
         async Task<bool> IPostService.DeletePost(Guid id)
         {

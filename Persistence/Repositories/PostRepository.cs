@@ -40,11 +40,6 @@ namespace Persistence.Repositories
             return r == null ? Option.None<Post>() : Option.Some(r);
         }
 
-        Task<Post> IPostRepository.GetFirstPost(Guid threadId)
-        {
-            return this.client.Posts.Where(a => a.ThreadId == threadId).OrderBy(a => a.Created).FirstAsync();
-        }
-
         Task<int> IPostRepository.GetThreadPostCount(Guid threadId)
         {
             return this.client.Posts.Where(a => a.ThreadId == threadId).CountAsync();

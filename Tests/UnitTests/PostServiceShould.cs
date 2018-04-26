@@ -38,7 +38,7 @@ namespace UnitTests
         {
             var postId = Guid.NewGuid();
             var threadId = Guid.NewGuid();
-            var ip = new IpHash("127.0.0.1");
+            var ip = new IpUnHashed("127.0.0.1");
 
             this.fileRepository.Setup(a => a.GetImageCount(threadId)).Returns(Task.FromResult(1));
             this.postRepository.Setup(a => a.GetThreadPostCount(threadId)).Returns(Task.FromResult(1));
@@ -54,7 +54,7 @@ namespace UnitTests
         {
             var postId = Guid.NewGuid();
             var threadId = Guid.NewGuid();
-            var ip = new IpHash("127.0.0.1");
+            var ip = new IpUnHashed("127.0.0.1");
 
             this.fileRepository.Setup(a => a.GetImageCount(threadId)).Returns(Task.FromResult(1));
             this.postRepository.Setup(a => a.GetThreadPostCount(threadId)).Returns(Task.FromResult(200));
@@ -71,7 +71,7 @@ namespace UnitTests
         {
             var postId = Guid.NewGuid();
             var threadId = Guid.NewGuid();
-            var ip = new IpHash("127.0.0.1");
+            var ip = new IpUnHashed("127.0.0.1");
 
             this.fileRepository.Setup(a => a.GetImageCount(threadId)).Returns(Task.FromResult(200));
             this.bannedIpRepository.Setup(a => a.IsBanned(ip)).Returns(Task.FromResult(false));
@@ -88,7 +88,7 @@ namespace UnitTests
             var postId = Guid.NewGuid();
             var threadId = Guid.NewGuid();
             var boardId = Guid.NewGuid();
-            var ip = new IpHash("127.0.0.1");
+            var ip = new IpUnHashed("127.0.0.1");
             
             this.bannedIpRepository.Setup(a => a.IsBanned(ip)).Returns(Task.FromResult(false));
             this.postRepository.Setup(a => a.Add(It.IsAny<Domain.Post>())).Returns(Task.CompletedTask);
@@ -106,7 +106,7 @@ namespace UnitTests
             var postId = Guid.NewGuid();
             var threadId = Guid.NewGuid();
             var boardId = Guid.NewGuid();
-            var ip = new IpHash("127.0.0.1");
+            var ip = new IpUnHashed("127.0.0.1");
 
             this.bannedIpRepository.Setup(a => a.IsBanned(ip)).Returns(Task.FromResult(true));
             var r = this.ps.AddThread(postId, threadId, boardId, "subject", new TripCodedName("Matt"), "comment", false, ip, Option.None<File>()).Result;

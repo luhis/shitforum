@@ -1,5 +1,4 @@
 ﻿using System;
-using Domain;
 using Domain.IpHash;
 using Services.Dtos;
 using ShitForum.Models;
@@ -8,7 +7,7 @@ namespace ShitForum.Mappers
 {
     public static class AddPostMapper
     {
-        public static Domain.Post Map(AddPost post, TripCodedName name, IpHash ipAddress)
+        public static Domain.Post Map(AddPost post, TripCodedName name, IIpHash ipAddress)
         {
             var options = OptionsMapper.Map(post.Options);
             return new Domain.Post(Guid.NewGuid(), post.ThreadId, DateTime.UtcNow,

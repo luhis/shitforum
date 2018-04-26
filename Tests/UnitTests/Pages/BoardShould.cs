@@ -62,8 +62,8 @@ namespace UnitTests.Pages
             this.threadService.Setup(a => a.GetOrderedThreads(boardId, Option.None<string>(), 100, 0)).Returns(
                 Task.FromResult(Option.Some(
                     new ThreadOverViewSet(
-                        new Board(boardId, "random", "bee"), 
-                        new List<ThreadOverView>() { new ThreadOverView(Guid.NewGuid(), "subject", 
+                        new Board(boardId, "random", "bee"),
+                        new List<ThreadOverView>() { new ThreadOverView(Guid.NewGuid(), "subject",
                         new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", Option.None<Domain.File>(), false, "127.0.0.1"), new List<PostOverView>() { } , 1, 1) }))));
 
             this.cookieStorage.Setup(a => a.ReadName(It.IsAny<HttpRequest>())).Returns("Matt");
@@ -80,10 +80,10 @@ namespace UnitTests.Pages
             board.Thread = new AddThread(boardId, "Matt", "sage", "subject", "comment", null);
             this.cookieStorage.Setup(a => a.SetNameCookie(It.IsAny<HttpResponse>(), "Matt"));
             this.getIp.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
-            this.postService.Setup(a => a.AddThread(It.IsAny<Guid>(), It.IsAny<Guid>(), boardId, "subject", It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IpHash>(), Option.None<File>())).Returns(Task.FromResult<OneOf<Success, Banned>>(new Success()));
+            this.postService.Setup(a => a.AddThread(It.IsAny<Guid>(), It.IsAny<Guid>(), boardId, "subject", It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IIpHash>(), Option.None<File>())).Returns(Task.FromResult<OneOf<Success, Banned>>(new Success()));
             this.threadService.Setup(a => a.GetOrderedThreads(boardId, Option.None<string>(), 100, 0))
                 .Returns(Task.FromResult(Option.Some(new ThreadOverViewSet(new Board(boardId, "bbbb", "b"), new List<ThreadOverView>()))));
-            this.bannedImageLogger.Setup(a => a.Log(null, IPAddress.Loopback, It.IsAny<IpHash>()));
+            this.bannedImageLogger.Setup(a => a.Log(null, IPAddress.Loopback, It.IsAny<IIpHash>()));
 
             board.OnPostAsync(null).Wait();
 
@@ -117,9 +117,9 @@ namespace UnitTests.Pages
                Task.FromResult(Option.Some(
                    new ThreadOverViewSet(
                        new Board(boardId, "random", "bee"),
-                       new List<ThreadOverView>() { new ThreadOverView(Guid.NewGuid(), "subject", 
+                       new List<ThreadOverView>() { new ThreadOverView(Guid.NewGuid(), "subject",
                        new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", Option.None<File>(), false, "127.0.0.1"), new List<PostOverView>() { }, 1, 1) }))));
-            this.bannedImageLogger.Setup(a => a.Log(It.IsAny<ModelStateEntry>(), IPAddress.Loopback, It.IsAny<IpHash>()));
+            this.bannedImageLogger.Setup(a => a.Log(It.IsAny<ModelStateEntry>(), IPAddress.Loopback, It.IsAny<IIpHash>()));
 
             board.OnPostAsync(null).Wait();
 

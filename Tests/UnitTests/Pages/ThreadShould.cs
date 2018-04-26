@@ -77,10 +77,10 @@ namespace UnitTests.Pages
             thread.Post = new AddPost(threadId, "Matt", "sage", "comment", null);
             this.getIp.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
             this.cookieStorage.Setup(a => a.SetNameCookie(It.IsAny<HttpResponse>(), "Matt"));
-            this.postService.Setup(a => a.Add(It.IsAny<Guid>(), threadId, It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IpHash>(), Option.None<Domain.File>())).Returns(
+            this.postService.Setup(a => a.Add(It.IsAny<Guid>(), threadId, It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IIpHash>(), Option.None<Domain.File>())).Returns(
                 Task.FromResult<OneOf<Success, Banned, ImageCountExceeded, PostCountExceeded>>(new Success()));
             this.threadService.Setup(a => a.GetThread(threadId)).Returns(Task.FromResult(Option.Some(new ThreadDetailView(threadId, "aaa", new Board(Guid.NewGuid(), "bbbb", "b"), new List<PostOverView>() ))));
-            this.bannedImageLogger.Setup(a => a.Log(null, IPAddress.Loopback, It.IsAny<IpHash>()));
+            this.bannedImageLogger.Setup(a => a.Log(null, IPAddress.Loopback, It.IsAny<IIpHash>()));
 
             thread.OnPostAsync().Wait();
 
@@ -118,7 +118,7 @@ namespace UnitTests.Pages
             this.threadService.Setup(a => a.GetThread(threadId)).Returns(
                 Task.FromResult(Option.Some(new ThreadDetailView(threadId, "subject", new Board(boardId, "random", "bee"), new List<PostOverView>() {
                     new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", Option.None<Domain.File>(), false, "myip") }))));
-            this.bannedImageLogger.Setup(a => a.Log(null, IPAddress.Loopback, It.IsAny<IpHash>()));
+            this.bannedImageLogger.Setup(a => a.Log(null, IPAddress.Loopback, It.IsAny<IIpHash>()));
 
             thread.OnPostAsync().Wait();
 
