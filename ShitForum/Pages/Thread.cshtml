@@ -24,16 +24,14 @@
             <a asp-route-iphash="@post.IpAddress" asp-page="BanUser">[Ban]</a>
         </div>
     </div>
-    <div class="row post">
-        <div class="col-md-2">
+    <div class="media post">
             @if (post.File.HasValue)
             {
                 <a asp-controller="Images" asp-action="GetPostImage" asp-route-id="@post.Id">
-                    <img src="@Url.Action("GetPostThumbnail", "Images", new {id = post.Id})" />
+                    <img class="m-3" src="@Url.Action("GetPostThumbnail", "Images", new {id = post.Id})" />
                 </a>
             }
-        </div>
-        <div class="col-md-10">
+        <div class="media-body">
             <p class="post-comment">@post.Comment</p>
         </div>
     </div>

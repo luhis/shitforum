@@ -28,21 +28,19 @@
             No. <a asp-page="Thread" asp-route-id="@thread.ThreadId">@thread.ThreadId</a>
         </div>
     </div>
-    <div class="row">
-        <div class="col-3">
+    <div class="media">
             @if (thread.OP.File.HasValue)
             {
                 <a asp-page="Thread" asp-route-id="@thread.ThreadId">
-                    <img src="@Url.Action("GetPostThumbnail", "Images", new {id = thread.OP.Id})"/>
+                    <img class="m-3" src="@Url.Action("GetPostThumbnail", "Images", new {id = thread.OP.Id})"/>
                 </a>
             }
-        </div>
-        <div class="col-9 post-comment">
+        <div class="media-body">
             @if (!string.IsNullOrWhiteSpace(thread.Subject))
             {
                 <p><a asp-page="Thread" asp-route-id="@thread.ThreadId">@thread.Subject</a></p>
             }
-            <p>@thread.OP.Comment</p>
+            <p class="post-comment">@thread.OP.Comment</p>
         </div>
     </div>
     <div class="row">
@@ -53,14 +51,12 @@
     </div>
     @foreach (var p in thread.FinalPosts)
     {
-        <div class="row post">
-            <div class="col-3">
+        <div class="media post mb-2">
                 @if (p.File.HasValue)
                 {
-                    <img src="@Url.Action("GetPostThumbnail", "Images", new {id = p.Id})" />
+                    <img class="m-3" src="@Url.Action("GetPostThumbnail", "Images", new {id = p.Id})" />
                 }
-            </div>
-            <div class="col-9">
+            <div class="media-body">
                 <p class="post-comment">@p.Comment</p>
             </div>
         </div>
