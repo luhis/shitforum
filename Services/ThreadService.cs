@@ -81,12 +81,10 @@ namespace Services
             var thread = await this.threadsRepository.GetById(threadId);
             return await thread.Match(async t =>
             {
-                var posts = await this.postsRepository.GetAll(threadId);
-                var postsMapped = await Task.WhenAll(posts.OrderBy(a => a.Created).Select(async p =>
-                {
-                    var file = await this.fileRepository.GetPostFile(p.Id);
-                    return PostMapper.Map(p, file);
-                }));
+                var posts = this.postsRepository.GetAll().Where(a => a.ThreadId == threadId);
+                var postsMapped = await Task.WhenAll( posts
+                    .OrderBy(a => a.Created).ToList()
+                    .Select(async p => PostMapper.Map(p, await this.fileRepository.GetPostFile(p.Id))));
                 var b = await this.boardRepository.GetById(t.BoardId);
                 return b.Match(
                     some => Option.Some(new ThreadDetailView(threadId, t.Subject, some, postsMapped.ToList())), 

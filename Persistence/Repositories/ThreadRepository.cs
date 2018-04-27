@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain;
@@ -16,11 +15,6 @@ namespace Persistence.Repositories
         public ThreadRepository(ForumContext client)
         {
             this.client = client;
-        }
-
-        async Task<IEnumerable<Thread>> IThreadRepository.GetAll(Guid boardId)
-        {
-            return (await this.client.Threads.Where(a => a.BoardId == boardId).ToListAsync()).AsEnumerable();
         }
 
         Task IThreadRepository.Add(Thread thread)
