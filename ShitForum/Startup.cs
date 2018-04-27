@@ -39,7 +39,6 @@ namespace ShitForum
             services.AddSingleton<ICookieStorage, CookieStorage>();
             services.AddSingleton<IBannedImageLogger, BannedImageLogger.BannedImageLogger>();
             services.AddSingleton<IGetIp, GetIp.GetIp>();
-            services.AddSingleton<IAdminChecker, AdminChecker>();
             services.AddSingleton<ForumContext>();
             services.AddSingleton<IpHasherFactory>();
             services.AddSingleton<TripCodeHasher>();
@@ -76,12 +75,13 @@ namespace ShitForum
                 app.UseHsts(a => a.MaxAge(365));
             }
 
+            var google = "https://www.google.com";
             app.UseCsp(a => a.
                 DefaultSources(b => b.Self()).
                 ImageSources(c => c.Self()).
                 StyleSources(c => c.Self().UnsafeInline()).
-                ScriptSources(s => s.Self().CustomSources("https://www.google.com", "https://www.gstatic.com")).
-                FrameSources(c => c.Self().CustomSources("https://www.google.com")));
+                ScriptSources(s => s.Self().CustomSources(google, "https://www.gstatic.com")).
+                FrameSources(c => c.Self().CustomSources(google)));
             app.UseReferrerPolicy(opts => opts.NoReferrer());
             app.UseStaticFiles();
             app.UseRedirectValidation();
