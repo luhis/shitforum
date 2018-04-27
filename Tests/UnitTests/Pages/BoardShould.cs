@@ -8,6 +8,7 @@ using ShitForum.Models;
 using ShitForum.Pages;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using Domain.IpHash;
@@ -16,10 +17,12 @@ using Services.Dtos;
 using Xunit;
 using Services.Results;
 using OneOf;
-using ShitForum;
 using ShitForum.BannedImageLogger;
 using ShitForum.Cookies;
 using ShitForum.GetIp;
+using SixLabors.ImageSharp;
+using UnitTests.Tooling;
+using File = Domain.File;
 
 namespace UnitTests.Pages
 {
@@ -90,15 +93,23 @@ namespace UnitTests.Pages
             this.repo.VerifyAll();
         }
 
-        [Fact(Skip = "need to look at this")]
-        public void AllowPostValidWithFIle()
+        [Fact]
+        public void AllowPostValidWithFile()
         {
             var boardId = Guid.NewGuid();
-            var file = this.repo.Create<IFormFile>(MockBehavior.Loose).Object;
+            var file = FileMock.GetIFormFileMock(this.repo);
 
-            board.Thread = new AddThread(boardId, "Matt", "sage", "subject", "comment", file);
+            board.Thread = new AddThread(boardId, "Matt", "sage", "subject", "comment", file.Object);
             this.getIp.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
             this.cookieStorage.Setup(a => a.SetNameCookie(It.IsAny<HttpResponse>(), "Matt"));
+            this.threadService.Setup(a => a.GetOrderedThreads(boardId, Option.None<string>(), 100, 0))
+                .Returns(Task.FromResult(Option.Some(new ThreadOverViewSet(new Board(boardId, "bbbb", "b"), new List<ThreadOverView>()))));
+            this.bannedImageLogger.Setup(a => a.Log(null, IPAddress.Loopback, It.IsAny<IIpHash>()));
+            this.postService.Setup(a => 
+                a.AddThread(It.IsAny<Guid>(), It.IsAny<Guid>(), boardId,
+                    "subject", It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IpUnHashed>(), It.IsAny<Option<File>>())).
+                Returns(Task.FromResult(OneOf<Success, Banned>.FromT0(new Success())));
+
             board.OnPostAsync(null).Wait();
 
             this.repo.VerifyAll();

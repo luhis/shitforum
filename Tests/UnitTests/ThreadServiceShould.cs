@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UnitTests.Tooling;
 using Xunit;
 
 namespace UnitTests
@@ -55,7 +56,7 @@ namespace UnitTests
             var boardId = Guid.NewGuid();
             this.postRepository.Setup(a => a.GetAll()).Returns(new Domain.Post[] { }.AsQueryable());
             this.boardRepository.Setup(a => a.GetById(boardId)).Returns(Task.FromResult(Option.Some(new Board(boardId, "b", "bbb"))));
-            this.threadRepository.Setup(a => a.GetAll()).Returns(new List<Thread>().AsQueryable());
+            this.threadRepository.Setup(a => a.GetAll()).Returns(new TestAsyncEnumerable<Thread>(new List<Thread> { new Thread(Guid.NewGuid(), boardId, "subject") }));
             var r = ts.GetOrderedCatalogThreads(boardId, 100, 0).Result;
             r.Should().NotBeNull();
 
@@ -68,7 +69,7 @@ namespace UnitTests
             var boardId = Guid.NewGuid();
             this.postRepository.Setup(a => a.GetAll()).Returns(new Domain.Post[] { }.AsQueryable());
             this.boardRepository.Setup(a => a.GetById(boardId)).Returns(Task.FromResult(Option.Some(new Board(boardId, "b", "bbb"))));
-            this.threadRepository.Setup(a => a.GetAll()).Returns(new List<Thread>().AsQueryable());
+            this.threadRepository.Setup(a => a.GetAll()).Returns(new TestAsyncEnumerable<Thread>(new List<Thread> { new Thread(Guid.NewGuid(), boardId, "subject") }));
             var r = ts.GetOrderedThreads(boardId, Option.None<string>(), 100, 0).Result;
             r.Should().NotBeNull();
 
@@ -81,7 +82,7 @@ namespace UnitTests
             var boardId = Guid.NewGuid();
             this.postRepository.Setup(a => a.GetAll()).Returns(new Domain.Post[] { }.AsQueryable());
             this.boardRepository.Setup(a => a.GetById(boardId)).Returns(Task.FromResult(Option.Some(new Board(boardId, "b", "bbb"))));
-            this.threadRepository.Setup(a => a.GetAll()).Returns(new List<Thread>().AsQueryable());
+            this.threadRepository.Setup(a => a.GetAll()).Returns(new TestAsyncEnumerable<Thread>(new List<Thread> {new Thread(Guid.NewGuid(), boardId, "subject")}));
             var r = ts.GetOrderedThreads(boardId, Option.Some("matt"), 100, 0).Result;
             r.Should().NotBeNull();
 

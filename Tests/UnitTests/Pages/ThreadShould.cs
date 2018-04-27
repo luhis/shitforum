@@ -16,10 +16,10 @@ using Services.Results;
 using OneOf;
 using System.IO;
 using Domain.IpHash;
-using ShitForum;
 using ShitForum.BannedImageLogger;
 using ShitForum.Cookies;
 using ShitForum.GetIp;
+using UnitTests.Tooling;
 
 namespace UnitTests.Pages
 {
@@ -87,19 +87,19 @@ namespace UnitTests.Pages
             this.repo.VerifyAll();
         }
 
-        [Fact(Skip = "needs work")]
+        [Fact]
         public void AllowPostValidWithFile()
         {
             var threadId = Guid.NewGuid();
-
-            var file = this.repo.Create<IFormFile>(MockBehavior.Loose);
-            file.Setup(a => a.OpenReadStream()).Returns(new MemoryStream());
-            file.Setup(a => a.FileName).Returns("file.jpg");
+            var file = FileMock.GetIFormFileMock(this.repo);
 
             thread.Post = new AddPost(threadId, "Matt", "sage", "comment", file.Object);
             this.getIp.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
             this.cookieStorage.Setup(a => a.SetNameCookie(It.IsAny<HttpResponse>(), "Matt"));
-            
+            this.threadService.Setup(a => a.GetThread(threadId)).Returns(Task.FromResult(Option.Some(new ThreadDetailView(threadId, "aaa", new Board(Guid.NewGuid(), "bbbb", "b"), new List<PostOverView>()))));
+            this.bannedImageLogger.Setup(a => a.Log(null, IPAddress.Loopback, It.IsAny<IIpHash>()));
+            this.postService.Setup(a => a.Add(It.IsAny<Guid>(), threadId, It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IIpHash>(), It.IsAny<Option<Domain.File>>()))
+                .Returns(Task.FromResult(OneOf<Success, Banned, ImageCountExceeded, PostCountExceeded>.FromT0(new Success())));
             thread.OnPostAsync().Wait();
 
             this.repo.VerifyAll();
