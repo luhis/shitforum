@@ -8,7 +8,6 @@ using ShitForum.Models;
 using ShitForum.Pages;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using Domain.IpHash;
@@ -20,7 +19,6 @@ using OneOf;
 using ShitForum.BannedImageLogger;
 using ShitForum.Cookies;
 using ShitForum.GetIp;
-using SixLabors.ImageSharp;
 using UnitTests.Tooling;
 using File = Domain.File;
 

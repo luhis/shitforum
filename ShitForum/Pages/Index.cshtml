@@ -8,14 +8,12 @@
         <li class="breadcrumb-item active">Home</li>
     </ol>
 </nav>
-@{
-    foreach (var board in Model.Boards)
+   
+<ul class="nav flex-column">
+    @foreach (var board in Model.Boards)
     {
-        <div class="row">
-            <div class="col-md-3">
-                <a asp-page="Board" asp-route-id="@board.Id">@board.BoardName</a>
-            </div>
-        </div>
-        <hr />
+        <li class="nav-item">
+            <a class="nav-link" asp-page="Board" asp-route-id="@board.Id">@board.BoardName</a>
+        </li>
     }
-}
+</ul>

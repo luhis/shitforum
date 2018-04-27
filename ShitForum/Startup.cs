@@ -39,6 +39,7 @@ namespace ShitForum
             services.AddSingleton<ICookieStorage, CookieStorage>();
             services.AddSingleton<IBannedImageLogger, BannedImageLogger.BannedImageLogger>();
             services.AddSingleton<IGetIp, GetIp.GetIp>();
+            services.AddSingleton<IAdminChecker, AdminChecker>();
             services.AddSingleton<ForumContext>();
             services.AddSingleton<IpHasherFactory>();
             services.AddSingleton<TripCodeHasher>();
