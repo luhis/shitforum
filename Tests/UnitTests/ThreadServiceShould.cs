@@ -57,7 +57,7 @@ namespace UnitTests
             this.postRepository.Setup(a => a.GetAll()).Returns(new Domain.Post[] { }.AsQueryable());
             this.boardRepository.Setup(a => a.GetById(boardId)).Returns(Task.FromResult(Option.Some(new Board(boardId, "b", "bbb"))));
             this.threadRepository.Setup(a => a.GetAll()).Returns(new TestAsyncEnumerable<Thread>(new List<Thread> { new Thread(Guid.NewGuid(), boardId, "subject") }));
-            var r = ts.GetOrderedCatalogThreads(boardId, 100, 0).Result;
+            var r = ts.GetOrderedCatalogThreads("bee").Result;
             r.Should().NotBeNull();
 
             repo.VerifyAll();
@@ -70,7 +70,7 @@ namespace UnitTests
             this.postRepository.Setup(a => a.GetAll()).Returns(new Domain.Post[] { }.AsQueryable());
             this.boardRepository.Setup(a => a.GetById(boardId)).Returns(Task.FromResult(Option.Some(new Board(boardId, "b", "bbb"))));
             this.threadRepository.Setup(a => a.GetAll()).Returns(new TestAsyncEnumerable<Thread>(new List<Thread> { new Thread(Guid.NewGuid(), boardId, "subject") }));
-            var r = ts.GetOrderedThreads(boardId, Option.None<string>(), 100, 0).Result;
+            var r = ts.GetOrderedThreads("bee", Option.None<string>(), 100, 0).Result;
             r.Should().NotBeNull();
 
             repo.VerifyAll();
@@ -83,7 +83,7 @@ namespace UnitTests
             this.postRepository.Setup(a => a.GetAll()).Returns(new Domain.Post[] { }.AsQueryable());
             this.boardRepository.Setup(a => a.GetById(boardId)).Returns(Task.FromResult(Option.Some(new Board(boardId, "b", "bbb"))));
             this.threadRepository.Setup(a => a.GetAll()).Returns(new TestAsyncEnumerable<Thread>(new List<Thread> {new Thread(Guid.NewGuid(), boardId, "subject")}));
-            var r = ts.GetOrderedThreads(boardId, Option.Some("matt"), 100, 0).Result;
+            var r = ts.GetOrderedThreads("bee", Option.Some("matt"), 100, 0).Result;
             r.Should().NotBeNull();
 
             repo.VerifyAll();

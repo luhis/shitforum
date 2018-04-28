@@ -30,12 +30,12 @@ namespace UnitTests.Pages
         {
             var boardId = Guid.NewGuid();
 
-            this.threadService.Setup(a => a.GetOrderedCatalogThreads(boardId, 100, 0)).Returns(Task.FromResult(Option.Some(
+            this.threadService.Setup(a => a.GetOrderedCatalogThreads("bee")).Returns(Task.FromResult(Option.Some(
                 new CatalogThreadOverViewSet(new Domain.Board(boardId, "b", "bbb"), new CatalogThreadOverView[] {
                     new CatalogThreadOverView(Guid.NewGuid(), "subject", new Domain.Board(boardId, "b", "board"), 
                     new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", Option.None<Domain.File>())) })
                 )));
-            thread.OnGet(boardId).Wait();
+            thread.OnGet("bee").Wait();
 
             this.repo.VerifyAll();
         }
