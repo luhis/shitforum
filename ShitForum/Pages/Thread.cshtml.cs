@@ -54,16 +54,16 @@ namespace ShitForum.Pages
 
         [BindProperty] public AddPost Post { get; set; }
 
-        public async Task<IActionResult> OnGet(Guid id, Guid replyTo)
+        public async Task<IActionResult> OnGet(string boardKey, Guid threadId, Guid replyTo)
         {
-            EnsureArg.IsNotEmpty(id, nameof(id));
-            var t = await this.threadService.GetThread(id).ConfigureAwait(false);
+            EnsureArg.IsNotEmpty(threadId, nameof(threadId));
+            var t = await this.threadService.GetThread(threadId).ConfigureAwait(false);
             return t.Match(thread =>
             {
                 this.IsAdmin = this.isAdmin.IsAdmin(this.HttpContext);
                 this.Thread = new ViewThread(thread.ThreadId, thread.Subject, thread.Posts);
                 var newComm = replyTo == Guid.Empty ? string.Empty : $">>{replyTo}\n";
-                this.Post = new AddPost(id, this.cookieStorage.ReadName(this.Request), String.Empty, newComm, null);
+                this.Post = new AddPost(threadId, this.cookieStorage.ReadName(this.Request), String.Empty, newComm, null);
                 this.Board = thread.Board;
                 return Page().ToIAR();
             }, () => new NotFoundResult().ToIAR());

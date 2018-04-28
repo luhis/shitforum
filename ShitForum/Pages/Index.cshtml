@@ -13,7 +13,7 @@
     @foreach (var board in Model.Boards)
     {
         <li class="nav-item">
-            <a class="nav-link" asp-page="Board" asp-route-id="@board.Id">@board.BoardName</a>
+            <a class="nav-link" asp-page="Board" asp-route-boardKey="@board.BoardKey">@board.BoardName</a>
         </li>
     }
 </ul>

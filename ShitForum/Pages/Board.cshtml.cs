@@ -46,16 +46,16 @@ namespace ShitForum.Pages
             this.bannedImageLogger = bannedImageLogger;
         }
 
-        public async Task<IActionResult> OnGet(Guid id, string filter)
+        public async Task<IActionResult> OnGet(string boardKey, string filter)
         {
-            EnsureArg.IsNotEmpty(id, nameof(id));
+            EnsureArg.IsNotNull(boardKey, nameof(boardKey));
             this.Filter = filter;
             var filterOption = NullableMapper.ToOption(filter);
-            var t = await this.threadService.GetOrderedThreads(id, filterOption, 100, 0);
+            var t = await this.threadService.GetOrderedThreads(boardKey, filterOption, 100, 0);
             return t.Match(ts =>
             {
                 this.Threads = ts.Threads;
-                this.Thread = new AddThread() { BoardId = id, Name = cookieStorage.ReadName(this.Request) };
+                this.Thread = new AddThread(ts.Board.Id, cookieStorage.ReadName(this.Request), string.Empty, string.Empty, string.Empty, null);
                 this.Board = ts.Board;
                 return Page().ToIAR();
             },
@@ -73,7 +73,7 @@ namespace ShitForum.Pages
 
         [Recaptcha]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OnPostAsync(string filter)
+        public async Task<IActionResult> OnPostAsync(string boardKey, string filter)
         {
             var ip = this.getIp.GetIp(this.Request);
             var ipHash = this.ipHasher.Hash(ip);
@@ -82,7 +82,7 @@ namespace ShitForum.Pages
 
             var filterOption = NullableMapper.ToOption(filter);
 
-            var t = await this.threadService.GetOrderedThreads(this.Thread.BoardId, filterOption, 100, 0);
+            var t = await this.threadService.GetOrderedThreads(boardKey, filterOption, 100, 0);
             return await t.Match(async threads =>
             {
                 if (!ModelState.IsValid)
@@ -106,11 +106,11 @@ namespace ShitForum.Pages
                         this.cookieStorage.SetNameCookie(this.Response, this.Thread.Name);
                         if (options.NoNoko)
                         {
-                            return RedirectToPage("Board", new { id = this.Thread.BoardId }).ToIAR();
+                            return RedirectToPage("Board", new { boardKey = boardKey }).ToIAR();
                         }
                         else
                         {
-                            return RedirectToPage("Thread", new { id = threadId }).ToIAR();
+                            return RedirectToPage("Thread", new { threadId = threadId }).ToIAR();
                         }
                     },
                     _ => RedirectToPage("Banned").ToIAR());

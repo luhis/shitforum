@@ -7,9 +7,9 @@ namespace Services
 {
     public interface IThreadService
     {
-        Task<Option<ThreadOverViewSet>> GetOrderedThreads(Guid boardId, Option<string> filter, int pageSize, int pageNumber);
+        Task<Option<ThreadOverViewSet>> GetOrderedThreads(string boardKey, Option<string> filter, int pageSize, int pageNumber);
 
-        Task<Option<CatalogThreadOverViewSet>> GetOrderedCatalogThreads(Guid boardId, int pageSize, int pageNumber);
+        Task<Option<CatalogThreadOverViewSet>> GetOrderedCatalogThreads(string boardKey, int pageSize, int pageNumber);
 
         Task<Option<ThreadDetailView>> GetThread(Guid threadId);
     }

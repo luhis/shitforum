@@ -19,10 +19,10 @@ namespace ShitForum.Pages
             this.threadService = threadService;
         }
 
-        public async Task<IActionResult> OnGet(Guid id)
+        public async Task<IActionResult> OnGet(string boardKey)
         {
-            EnsureArg.IsNotEmpty(id, nameof(id));
-            var t = await this.threadService.GetOrderedCatalogThreads(id, 100, 0);
+            EnsureArg.IsNotEmpty(boardKey, nameof(boardKey));
+            var t = await this.threadService.GetOrderedCatalogThreads(boardKey, 100, 0);
             return t.Match(threads =>
             {
                 this.Threads = threads.Threads;

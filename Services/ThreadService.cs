@@ -23,12 +23,12 @@ namespace Services
             this.boardRepository = boardRepository;
         }
 
-        async Task<Option<CatalogThreadOverViewSet>> IThreadService.GetOrderedCatalogThreads(Guid boardId, int pageSize, int pageNumber)
+        async Task<Option<CatalogThreadOverViewSet>> IThreadService.GetOrderedCatalogThreads(string boardKey, int pageSize, int pageNumber)
         {
-            var board = await this.boardRepository.GetById(boardId);
+            var board = await this.boardRepository.GetByKey(boardKey);
             return await board.Match(async some =>
             {
-                var threadIds = this.threadsRepository.GetAll().Where(thread => thread.BoardId == boardId).Select(thread => thread.Id);
+                var threadIds = this.threadsRepository.GetAll().Where(thread => thread.BoardId == some.Id).Select(thread => thread.Id);
                 var latestThreads = this.postsRepository.GetAll().Where(a => !a.IsSage && threadIds.Contains(a.ThreadId)).OrderBy(a => a.Created).Select(a => a.ThreadId).Distinct()
                     .Skip(pageSize * pageNumber).Take(pageSize);
                 var threads = await this.threadsRepository.GetAll().Where(a => latestThreads.Contains(a.Id)).ToListAsync();
@@ -42,12 +42,12 @@ namespace Services
             }, () => Task.FromResult(Option.None<CatalogThreadOverViewSet>()));
         }
 
-        async Task<Option<ThreadOverViewSet>> IThreadService.GetOrderedThreads(Guid boardId, Option<string> filter, int pageSize, int pageNumber)
+        async Task<Option<ThreadOverViewSet>> IThreadService.GetOrderedThreads(string boardKey, Option<string> filter, int pageSize, int pageNumber)
         {
-            var board = await this.boardRepository.GetById(boardId);
+            var board = await this.boardRepository.GetByKey(boardKey);
             return await board.Match(async some =>
             {
-                var threadIds = this.threadsRepository.GetAll().Where(t => t.BoardId == boardId).Where(a => a.Posts.OrderBy(p => p.Created).First().Comment.Contains(filter.ValueOr(string.Empty))).Select(t => t.Id);
+                var threadIds = this.threadsRepository.GetAll().Where(t => t.BoardId == some.Id).Where(a => a.Posts.OrderBy(p => p.Created).First().Comment.Contains(filter.ValueOr(string.Empty))).Select(t => t.Id);
                 var latestThreads = this.postsRepository.GetAll().Where(a => !a.IsSage && threadIds.Contains(a.ThreadId)).OrderBy(a => a.Created).Select(a => a.ThreadId).Distinct()
                     .Skip(pageSize * pageNumber).Take(pageSize);
                 var threads = await this.threadsRepository.GetAll().Where(a => latestThreads.Contains(a.Id)).ToListAsync();

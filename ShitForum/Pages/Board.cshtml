@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{boardKey}"
 @model ShitForum.Pages.BoardModel
 @inject ReCaptchaCore.RecaptchaSettings RecaptchaSettings
 @{
@@ -25,20 +25,20 @@
         <div class="col">
             @thread.OP.Name
             @thread.OP.Created
-            No. <a asp-page="Thread" asp-route-id="@thread.ThreadId">@thread.ThreadId</a>
+            No. <a asp-page="Thread" asp-route-boardKey="@Model.Board.BoardKey" asp-route-threadId="@thread.ThreadId" asp-route-subject="@thread.Subject">@thread.ThreadId</a>
         </div>
     </div>
     <div class="media">
             @if (thread.OP.File.HasValue)
             {
-                <a asp-page="Thread" asp-route-id="@thread.ThreadId">
+                <a asp-page="Thread" asp-route-boardKey="@Model.Board.BoardKey" asp-route-threadId="@thread.ThreadId"  asp-route-subject="@thread.Subject">
                     <img class="m-3" src="@Url.Action("GetPostThumbnail", "Images", new {id = thread.OP.Id})"/>
                 </a>
             }
         <div class="media-body">
             @if (!string.IsNullOrWhiteSpace(thread.Subject))
             {
-                <p><a asp-page="Thread" asp-route-id="@thread.ThreadId">@thread.Subject</a></p>
+                <p><a asp-page="Thread" asp-route-boardKey="@Model.Board.BoardKey" asp-route-threadId="@thread.ThreadId" asp-route-subject="@thread.Subject">@thread.Subject</a></p>
             }
             <p class="post-comment">@thread.OP.Comment</p>
         </div>
@@ -46,7 +46,7 @@
     <div class="row">
         <div class="col">
             @($"{thread.PostCount} replies and {thread.ImageCount} images omitted.")
-            <a asp-page="Thread" asp-route-id="@thread.ThreadId">Click here</a> to view.
+            <a asp-page="Thread" asp-route-boardKey="@Model.Board.BoardKey" asp-route-threadId="@thread.ThreadId">Click here</a> to view.
         </div>
     </div>
     @foreach (var p in thread.FinalPosts)
@@ -63,6 +63,8 @@
     }
     <hr />
 }
+
+//todo paging
 
 <h5>Add a new thread</h5>
 

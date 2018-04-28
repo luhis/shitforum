@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{boardKey}"
 @model ShitForum.Pages.CatalogModel
 @{
     ViewData["Title"] = "Board";
@@ -9,7 +9,7 @@
         <li class="breadcrumb-item active" aria-current="page">Catalog @Model.Board.BoardName</li>
     </ol>
 </nav>
-<hr/>
+<hr />
 [<a asp-page="Board" asp-route-id="@Model.Board.Id">Return</a>]
 <hr />
 <div class="row">
