@@ -10,6 +10,8 @@ using Persistence.Repositories;
 using ShitForum.Hasher;
 using ShitForum.ImageValidation;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ShitForum.BannedImageLogger;
@@ -79,7 +81,7 @@ namespace ShitForum
             var google = "https://www.google.com";
             app.UseCsp(a => a.
                 DefaultSources(b => b.Self()).
-                ImageSources(c => c.Self()).
+                ImageSources(c => c.Self().CustomSources("data:")).
                 StyleSources(c => c.Self().UnsafeInline()).
                 ScriptSources(s => s.Self().CustomSources(google, "https://www.gstatic.com")).
                 FrameSources(c => c.Self().CustomSources(google)));

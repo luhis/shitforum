@@ -51,7 +51,7 @@
     </div>
     @foreach (var p in thread.FinalPosts)
     {
-        <div class="media post mb-2">
+        <div class="media post rounded mb-2">
                 @if (p.File.HasValue)
                 {
                     <img class="m-3" src="@Url.Action("GetPostThumbnail", "Images", new {id = p.Id})" />
