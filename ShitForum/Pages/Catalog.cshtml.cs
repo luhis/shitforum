@@ -22,7 +22,7 @@ namespace ShitForum.Pages
         public async Task<IActionResult> OnGet(string boardKey)
         {
             EnsureArg.IsNotEmpty(boardKey, nameof(boardKey));
-            var t = await this.threadService.GetOrderedCatalogThreads(boardKey, 100, 0);
+            var t = await this.threadService.GetOrderedCatalogThreads(boardKey);
             return t.Match(threads =>
             {
                 this.Threads = threads.Threads;

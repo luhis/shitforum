@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Domain;
 using EnsureThat;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -46,28 +44,25 @@ namespace ShitForum.Pages
             this.bannedImageLogger = bannedImageLogger;
         }
 
-        public async Task<IActionResult> OnGet(string boardKey, string filter)
+        public async Task<IActionResult> OnGet(string boardKey, string filter, int pageNumber = 1)
         {
             EnsureArg.IsNotNull(boardKey, nameof(boardKey));
             this.Filter = filter;
             var filterOption = NullableMapper.ToOption(filter);
-            var t = await this.threadService.GetOrderedThreads(boardKey, filterOption, 100, 0);
+            var t = await this.threadService.GetOrderedThreads(boardKey, filterOption, 100, pageNumber);
             return t.Match(ts =>
             {
-                this.Threads = ts.Threads;
+                this.Threads = ts;
                 this.Thread = new AddThread(ts.Board.Id, cookieStorage.ReadName(this.Request), string.Empty, string.Empty, string.Empty, null);
-                this.Board = ts.Board;
                 return Page().ToIAR();
             },
             () => new NotFoundResult().ToIAR());
         }
 
-        public IEnumerable<ThreadOverView> Threads { get; private set; }
+        public ThreadOverViewSet Threads { get; private set; }
 
         [BindProperty]
         public AddThread Thread { get; set; }
-
-        public Board Board { get; private set; }
 
         public string Filter { get; private set; }
 
@@ -87,8 +82,7 @@ namespace ShitForum.Pages
             {
                 if (!ModelState.IsValid)
                 {
-                    this.Threads = threads.Threads;
-                    this.Board = threads.Board;
+                    this.Threads = threads;
                     return Page().ToIAR();
                 }
 

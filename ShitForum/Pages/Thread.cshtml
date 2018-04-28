@@ -7,7 +7,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-page="Index">Home</a></li>
-        <li class="breadcrumb-item"><a asp-page="Board" asp-route-id="@Model.Board.BoardId">@Model.Board.BoardName</a></li>
+        <li class="breadcrumb-item"><a asp-page="Board">@Model.Thread.Board.BoardName</a></li>
         <li class="breadcrumb-item active" aria-current="page">@Model.Thread.ThreadId - @Model.Thread.Subject</li>
     </ol>
 </nav>

@@ -1,5 +1,6 @@
 ﻿@page "{boardKey}"
 @model ShitForum.Pages.BoardModel
+@using ShitForum.ViewComponents
 @inject ReCaptchaCore.RecaptchaSettings RecaptchaSettings
 @{
     ViewData["Title"] = "Board";
@@ -8,37 +9,37 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-page="Index">Home</a></li>
-        <li class="breadcrumb-item active" aria-current="page">@Model.Board.BoardName</li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Threads.Board.BoardName</li>
     </ol>
 </nav>
 <hr />
 <form asp-page="Board" method="get">
-    <input type="hidden" value="@Model.Board.Id" name="id" />
+    <input type="hidden" value="@Model.Threads.Board.Id" name="id" />
     <input placeholder="Search OPs..." name="filter" value="@Model.Filter" type="text" />
-    <span>[<a asp-page="Catalog" asp-route-id="@Model.Board.Id">Catalog</a>]</span>
+    <span>[<a asp-page="Catalog" asp-route-id="@Model.Threads.Board.Id">Catalog</a>]</span>
 </form>
 <hr />
 
-@foreach (var thread in Model.Threads)
+@foreach (var thread in Model.Threads.Threads)
 {
     <div class="row">
         <div class="col">
             @thread.OP.Name
             @thread.OP.Created
-            No. <a asp-page="Thread" asp-route-boardKey="@Model.Board.BoardKey" asp-route-threadId="@thread.ThreadId" asp-route-subject="@thread.Subject">@thread.ThreadId</a>
+            No. <a asp-page="Thread" asp-route-boardKey="@Model.Threads.Board.BoardKey" asp-route-threadId="@thread.ThreadId" asp-route-subject="@thread.Subject">@thread.ThreadId</a>
         </div>
     </div>
     <div class="media">
-            @if (thread.OP.File.HasValue)
-            {
-                <a asp-page="Thread" asp-route-boardKey="@Model.Board.BoardKey" asp-route-threadId="@thread.ThreadId"  asp-route-subject="@thread.Subject">
-                    <img class="m-3" src="@Url.Action("GetPostThumbnail", "Images", new {id = thread.OP.Id})"/>
-                </a>
-            }
+        @if (thread.OP.File.HasValue)
+        {
+            <a asp-page="Thread" asp-route-boardKey="@Model.Threads.Board.BoardKey" asp-route-threadId="@thread.ThreadId" asp-route-subject="@thread.Subject">
+                <img class="m-3" src="@Url.Action("GetPostThumbnail", "Images", new {id = thread.OP.Id})" />
+            </a>
+        }
         <div class="media-body">
             @if (!string.IsNullOrWhiteSpace(thread.Subject))
             {
-                <p><a asp-page="Thread" asp-route-boardKey="@Model.Board.BoardKey" asp-route-threadId="@thread.ThreadId" asp-route-subject="@thread.Subject">@thread.Subject</a></p>
+                <p><a asp-page="Thread" asp-route-boardKey="@Model.Threads.Board.BoardKey" asp-route-threadId="@thread.ThreadId" asp-route-subject="@thread.Subject">@thread.Subject</a></p>
             }
             <p class="post-comment">@thread.OP.Comment</p>
         </div>
@@ -46,16 +47,16 @@
     <div class="row">
         <div class="col">
             @($"{thread.PostCount} replies and {thread.ImageCount} images omitted.")
-            <a asp-page="Thread" asp-route-boardKey="@Model.Board.BoardKey" asp-route-threadId="@thread.ThreadId">Click here</a> to view.
+            <a asp-page="Thread" asp-route-boardKey="@Model.Threads.Board.BoardKey" asp-route-threadId="@thread.ThreadId">Click here</a> to view.
         </div>
     </div>
     @foreach (var p in thread.FinalPosts)
     {
         <div class="media post rounded mb-2">
-                @if (p.File.HasValue)
-                {
-                    <img class="m-3" src="@Url.Action("GetPostThumbnail", "Images", new {id = p.Id})" />
-                }
+            @if (p.File.HasValue)
+            {
+                <img class="m-3" src="@Url.Action("GetPostThumbnail", "Images", new {id = p.Id})" />
+            }
             <div class="media-body">
                 <p class="post-comment">@p.Comment</p>
             </div>
@@ -63,9 +64,6 @@
     }
     <hr />
 }
-
-//todo paging
-
 <h5>Add a new thread</h5>
 
 <div asp-validation-summary="All"></div>

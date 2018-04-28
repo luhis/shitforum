@@ -23,16 +23,15 @@ namespace Services
             this.boardRepository = boardRepository;
         }
 
-        async Task<Option<CatalogThreadOverViewSet>> IThreadService.GetOrderedCatalogThreads(string boardKey, int pageSize, int pageNumber)
+        async Task<Option<CatalogThreadOverViewSet>> IThreadService.GetOrderedCatalogThreads(string boardKey)
         {
             var board = await this.boardRepository.GetByKey(boardKey);
             return await board.Match(async some =>
             {
-                var threadIds = this.threadsRepository.GetAll().Where(thread => thread.BoardId == some.Id).Select(thread => thread.Id);
-                var latestThreads = this.postsRepository.GetAll().Where(a => !a.IsSage && threadIds.Contains(a.ThreadId)).OrderBy(a => a.Created).Select(a => a.ThreadId).Distinct()
-                    .Skip(pageSize * pageNumber).Take(pageSize);
-                var threads = await this.threadsRepository.GetAll().Where(a => latestThreads.Contains(a.Id)).ToListAsync();
-                var t = await Task.WhenAll(threads.Select(async thread =>
+                var boardThreads = this.threadsRepository.GetAll().Where(thread => thread.BoardId == some.Id).Select(thread => thread.Id);
+                var allThreads = this.postsRepository.GetAll().Where(a => !a.IsSage && boardThreads.Contains(a.ThreadId)).OrderBy(a => a.Created).Select(a => a.ThreadId).Distinct();
+                var domainThreads = await this.threadsRepository.GetAll().Where(a => allThreads.Contains(a.Id)).ToListAsync();
+                var t = await Task.WhenAll(domainThreads.Select(async thread =>
                 {
                     var posts = this.postsRepository.GetAll().Where(p => p.ThreadId == thread.Id);
                     var firstPost = await this.GetFirstPostAsync(posts);
@@ -49,7 +48,7 @@ namespace Services
             {
                 var threadIds = this.threadsRepository.GetAll().Where(t => t.BoardId == some.Id).Where(a => a.Posts.OrderBy(p => p.Created).First().Comment.Contains(filter.ValueOr(string.Empty))).Select(t => t.Id);
                 var latestThreads = this.postsRepository.GetAll().Where(a => !a.IsSage && threadIds.Contains(a.ThreadId)).OrderBy(a => a.Created).Select(a => a.ThreadId).Distinct()
-                    .Skip(pageSize * pageNumber).Take(pageSize);
+                    .Skip(pageSize * (pageNumber - 1)).Take(pageSize);
                 var threads = await this.threadsRepository.GetAll().Where(a => latestThreads.Contains(a.Id)).ToListAsync();
                 var l = await Task.WhenAll(threads.Select(async thread =>
                 {
@@ -65,7 +64,8 @@ namespace Services
                     var imageCount = (await this.fileRepository.GetImageCount(thread.Id)) - shownPosts.Count(p => p.File.HasValue);
                     return new ThreadOverView(thread.Id, thread.Subject, firstPost, lastPosts, postCount, imageCount);
                 }).ToArray());
-                return Option.Some(new ThreadOverViewSet(some, l));
+                var numberOfPages = (threadIds.Count() / pageSize) + 1;
+                return Option.Some(new ThreadOverViewSet(some, l, new PageData(pageNumber, numberOfPages)));
             }, () => Task.FromResult(Option.None<ThreadOverViewSet>()));
         }
 

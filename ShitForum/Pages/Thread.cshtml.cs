@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Domain;
 using EnsureThat;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -48,8 +47,7 @@ namespace ShitForum.Pages
             this.isAdmin = isAdmin;
         }
 
-        public ViewThread Thread { get; private set; }
-        public BoardOverView Board { get; private set; }
+        public ThreadDetailView Thread { get; private set; }
         public bool IsAdmin { get; private set; }
 
         [BindProperty] public AddPost Post { get; set; }
@@ -61,10 +59,9 @@ namespace ShitForum.Pages
             return t.Match(thread =>
             {
                 this.IsAdmin = this.isAdmin.IsAdmin(this.HttpContext);
-                this.Thread = new ViewThread(thread.ThreadId, thread.Subject, thread.Posts);
+                this.Thread = thread;
                 var newComm = replyTo == Guid.Empty ? string.Empty : $">>{replyTo}\n";
                 this.Post = new AddPost(threadId, this.cookieStorage.ReadName(this.Request), String.Empty, newComm, null);
-                this.Board = thread.Board;
                 return Page().ToIAR();
             }, () => new NotFoundResult().ToIAR());
         }
@@ -85,8 +82,7 @@ namespace ShitForum.Pages
                 if (!this.ModelState.IsValid)
                 {
                     this.IsAdmin = this.isAdmin.IsAdmin(this.HttpContext);
-                    this.Thread = new ViewThread(thread.ThreadId, thread.Subject, thread.Posts);
-                    this.Board = thread.Board;
+                    this.Thread = thread;
                     return this.Page().ToIAR();
                 }
                 else

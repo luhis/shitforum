@@ -9,7 +9,7 @@ namespace Services
     {
         Task<Option<ThreadOverViewSet>> GetOrderedThreads(string boardKey, Option<string> filter, int pageSize, int pageNumber);
 
-        Task<Option<CatalogThreadOverViewSet>> GetOrderedCatalogThreads(string boardKey, int pageSize, int pageNumber);
+        Task<Option<CatalogThreadOverViewSet>> GetOrderedCatalogThreads(string boardKey);
 
         Task<Option<ThreadDetailView>> GetThread(Guid threadId);
     }
