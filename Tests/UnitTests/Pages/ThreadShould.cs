@@ -62,7 +62,7 @@ namespace UnitTests.Pages
         {
             var threadId = Guid.NewGuid();
             var boardId = Guid.NewGuid();
-
+            this.iIsAdmin.Setup(a => a.IsAdmin(It.IsAny<HttpContext>())).Returns(false);
             this.threadService.Setup(a => a.GetThread(threadId)).Returns(
                 Task.FromResult(Option.Some(new ThreadDetailView(threadId, "subject", new BoardOverView(boardId, "random", "bee"), new List<PostOverView>() {
                     new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", Option.None<Domain.File>(), false, "myip") }))));
@@ -117,6 +117,7 @@ namespace UnitTests.Pages
             thread.Post = new AddPost(threadId, "", "", "", null);
             thread.ModelState.AddModelError("file", "blah");
 
+            this.iIsAdmin.Setup(a => a.IsAdmin(It.IsAny<HttpContext>())).Returns(false);
             this.getIp.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
             this.threadService.Setup(a => a.GetThread(threadId)).Returns(
                 Task.FromResult(Option.Some(new ThreadDetailView(threadId, "subject", new BoardOverView(boardId, "random", "bee"), new List<PostOverView>() {
