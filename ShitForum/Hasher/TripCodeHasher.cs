@@ -22,7 +22,7 @@ namespace ShitForum.Hasher
                 {"##", s =>
                     {
                         var broken = Break(s, "##").ToArray();
-                        return broken[0] + "!!" + Sha256Hasher.Hash(salt + broken[1]);
+                        return broken[0] + "!!" + Repeater.DoXTimes(salt + broken[1], Sha256Hasher.Hash, 10);
                     }
                 },
                 {
@@ -30,7 +30,7 @@ namespace ShitForum.Hasher
                     s =>
                     {
                         var broken = Break(s, "#").ToArray();
-                        return broken[0] + "!" + Sha256Hasher.Hash(broken[1]);
+                        return broken[0] + "!" + Repeater.DoXTimes(broken[1], Sha256Hasher.Hash, 10);
                     }
                 },
                 {

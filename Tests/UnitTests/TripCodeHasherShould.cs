@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Services;
 using Services.Dtos;
 using ShitForum.Hasher;
 using Xunit;
@@ -33,14 +32,14 @@ namespace UnitTests
         public void HashTheCode()
         {
             var res = hasher.Hash("Matt M #abcdefg");
-            res.Should().BeEquivalentTo(new TripCodedName("Matt M !fRpUEnsiJQL1t5tfsIAwYRUqRPkrN+I8ZSe69mXU2po="));
+            res.Should().BeEquivalentTo(new TripCodedName("Matt M !ZKOlfWJ8O3w8nL/7xlWFLecXJtn2y33KSoS4AWD84qo="));
         }
 
         [Fact]
         public void SecureHashTheCode()
         {
             var res = hasher.Hash("Matt M ##abcdefg");
-            res.Should().BeEquivalentTo(new TripCodedName("Matt M !!cHbVOC7c5jnZ6q3fxa7jUnx4ZzgqslO+L47lrFPEhPY="));
+            res.Should().BeEquivalentTo(new TripCodedName("Matt M !!Jtgr1iw+iOJ/KKq6nvRKwxwBUGOPmeogezudsZDQSXg="));
         }
     }
 }

@@ -7,12 +7,12 @@ namespace ShitForum.Hasher
 {
     public static class ImageHasher
     {
-        private static readonly SHA1 sha1 = SHA1.Create();
+        private static readonly MD5 md5 = MD5.Create();
         public static ImageHash Hash(byte[] bs)
         {
             EnsureArg.IsNotNull(bs, nameof(bs));
             
-            return new ImageHash(Convert.ToBase64String(sha1.ComputeHash(bs)));
+            return new ImageHash(Convert.ToBase64String(md5.ComputeHash(bs)));
         }
     }
 }
