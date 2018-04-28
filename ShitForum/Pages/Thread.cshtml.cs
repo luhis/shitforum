@@ -5,6 +5,7 @@ using EnsureThat;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Services;
+using Services.Dtos;
 using ShitForum.Attributes;
 using ShitForum.BannedImageLogger;
 using ShitForum.Cookies;
@@ -48,7 +49,7 @@ namespace ShitForum.Pages
         }
 
         public ViewThread Thread { get; private set; }
-        public Board Board { get; private set; }
+        public BoardOverView Board { get; private set; }
         public bool IsAdmin { get; private set; }
 
         [BindProperty] public AddPost Post { get; set; }
@@ -102,7 +103,7 @@ namespace ShitForum.Pages
                             this.cookieStorage.SetNameCookie(this.Response, this.Post.Name);
                             if (options.NoNoko)
                             {
-                                return RedirectToPage("Board", new {id = thread.Board.Id});
+                                return RedirectToPage("Board", new {id = thread.Board.BoardId});
                             }
                             else
                             {

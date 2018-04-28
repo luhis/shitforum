@@ -7,7 +7,7 @@ namespace Services.Dtos
 {
     public sealed class ThreadDetailView
     {
-        public ThreadDetailView(Guid threadId, string subject, Board board, IReadOnlyList<PostOverView> posts)
+        public ThreadDetailView(Guid threadId, string subject, BoardOverView board, IReadOnlyList<PostOverView> posts)
         {
             ThreadId = EnsureArg.IsNotEmpty(threadId, nameof(threadId));
             Subject = EnsureArg.IsNotNull(subject, nameof(subject));
@@ -19,7 +19,7 @@ namespace Services.Dtos
 
         public string Subject { get; }
 
-        public Board Board { get; }
+        public BoardOverView Board { get; }
 
         public IReadOnlyList<PostOverView> Posts { get; }
     }

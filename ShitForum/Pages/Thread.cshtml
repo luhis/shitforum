@@ -7,7 +7,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-page="Index">Home</a></li>
-        <li class="breadcrumb-item"><a asp-page="Board" asp-route-id="@Model.Board.Id">@Model.Board.BoardName</a></li>
+        <li class="breadcrumb-item"><a asp-page="Board" asp-route-id="@Model.Board.BoardId">@Model.Board.BoardName</a></li>
         <li class="breadcrumb-item active" aria-current="page">@Model.Thread.ThreadId - @Model.Thread.Subject</li>
     </ol>
 </nav>
@@ -23,7 +23,7 @@
             @if (Model.IsAdmin)
             {
                 <a asp-route-id="@post.Id" asp-page="DeletePost">[Delete]</a>
-                <a asp-route-iphash="@post.IpAddress" asp-page="BanUser">[Ban]</a>
+                <a asp-route-id="@post.Id" asp-page="BanUser">[Ban]</a>
                 if (post.File.HasValue)
                 {
                     <a asp-route-id="@post.Id" asp-page="BanImage">[Ban Image]</a>

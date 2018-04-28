@@ -16,13 +16,15 @@ namespace Services
         private readonly IFileRepository fileRepository;
         private readonly IThreadRepository threadRepository;
         private readonly IBannedIpRepository bannedIpRepository;
+        private readonly IBoardRepository boardRepository;
 
-        public PostService(IPostRepository postRepository, IFileRepository fileRepository, IThreadRepository threadRepository, IBannedIpRepository bannedIpRepository)
+        public PostService(IPostRepository postRepository, IFileRepository fileRepository, IThreadRepository threadRepository, IBannedIpRepository bannedIpRepository, IBoardRepository boardRepository)
         {
             this.postRepository = postRepository;
             this.fileRepository = fileRepository;
             this.threadRepository = threadRepository;
             this.bannedIpRepository = bannedIpRepository;
+            this.boardRepository = boardRepository;
         }
 
         private const int ImageLimit = 50;
@@ -71,7 +73,23 @@ namespace Services
             return new Success();
         }
 
-        Task<Option<Post>> IPostService.GetById(Guid id) => this.postRepository.GetById(id);
+        async Task<Option<PostDetailView>> IPostService.GetById(Guid id)
+        {
+            Func<Task<Option<PostDetailView>>> noneRes = () => Task.FromResult(Option.None<PostDetailView>());
+            var post = await this.postRepository.GetById(id);
+
+            return await post.Match(async some =>
+            {
+                var t = await this.threadRepository.GetById(some.ThreadId);
+                return await t.Match(async thread =>
+                {
+                    var b = await this.boardRepository.GetById(thread.BoardId);
+                    return b.Match(
+                        board => Option.Some(new PostDetailView(some.Id, thread.Id, thread.Subject, new BoardOverView(board.Id, board.BoardName, board.BoardKey), some.Comment)),
+                        Option.None<PostDetailView>);
+                }, noneRes);
+            }, noneRes);
+        }
 
         async Task<bool> IPostService.DeletePost(Guid id)
         {

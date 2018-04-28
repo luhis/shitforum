@@ -87,7 +87,7 @@ namespace Services
                     .Select(async p => PostMapper.Map(p, await this.fileRepository.GetPostFile(p.Id))));
                 var b = await this.boardRepository.GetById(t.BoardId);
                 return b.Match(
-                    some => Option.Some(new ThreadDetailView(threadId, t.Subject, some, postsMapped.ToList())), 
+                    some => Option.Some(new ThreadDetailView(threadId, t.Subject, new BoardOverView(some.Id, some.BoardName, some.BoardKey), postsMapped.ToList())), 
                     Option.None<ThreadDetailView>);
 
             }, () => Task.FromResult(Option.None<ThreadDetailView>()));

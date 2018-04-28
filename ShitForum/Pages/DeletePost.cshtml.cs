@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Domain;
+using EnsureThat;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,37 +14,31 @@ namespace ShitForum.Pages
     public class DeletePostModel : PageModel
     {
         private readonly IPostService postService;
-        private readonly IThreadService threadService;
-        public Post Post { get; private set; }
-        public ThreadDetailView Thread { get; private set; }
+        public PostDetailView Post { get; private set; }
 
-        public DeletePostModel(IPostService postService, IThreadService threadService)
+        public DeletePostModel(IPostService postService)
         {
             this.postService = postService;
-            this.threadService = threadService;
         }
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
+            EnsureArg.IsNotEmpty(id, nameof(id));
             var p = await postService.GetById(id);
-            return await p.Match(async post =>
+            return p.Match(post =>
             {
-                var t = await threadService.GetThread(post.ThreadId);
-                return t.Match(thread =>
-                {
-                    this.Thread = thread;
-                    this.Post = post;
-                    return Page().ToIAR();
-                }, () => new NotFoundResult().ToIAR());
-            }, () => new NotFoundResult().ToIART());
+                this.Post = post;
+                return Page().ToIAR();
+            }, () => new NotFoundResult().ToIAR());
         }
         
         public async Task<IActionResult> OnPostAsync(Guid id)
         {
+            EnsureArg.IsNotEmpty(id, nameof(id));
             var p = await postService.GetById(id);
             return await p.Match(async post =>
             {
-                await postService.DeletePost(post.Id);
+                await postService.DeletePost(id);
                 return new RedirectToPageResult("Thread", new { id = post.ThreadId }).ToIAR();
             }, () => new StatusCodeResult(StatusCodes.Status500InternalServerError).ToIART());
         }

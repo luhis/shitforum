@@ -9,7 +9,6 @@ using Domain.IpHash;
 using Services.Dtos;
 using Xunit;
 using FluentAssertions;
-using Services.Results;
 
 namespace UnitTests
 {
@@ -22,6 +21,7 @@ namespace UnitTests
         private readonly Mock<IPostRepository> postRepository;
         private readonly Mock<IFileRepository> fileRepository;
         private readonly Mock<IBannedIpRepository> bannedIpRepository;
+        private readonly Mock<IBoardRepository> boardRepository;
 
         public PostServiceShould()
         {
@@ -29,8 +29,10 @@ namespace UnitTests
             this.postRepository = repo.Create<IPostRepository>();
             this.fileRepository = repo.Create<IFileRepository>();
             this.bannedIpRepository = repo.Create<IBannedIpRepository>();
+            this.boardRepository = repo.Create<IBoardRepository>();
 
-            this.ps = new PostService(this.postRepository.Object, this.fileRepository.Object, this.threadRepository.Object, this.bannedIpRepository.Object);
+            this.ps = new PostService(this.postRepository.Object, this.fileRepository.Object,
+                this.threadRepository.Object, this.bannedIpRepository.Object, this.boardRepository.Object);
         }
 
         [Fact]

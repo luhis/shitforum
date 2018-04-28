@@ -4,6 +4,15 @@
     ViewData["Title"] = "BanUser";
 }
 
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-page="Index">Home</a></li>
+        <li class="breadcrumb-item"><a asp-page="Board" asp-route-id="@Model.Post.Board.BoardId">@Model.Post.Board.BoardName</a></li>
+        <li class="breadcrumb-item"><a asp-page="Thread" asp-route-id="@Model.Post.ThreadId">@Model.Post.ThreadId</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Post.Id</li>
+    </ol>
+</nav>
+
 <h2>Ban User</h2>
 
 <form method="post">
@@ -13,7 +22,7 @@
     </div>
     <div class="form-group">
         Expiry:
-        <input class="form-control" asp-for="Expiry" type="date" placeholder="reason"/>
+        <input class="form-control" asp-for="Expiry" type="date" placeholder="reason" />
     </div>
     <input class="btn btn-primary" type="submit" />
 </form>
