@@ -37,6 +37,7 @@ namespace ShitForum
             services.AddSingleton<IFileRepository, FileRepository>();
             services.AddSingleton<IValidateImage, ValidateImage>();
             services.AddSingleton<ICookieStorage, CookieStorage>();
+            services.AddSingleton<IIsAdmin, IsAdmin>();
             services.AddSingleton<IBannedImageLogger, BannedImageLogger.BannedImageLogger>();
             services.AddSingleton<IGetIp, GetIp.GetIp>();
             services.AddSingleton<ForumContext>();

@@ -17,7 +17,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "Tests\UnitTest
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{02C21636-1F65-49F7-BB83-826941160FBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReCaptchaCore", "ReCaptchaCore\ReCaptchaCore.csproj", "{F1B0B47B-D7F1-4D6D-96F0-B1AE719EC7C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReCaptchaCore", "ReCaptchaCore\ReCaptchaCore.csproj", "{F1B0B47B-D7F1-4D6D-96F0-B1AE719EC7C1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F5D9DD31-F49F-4E56-885F-2C17CEA80EB9}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		readme.md = readme.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

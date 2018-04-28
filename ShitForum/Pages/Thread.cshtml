@@ -20,17 +20,25 @@
             @post.Name
             @post.Created
             No. <a asp-route-id="@Model.Thread.ThreadId" asp-route-replyto="@post.Id">@post.Id</a>
-            <a asp-route-id="@post.Id" asp-page="DeletePost">[Delete]</a>
-            <a asp-route-iphash="@post.IpAddress" asp-page="BanUser">[Ban]</a>
+            @if (Model.IsAdmin)
+            {
+                <a asp-route-id="@post.Id" asp-page="DeletePost">[Delete]</a>
+                <a asp-route-iphash="@post.IpAddress" asp-page="BanUser">[Ban]</a>
+                if (post.File.HasValue)
+                {
+                    <a asp-route-id="@post.Id" asp-page="BanImage">[Ban Image]</a>
+                }
+
+            }
         </div>
     </div>
     <div class="media post">
-            @if (post.File.HasValue)
-            {
-                <a asp-controller="Images" asp-action="GetPostImage" asp-route-id="@post.Id">
-                    <img class="m-3" src="@Url.Action("GetPostThumbnail", "Images", new {id = post.Id})" />
-                </a>
-            }
+        @if (post.File.HasValue)
+        {
+            <a asp-controller="Images" asp-action="GetPostImage" asp-route-id="@post.Id">
+                <img class="m-3" src="@Url.Action("GetPostThumbnail", "Images", new {id = post.Id})" />
+            </a>
+        }
         <div class="media-body">
             <p class="post-comment">@post.Comment</p>
         </div>

@@ -1,0 +1,15 @@
+﻿@page
+@model ShitForum.Pages.BanImageModel
+@{
+    ViewData["Title"] = "BanImage";
+}
+
+<h2>Ban Image</h2>
+
+<form method="post">
+    <div class="form-group">
+        Reason:
+        <input class="form-control" asp-for="Reason" type="text" placeholder="reason" />
+    </div>
+    <input class="btn btn-primary" type="submit" />
+</form>

@@ -25,6 +25,7 @@ namespace ShitForum.Pages
         private readonly IThreadService threadService;
         private readonly IPostService postService;
         private readonly IBannedImageLogger bannedImageLogger;
+        private readonly IIsAdmin isAdmin;
 
         public ThreadModel(
             IpHasherFactory ipHasherFactory,
@@ -33,7 +34,8 @@ namespace ShitForum.Pages
             IGetIp getIp,
             IThreadService threadService,
             IPostService postService,
-            IBannedImageLogger bannedImageLogger)
+            IBannedImageLogger bannedImageLogger,
+            IIsAdmin isAdmin)
         {
             this.ipHasher = ipHasherFactory.GetHasher();
             this.tripCodeHasher = tripCodeHasher;
@@ -42,10 +44,12 @@ namespace ShitForum.Pages
             this.threadService = threadService;
             this.postService = postService;
             this.bannedImageLogger = bannedImageLogger;
+            this.isAdmin = isAdmin;
         }
 
         public ViewThread Thread { get; private set; }
         public Board Board { get; private set; }
+        public bool IsAdmin { get; private set; }
 
         [BindProperty] public AddPost Post { get; set; }
 
@@ -55,14 +59,10 @@ namespace ShitForum.Pages
             var t = await this.threadService.GetThread(id).ConfigureAwait(false);
             return t.Match(thread =>
             {
+                this.IsAdmin = this.isAdmin.IsAdmin(this.HttpContext);
                 this.Thread = new ViewThread(thread.ThreadId, thread.Subject, thread.Posts);
                 var newComm = replyTo == Guid.Empty ? string.Empty : $">>{replyTo}\n";
-                this.Post = new AddPost()
-                {
-                    ThreadId = id,
-                    Name = this.cookieStorage.ReadName(this.Request),
-                    Comment = newComm
-                };
+                this.Post = new AddPost(id, this.cookieStorage.ReadName(this.Request), String.Empty, newComm, null);
                 this.Board = thread.Board;
                 return Page().ToIAR();
             }, () => new NotFoundResult().ToIAR());
@@ -83,6 +83,7 @@ namespace ShitForum.Pages
             {
                 if (!this.ModelState.IsValid)
                 {
+                    this.IsAdmin = this.isAdmin.IsAdmin(this.HttpContext);
                     this.Thread = new ViewThread(thread.ThreadId, thread.Subject, thread.Posts);
                     this.Board = thread.Board;
                     return this.Page().ToIAR();
