@@ -22,12 +22,7 @@ namespace Services
             return this.bannedIpRepository.Ban(hash, reason, expiry);
         }
 
-        public Task<bool> IsBanned(IIpHash hash)
-        {
-            return this.bannedIpRepository.IsBanned(hash);
-        }
-
-        public async Task<Option<IIpHash>> GetHashForPost(Guid postId)
+        async Task<Option<IIpHash>> IUserService.GetHashForPost(Guid postId)
         {
             var post = await this.postRepository.GetById(postId);
                 

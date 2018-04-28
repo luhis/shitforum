@@ -9,8 +9,6 @@ namespace Services
     {
         Task BanUser(IIpHash hash, string reason, DateTime expiry);
 
-        Task<bool> IsBanned(IIpHash hash);
-
         Task<Option<IIpHash>> GetHashForPost(Guid postId);
     }
 }
