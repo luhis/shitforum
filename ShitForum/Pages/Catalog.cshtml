@@ -17,7 +17,7 @@
     {
         <div class="col-4">
             <div class="card">
-                <a asp-page="Thread" asp-route-id="@thread.ThreadId">
+                <a asp-page="Thread" asp-route-threadId="@thread.ThreadId" asp-route-subject="@thread.Subject">
                     <img class="card-img-top" src="@Url.Action("GetPostThumbnail", "Images", new { id = thread.FirstPost.Id })" alt="@thread.Subject">
                 </a>
                 <div class="card-body">
