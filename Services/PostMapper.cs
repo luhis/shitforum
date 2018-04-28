@@ -6,7 +6,7 @@ namespace Services
     {
         public static PostOverView Map(Domain.Post p, Optional.Option< Domain.File> f)
         {
-            return new PostOverView(p.Id, p.Created, p.Name, p.Comment, f, p.IsSage, p.IpAddress);
+            return new PostOverView(p.Id, p.Created, p.Name, p.Comment, f);
         }
     }
 }

@@ -65,7 +65,7 @@ namespace UnitTests.Pages
                     new ThreadOverViewSet(
                         new Board(boardId, "random", "bee"),
                         new List<ThreadOverView>() { new ThreadOverView(Guid.NewGuid(), "subject",
-                        new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", Option.None<Domain.File>(), false, "127.0.0.1"), new List<PostOverView>() { } , 1, 1) }))));
+                        new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", Option.None<Domain.File>()), new List<PostOverView>() { } , 1, 1) }))));
 
             this.cookieStorage.Setup(a => a.ReadName(It.IsAny<HttpRequest>())).Returns("Matt");
             board.OnGet(boardId, null).Wait();
@@ -127,7 +127,7 @@ namespace UnitTests.Pages
                    new ThreadOverViewSet(
                        new Board(boardId, "random", "bee"),
                        new List<ThreadOverView>() { new ThreadOverView(Guid.NewGuid(), "subject",
-                       new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", Option.None<File>(), false, "127.0.0.1"), new List<PostOverView>() { }, 1, 1) }))));
+                       new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", Option.None<File>()), new List<PostOverView>() { }, 1, 1) }))));
             this.bannedImageLogger.Setup(a => a.Log(It.IsAny<ModelStateEntry>(), IPAddress.Loopback, It.IsAny<IIpHash>()));
 
             board.OnPostAsync(null).Wait();
