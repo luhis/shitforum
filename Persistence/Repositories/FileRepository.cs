@@ -29,12 +29,12 @@ namespace Persistence.Repositories
         {
             var posts = client.Posts.Where(a => a.ThreadId == threadId).Select(a => a.Id);
 
-            return client.Files.CountAsync(a => posts.Contains(a.PostId));
+            return client.Files.CountAsync(a => posts.Contains(a.Id));
         }
 
         async Task<Option<File>> IFileRepository.GetPostFile(Guid postId)
         {
-            var f = await client.Files.SingleOrDefaultAsync(a => a.PostId == postId);
+            var f = await client.Files.SingleOrDefaultAsync(a => a.Id == postId);
             return f != null ? Option.Some(f) : Option.None<File>();
         }
     }

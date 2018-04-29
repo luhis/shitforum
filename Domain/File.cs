@@ -5,9 +5,9 @@ namespace Domain
 {
     public sealed class File : DomainBase
     {
-        public File(Guid id, Guid postId, string fileName, byte[] thumbNailJpeg, byte[] data, string mimeType) : base(id)
+        public File(Guid id, string fileName, byte[] thumbNailJpeg, byte[] data, string mimeType) : base(id)
         {
-            PostId = EnsureArg.IsNotNull(postId, nameof(postId));
+            //the id is the postid
             FileName = EnsureArg.IsNotNullOrWhiteSpace(fileName, nameof(fileName));
             ThumbNailJpeg = EnsureArg.IsNotNull(thumbNailJpeg, nameof(thumbNailJpeg));
             Data = EnsureArg.IsNotNull(data, nameof(data));
@@ -17,8 +17,8 @@ namespace Domain
         public File()
         {
         }
-
-        public Guid PostId { get; private set; }
+        
+        public Post Post { get; private set; }
 
         public string FileName { get; private set; }
 

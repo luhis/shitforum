@@ -31,7 +31,7 @@ namespace ShitForum.Pages
             var f = await this.fileService.GetPostFile(id);
             return await f.Match(async some =>
             {
-                var p = await this.postService.GetById(some.PostId);
+                var p = await this.postService.GetById(some.Id);
                 return p.Match(post =>
                 {
                     this.Post = post;

@@ -26,5 +26,6 @@ namespace Domain
         public string Comment { get; private set; }
         public bool IsSage { get; private set; }
         public string IpAddress { get; private set; }
+        public File File { get; private set; }
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Persistence.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class initialcreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -49,22 +49,6 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Files",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    Data = table.Column<byte[]>(nullable: false),
-                    FileName = table.Column<string>(nullable: false),
-                    MimeType = table.Column<string>(nullable: false),
-                    PostId = table.Column<Guid>(nullable: false),
-                    ThumbNailJpeg = table.Column<byte[]>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Files", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Threads",
                 columns: table => new
                 {
@@ -102,6 +86,27 @@ namespace Persistence.Migrations
                         name: "FK_Posts_Threads_ThreadId",
                         column: x => x.ThreadId,
                         principalTable: "Threads",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Files",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Data = table.Column<byte[]>(nullable: false),
+                    FileName = table.Column<string>(nullable: false),
+                    MimeType = table.Column<string>(nullable: false),
+                    ThumbNailJpeg = table.Column<byte[]>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Files", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Files_Posts_Id",
+                        column: x => x.Id,
+                        principalTable: "Posts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });

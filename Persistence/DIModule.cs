@@ -13,6 +13,8 @@ namespace Persistence
             services.AddSingleton<IPostRepository, PostRepository>();
             services.AddSingleton<IBannedIpRepository, BannedIpRepository>();
             services.AddSingleton<IBannedImageRepository, BannedImageRepository>();
+            services.AddSingleton<IFileRepository, FileRepository>();
+            services.AddSingleton<ForumContext>();
         }
     }
 }

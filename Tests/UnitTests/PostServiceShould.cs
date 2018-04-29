@@ -116,5 +116,17 @@ namespace UnitTests
 
             this.repo.VerifyAll();
         }
+
+        [Fact]
+        public void GetById()
+        {
+
+        }
+
+        [Fact]
+        public void Delete()
+        {
+
+        }
     }
 }

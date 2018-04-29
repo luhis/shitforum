@@ -36,6 +36,7 @@ namespace Persistence
                 this.Boards.Add(new Board(new System.Guid("1f5f47db-dd27-4b58-9229-4ae72829621e"), "Random", "b"));
                 this.Boards.Add(new Board(new System.Guid("ec9ec01d-d0ed-4b55-a3ad-78bc32b0ebc9"), "International", "int"));
                 this.Boards.Add(new Board(new System.Guid("3643c3d5-a917-470d-a41e-14d317ef24a7"), "Politically Suicidal", "pol"));
+                this.Boards.Add(new Board(new System.Guid("4fcca824-1986-437f-b844-4373d9b5f855"), "Brighton", "btn"));
                 await this.SaveChangesAsync();
             }
         }

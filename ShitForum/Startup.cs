@@ -1,4 +1,3 @@
-using Domain.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
@@ -6,17 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Persistence;
-using Persistence.Repositories;
-using ShitForum.Hasher;
-using ShitForum.ImageValidation;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using ShitForum.BannedImageLogger;
-using ShitForum.Cookies;
-using ShitForum.GetIp;
 
 namespace ShitForum
 {
@@ -36,16 +27,7 @@ namespace ShitForum
             Persistence.DIModule.Add(services);
             Services.DIModule.Add(services);
             ReCaptchaCore.DIModule.Add(services);
-            services.AddSingleton<IFileRepository, FileRepository>();
-            services.AddSingleton<IValidateImage, ValidateImage>();
-            services.AddSingleton<ICookieStorage, CookieStorage>();
-            services.AddSingleton<IIsAdmin, IsAdmin>();
-            services.AddSingleton<IBannedImageLogger, BannedImageLogger.BannedImageLogger>();
-            services.AddSingleton<IGetIp, GetIp.GetIp>();
-            services.AddSingleton<ForumContext>();
-            services.AddSingleton<IpHasherFactory>();
-            services.AddSingleton<TripCodeHasher>();
-            services.AddSingleton<AdminSettings>();
+            ShitForum.DIModule.Add(services);
 
             services.Configure<RouteOptions>(options => {
                 options.LowercaseUrls = true;

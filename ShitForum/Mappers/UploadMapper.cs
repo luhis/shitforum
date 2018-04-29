@@ -27,7 +27,7 @@ namespace ShitForum.Mappers
             string mime = MimeTypes.GetMimeType(f.FileName);
             var imageData = ExtractStream(f.OpenReadStream());
             var thumbNail = Thumbnailer.Make(imageData);
-            return Option.Some(new File(Guid.NewGuid(), postId, f.FileName, thumbNail, imageData, mime));
+            return Option.Some(new File(postId, f.FileName, thumbNail, imageData, mime));
         }
 
         public static Option<byte[]> ExtractData(IFormFile f) => f == null ? Option.None<byte[]>() : Option.Some(ExtractStream(f.OpenReadStream()));

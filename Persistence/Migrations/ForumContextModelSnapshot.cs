@@ -82,8 +82,6 @@ namespace Persistence.Migrations
                     b.Property<string>("MimeType")
                         .IsRequired();
 
-                    b.Property<Guid>("PostId");
-
                     b.Property<byte[]>("ThumbNailJpeg")
                         .IsRequired();
 
@@ -132,6 +130,14 @@ namespace Persistence.Migrations
                     b.HasIndex("BoardId");
 
                     b.ToTable("Threads");
+                });
+
+            modelBuilder.Entity("Domain.File", b =>
+                {
+                    b.HasOne("Domain.Post", "Post")
+                        .WithOne("File")
+                        .HasForeignKey("Domain.File", "Id")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Domain.Post", b =>

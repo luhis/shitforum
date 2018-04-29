@@ -11,8 +11,8 @@ using System;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ForumContext))]
-    [Migration("20180426200755_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20180429204612_initialcreate")]
+    partial class initialcreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -83,8 +83,6 @@ namespace Persistence.Migrations
                     b.Property<string>("MimeType")
                         .IsRequired();
 
-                    b.Property<Guid>("PostId");
-
                     b.Property<byte[]>("ThumbNailJpeg")
                         .IsRequired();
 
@@ -133,6 +131,14 @@ namespace Persistence.Migrations
                     b.HasIndex("BoardId");
 
                     b.ToTable("Threads");
+                });
+
+            modelBuilder.Entity("Domain.File", b =>
+                {
+                    b.HasOne("Domain.Post", "Post")
+                        .WithOne("File")
+                        .HasForeignKey("Domain.File", "Id")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Domain.Post", b =>

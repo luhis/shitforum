@@ -12,6 +12,7 @@ namespace Persistence.Setup
             entity.Property(e => e.FileName).IsRequired();
             entity.Property(e => e.MimeType).IsRequired();
             entity.Property(e => e.ThumbNailJpeg).IsRequired();
+            entity.HasOne(a => a.Post).WithOne(a => a.File).HasForeignKey<File>(a => a.Id);
         }
     }
 }
