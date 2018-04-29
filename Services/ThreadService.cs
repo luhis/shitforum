@@ -10,15 +10,19 @@ namespace Services
 {
     public class ThreadService : IThreadService
     {
-        private readonly IThreadRepository threadsRepository;
-        private readonly IPostRepository postsRepository;
+        private readonly IThreadRepository threadRepository;
         private readonly IFileRepository fileRepository;
         private readonly IBoardRepository boardRepository;
+        private readonly IPostRepository postRepository;
 
-        public ThreadService(IThreadRepository threadsRepository, IPostRepository postsRepository, IFileRepository filesRepository, IBoardRepository boardRepository)
+        public ThreadService(
+            IThreadRepository threadRepository, 
+            IPostRepository postRepository, 
+            IFileRepository filesRepository, 
+            IBoardRepository boardRepository)
         {
-            this.threadsRepository = threadsRepository;
-            this.postsRepository = postsRepository;
+            this.threadRepository = threadRepository;
+            this.postRepository = postRepository;
             this.fileRepository = filesRepository;
             this.boardRepository = boardRepository;
         }
@@ -28,12 +32,12 @@ namespace Services
             var board = await this.boardRepository.GetByKey(boardKey);
             return await board.Match(async some =>
             {
-                var boardThreads = this.threadsRepository.GetAll().Where(thread => thread.BoardId == some.Id).Select(thread => thread.Id);
-                var allThreads = this.postsRepository.GetAll().Where(a => !a.IsSage && boardThreads.Contains(a.ThreadId)).OrderBy(a => a.Created).Select(a => a.ThreadId).Distinct();
-                var domainThreads = await this.threadsRepository.GetAll().Where(a => allThreads.Contains(a.Id)).ToListAsync();
+                var boardThreads = this.threadRepository.GetAll().Where(thread => thread.BoardId == some.Id).Select(thread => thread.Id);
+                var allThreads = this.postRepository.GetAll().Where(a => !a.IsSage && boardThreads.Contains(a.ThreadId)).OrderBy(a => a.Created).Select(a => a.ThreadId).Distinct();
+                var domainThreads = await this.threadRepository.GetAll().Where(a => allThreads.Contains(a.Id)).ToListAsync();
                 var t = await Task.WhenAll(domainThreads.Select(async thread =>
                 {
-                    var posts = this.postsRepository.GetAll().Where(p => p.ThreadId == thread.Id);
+                    var posts = this.postRepository.GetAll().Where(p => p.ThreadId == thread.Id);
                     var firstPost = await this.GetFirstPostAsync(posts);
                     return new CatalogThreadOverView(thread.Id, thread.Subject, some, firstPost);
                 }).ToArray());
@@ -46,13 +50,14 @@ namespace Services
             var board = await this.boardRepository.GetByKey(boardKey);
             return await board.Match(async some =>
             {
-                var threadIds = this.threadsRepository.GetAll().Where(t => t.BoardId == some.Id).Where(a => a.Posts.OrderBy(p => p.Created).First().Comment.Contains(filter.ValueOr(string.Empty))).Select(t => t.Id);
-                var latestThreads = this.postsRepository.GetAll().Where(a => !a.IsSage && threadIds.Contains(a.ThreadId)).OrderBy(a => a.Created).Select(a => a.ThreadId).Distinct()
+                var boardThreads = this.threadRepository.GetAll().Where(t => t.BoardId == some.Id).Select(a => a.Id);
+                var threadIds = this.postRepository.GetAll().Where(a => boardThreads.Contains(a.ThreadId)).GroupBy(a => a.ThreadId).Where(a => a.OrderBy(b => b.Created).First().Comment.Contains(filter.ValueOr(string.Empty))).Select(a => a.Key);
+                var latestThreads = this.postRepository.GetAll().Where(a => !a.IsSage && threadIds.Contains(a.ThreadId)).OrderBy(a => a.Created).Select(a => a.ThreadId).Distinct()
                     .Skip(pageSize * (pageNumber - 1)).Take(pageSize);
-                var threads = await this.threadsRepository.GetAll().Where(a => latestThreads.Contains(a.Id)).ToListAsync();
+                var threads = await this.threadRepository.GetAll().Where(a => latestThreads.Contains(a.Id)).ToListAsync();
                 var l = await Task.WhenAll(threads.Select(async thread =>
                 {
-                    var posts = this.postsRepository.GetAll().Where(p => p.ThreadId == thread.Id);
+                    var posts = this.postRepository.GetAll().Where(p => p.ThreadId == thread.Id);
                     var firstPost = await GetFirstPostAsync(posts);
                     var lastPosts = (await Task.WhenAll(posts.Skip(1).OrderByDescending(a => a.Created).Take(5).ToArray().Select(async p =>
                     {
@@ -78,10 +83,10 @@ namespace Services
 
         async Task<Option<ThreadDetailView>> IThreadService.GetThread(Guid threadId)
         {
-            var thread = await this.threadsRepository.GetById(threadId);
+            var thread = await this.threadRepository.GetById(threadId);
             return await thread.Match(async t =>
             {
-                var posts = this.postsRepository.GetAll().Where(a => a.ThreadId == threadId);
+                var posts = this.postRepository.GetAll().Where(a => a.ThreadId == threadId);
                 var postsMapped = await Task.WhenAll( posts
                     .OrderBy(a => a.Created).ToList()
                     .Select(async p => PostMapper.Map(p, await this.fileRepository.GetPostFile(p.Id))));
