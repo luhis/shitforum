@@ -1,18 +1,18 @@
-﻿@model ShitForum.ViewComponents.PagerModelViewComponent
+﻿@model ShitForum.ViewComponents.PagerViewModel
 
 <nav aria-label="Page navigation">
     <ul class="pagination">
-        <li class="page-item @(Model.PageData.PageNumber > 1 ? "" : "disabled")">
-            <a asp-route-pageNumber="@(Model.PageData.PageNumber - 1)" class="page-link">Previous</a>
+        <li class="page-item @(Model.PageNumber > 1 ? "" : "disabled")">
+            <a asp-route-pageNumber="@(Model.PageNumber - 1)" class="page-link">Previous</a>
         </li>
         @foreach (var i in Model.PagesToShow)
         {
-            <li class="page-item @(Model.PageData.PageNumber == i? "disabled" : "")">
+            <li class="page-item @(Model.PageNumber == i? "disabled" : "")">
                 <a class="page-link" asp-route-pageNumber="@i">@i</a>
             </li>
         }
-        <li class="page-item @(Model.PageData.PageNumber == Model.PageData.NumberOfPages ? "" : "disabled")">
-            <a asp-route-pageNumber="@(Model.PageData.PageNumber + 1)" class="page-link">Next</a>
+        <li class="page-item @(Model.PageNumber +1 < Model.NumberOfPages ? "" : "disabled")">
+            <a asp-route-pageNumber="@(Model.PageNumber + 1)" class="page-link">Next</a>
         </li>
     </ul>
 </nav>

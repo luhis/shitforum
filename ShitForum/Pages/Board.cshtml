@@ -64,6 +64,8 @@
     }
     <hr />
 }
+@await Component.InvokeAsync("Pager", new { pageNumber = Model.Threads.PageData.PageNumber, numberOfPages = Model.Threads.PageData.NumberOfPages })
+
 <h5>Add a new thread</h5>
 
 <div asp-validation-summary="All"></div>
