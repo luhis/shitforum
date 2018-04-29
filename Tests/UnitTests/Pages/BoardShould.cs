@@ -60,7 +60,7 @@ namespace UnitTests.Pages
         {
             var boardId = Guid.NewGuid();
 
-            this.threadService.Setup(a => a.GetOrderedThreads("bee", Option.None<string>(), 100, 0)).Returns(
+            this.threadService.Setup(a => a.GetOrderedThreads("bee", Option.None<string>(), 100, 1)).Returns(
                 Task.FromResult(Option.Some(
                     new ThreadOverViewSet(
                         new Board(boardId, "random", "bee"),
@@ -82,7 +82,7 @@ namespace UnitTests.Pages
             this.cookieStorage.Setup(a => a.SetNameCookie(It.IsAny<HttpResponse>(), "Matt"));
             this.getIp.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
             this.postService.Setup(a => a.AddThread(It.IsAny<Guid>(), It.IsAny<Guid>(), boardId, "subject", It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IIpHash>(), Option.None<File>())).Returns(Task.FromResult<OneOf<Success, Banned>>(new Success()));
-            this.threadService.Setup(a => a.GetOrderedThreads("bee", Option.None<string>(), 100, 0))
+            this.threadService.Setup(a => a.GetOrderedThreads("bee", Option.None<string>(), 100, 1))
                 .Returns(Task.FromResult(Option.Some(new ThreadOverViewSet(new Board(boardId, "bbbb", "b"), new List<ThreadOverView>(), new PageData(1, 11)))));
             this.bannedImageLogger.Setup(a => a.Log(null, IPAddress.Loopback, It.IsAny<IIpHash>()));
 
@@ -100,7 +100,7 @@ namespace UnitTests.Pages
             board.Thread = new AddThread(boardId, "Matt", "sage", "subject", "comment", file.Object);
             this.getIp.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
             this.cookieStorage.Setup(a => a.SetNameCookie(It.IsAny<HttpResponse>(), "Matt"));
-            this.threadService.Setup(a => a.GetOrderedThreads("bee", Option.None<string>(), 100, 0))
+            this.threadService.Setup(a => a.GetOrderedThreads("bee", Option.None<string>(), 100, 1))
                 .Returns(Task.FromResult(Option.Some(new ThreadOverViewSet(new Board(boardId, "bbbb", "b"), new List<ThreadOverView>(), new PageData(1, 11)))));
             this.bannedImageLogger.Setup(a => a.Log(null, IPAddress.Loopback, It.IsAny<IIpHash>()));
             this.postService.Setup(a => 
@@ -122,7 +122,7 @@ namespace UnitTests.Pages
             board.ModelState.AddModelError("file", "blah");
 
             this.getIp.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
-            this.threadService.Setup(a => a.GetOrderedThreads("bee", Option.None<string>(), 100, 0)).Returns(
+            this.threadService.Setup(a => a.GetOrderedThreads("bee", Option.None<string>(), 100, 1)).Returns(
                Task.FromResult(Option.Some(
                    new ThreadOverViewSet(
                        new Board(boardId, "random", "bee"),

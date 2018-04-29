@@ -4,7 +4,6 @@ using ShitForum.Pages;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Domain;
 using Xunit;
 using Microsoft.AspNetCore.Http;
 using ShitForum.Models;
@@ -67,7 +66,7 @@ namespace UnitTests.Pages
                 Task.FromResult(Option.Some(new ThreadDetailView(threadId, "subject", new BoardOverView(boardId, "random", "bee"), new List<PostOverView>() {
                     new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", Option.None<Domain.File>()) }))));
             this.cookieStorage.Setup(a => a.ReadName(It.IsAny<HttpRequest>())).Returns("Matt");
-            thread.OnGet("bee", Guid.NewGuid(), Guid.NewGuid()).Wait();
+            thread.OnGet("bee", threadId, Guid.NewGuid()).Wait();
 
             this.repo.VerifyAll();
         }
