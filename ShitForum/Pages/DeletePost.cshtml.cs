@@ -14,7 +14,7 @@ namespace ShitForum.Pages
     public class DeletePostModel : PageModel
     {
         private readonly IPostService postService;
-        public PostDetailView Post { get; private set; }
+        public PostContextView Post { get; private set; }
 
         public DeletePostModel(IPostService postService)
         {

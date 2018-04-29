@@ -32,17 +32,7 @@
             }
         </div>
     </div>
-    <div class="media post rounded">
-        @if (post.File.HasValue)
-        {
-            <a asp-controller="Images" asp-action="GetPostImage" asp-route-id="@post.Id">
-                <img class="m-3" src="@Url.Action("GetPostThumbnail", "Images", new {id = post.Id})" />
-            </a>
-        }
-        <div class="media-body">
-            <p class="post-comment">@post.Comment</p>
-        </div>
-    </div>
+    <vc:post-view p="post"/>
 }
 
 <hr />

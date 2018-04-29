@@ -7,13 +7,14 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-page="Index">Home</a></li>
-        <li class="breadcrumb-item"><a asp-page="Board" asp-route-id="@Model.Post.Board.BoardId">@Model.Post.Board.BoardName</a></li>
-        <li class="breadcrumb-item"><a asp-page="Thread" asp-route-id="@Model.Post.ThreadId">@Model.Post.ThreadId</a></li>
-        <li class="breadcrumb-item active" aria-current="page">@Model.Post.Id</li>
+        <li class="breadcrumb-item"><a asp-page="Board" asp-route-boardKey="@Model.Post.Board.BoardKey">@Model.Post.Board.BoardName</a></li>
+        <li class="breadcrumb-item"><a asp-page="Thread" asp-route-boardKey="@Model.Post.Board.BoardKey" asp-route-threadId="@Model.Post.ThreadId">@Model.Post.ThreadId</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Post.Post.Id</li>
     </ol>
 </nav>
 
 <h2>Ban User</h2>
+<vc:post-view p="Model.Post.Post" />
 
 <form method="post">
     <div class="form-group">

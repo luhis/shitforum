@@ -28,7 +28,7 @@ namespace ShitForum.Pages
         [BindProperty]
         public DateTime Expiry { get; set; }
 
-        public PostDetailView Post { get; private set; }
+        public PostContextView Post { get; private set; }
 
         public async Task<IActionResult> OnGet(Guid id)
         {

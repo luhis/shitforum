@@ -52,20 +52,15 @@
     </div>
     @foreach (var p in thread.FinalPosts)
     {
-        <div class="media post rounded mb-2">
-            @if (p.File.HasValue)
-            {
-                <img class="m-3" src="@Url.Action("GetPostThumbnail", "Images", new {id = p.Id})" />
-            }
-            <div class="media-body">
-                <p class="post-comment">@p.Comment</p>
-            </div>
+        <div class="row">
+            <div class="col"></div>
         </div>
+        <vc:post-view p="p" />
     }
     <hr />
 }
-@await Component.InvokeAsync("Pager", new { pageNumber = Model.Threads.PageData.PageNumber, numberOfPages = Model.Threads.PageData.NumberOfPages })
 
+<vc:pager number-of-pages="Model.Threads.PageData.NumberOfPages" page-number="Model.Threads.PageData.PageNumber" />
 <h5>Add a new thread</h5>
 
 <div asp-validation-summary="All"></div>

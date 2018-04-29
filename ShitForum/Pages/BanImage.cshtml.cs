@@ -23,7 +23,7 @@ namespace ShitForum.Pages
         }
 
         [BindProperty] public string Reason { get; set; }
-        public PostDetailView Post { get; private set; }
+        public PostContextView Post { get; private set; }
 
         public async Task<IActionResult> OnGet(Guid id)
         {

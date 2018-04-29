@@ -68,7 +68,7 @@ namespace ShitForum.Pages
 
         [Recaptcha]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OnPostAsync(string boardKey, string filter)
+        public async Task<IActionResult> OnPostAsync(string boardKey, string filter, int pageNumber = 1)
         {
             var ip = this.getIp.GetIp(this.Request);
             var ipHash = this.ipHasher.Hash(ip);
@@ -77,7 +77,7 @@ namespace ShitForum.Pages
 
             var filterOption = NullableMapper.ToOption(filter);
 
-            var t = await this.threadService.GetOrderedThreads(boardKey, filterOption, 100, 0);
+            var t = await this.threadService.GetOrderedThreads(boardKey, filterOption, 100, pageNumber);
             return await t.Match(async threads =>
             {
                 if (!ModelState.IsValid)

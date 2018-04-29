@@ -73,9 +73,9 @@ namespace Services
             return new Success();
         }
 
-        async Task<Option<PostDetailView>> IPostService.GetById(Guid id)
+        async Task<Option<PostContextView>> IPostService.GetById(Guid id)
         {
-            Func<Task<Option<PostDetailView>>> noneRes = () => Task.FromResult(Option.None<PostDetailView>());
+            Func<Task<Option<PostContextView>>> noneRes = () => Task.FromResult(Option.None<PostContextView>());
             var post = await this.postRepository.GetById(id);
 
             return await post.Match(async some =>
@@ -84,9 +84,11 @@ namespace Services
                 return await t.Match(async thread =>
                 {
                     var b = await this.boardRepository.GetById(thread.BoardId);
+                    var file = await this.fileRepository.GetPostFile(some.Id);
                     return b.Match(
-                        board => Option.Some(new PostDetailView(some.Id, thread.Id, thread.Subject, new BoardOverView(board.Id, board.BoardName, board.BoardKey), some.Comment)),
-                        Option.None<PostDetailView>);
+                        board => 
+                        Option.Some(new PostContextView(thread.Id, thread.Subject, new BoardOverView(board.Id, board.BoardName, board.BoardKey), PostMapper.Map(some, file))),
+                        Option.None<PostContextView>);
                 }, noneRes);
             }, noneRes);
         }
