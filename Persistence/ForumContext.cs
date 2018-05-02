@@ -16,7 +16,7 @@ namespace Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=forum.db");
+            optionsBuilder.UseSqlite("Data Source=../shitForum.db");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -31,6 +31,7 @@ namespace Persistence
 
         public async Task SeedData()
         {
+            await this.Database.MigrateAsync();
             if (!await this.Boards.AnyAsync())
             {
                 this.Boards.Add(new Board(new System.Guid("1f5f47db-dd27-4b58-9229-4ae72829621e"), "Random", "b"));

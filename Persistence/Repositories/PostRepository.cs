@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Domain;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Optional;
 
 namespace Persistence.Repositories
@@ -11,16 +12,27 @@ namespace Persistence.Repositories
     public class PostRepository : IPostRepository
     {
         private readonly ForumContext client;
+        private readonly ILogger<PostRepository> logger;
 
-        public PostRepository(ForumContext client)
+        public PostRepository(ForumContext client, ILogger<PostRepository> logger)
         {
             this.client = client;
+            this.logger = logger;
         }
 
-        Task IPostRepository.Add(Post post)
+        async Task IPostRepository.Add(Post post)
         {
             this.client.Add(post);
-            return this.client.SaveChangesAsync();
+            try
+            {
+                await this.client.SaveChangesAsync();
+            }
+            catch(Exception e)
+            {
+                logger.LogError(e, "Error saving outer: " + e.Message);
+                logger.LogError(e, "Error saving inner: " + e.InnerException.Message);
+                throw e;
+            }
         }
 
         IQueryable<Post> IPostRepository.GetAll()

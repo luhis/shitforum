@@ -5,6 +5,7 @@
 
 appsettings.*.json
 *.db
+*.7z
 *.min.js
 *.min.css
 
