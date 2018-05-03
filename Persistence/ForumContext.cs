@@ -7,6 +7,13 @@ namespace Persistence
 {
     public class ForumContext : DbContext
     {
+        private readonly string DbLocation;
+
+        public ForumContext(IShitForumDbConfig config)
+        {
+            this.DbLocation = config.DbLocation;
+        }
+
         public DbSet<Board> Boards { get; private set; }
         public DbSet<Thread> Threads { get; private set; }
         public DbSet<Post> Posts { get; private set; }
@@ -16,7 +23,7 @@ namespace Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=../shitForum.db");
+            optionsBuilder.UseSqlite($"Data Source={DbLocation}");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

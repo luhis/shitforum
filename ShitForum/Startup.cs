@@ -15,11 +15,8 @@ namespace ShitForum
     {
         public Startup(IConfiguration configuration, ILogger<Startup> logger)
         {
-            this.Configuration = configuration;
             logger.LogInformation($"Starting up ShitForum {DateTime.UtcNow}");
         }
-
-        private IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -51,7 +48,7 @@ namespace ShitForum
         {
             if (env.IsDevelopment())
             {
-                app.UseBrowserLink();
+                /////app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
             }
             else

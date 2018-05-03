@@ -13,7 +13,7 @@ namespace IntegrationTests
 
         public BoardRepositoryShould()
         {
-            var cf = new ForumContext();
+            var cf = new ForumContext(new Config("../ShitForum.db"));
             this.boards = new BoardRepository(cf);
         }
 
