@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
-namespace ShitForum.ViewComponents
+namespace ShitForum.ViewComponents.Models
 {
-
     public class PagerViewModel
     {
         public PagerViewModel(int pageNumber, IReadOnlyList<int> pagesToShow, int numberOfPages)

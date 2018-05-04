@@ -13,13 +13,12 @@
     </ol>
 </nav>
 
-
 @foreach (var post in Model.Thread.Posts)
 {
     <div class="row">
         <div class="col">
             @post.Name
-            @post.Created
+            <vc:date-time-view p="post" />
             No. <a asp-route-id="@Model.Thread.ThreadId" asp-route-replyto="@post.Id">@post.Id</a>
             @if (Model.IsAdmin)
             {
@@ -33,7 +32,7 @@
             }
         </div>
     </div>
-    <vc:post-view p="post"/>
+    <vc:post-view p="post" />
 }
 
 <hr />

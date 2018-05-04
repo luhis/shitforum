@@ -25,7 +25,7 @@
     <div class="row">
         <div class="col">
             @thread.OP.Name
-            @thread.OP.Created
+            <vc:date-time-view p="thread.OP" />
             No. <a asp-page="Thread" asp-route-boardKey="@Model.Threads.Board.BoardKey" asp-route-threadId="@thread.ThreadId" asp-route-subject="@thread.Subject">@thread.ThreadId</a>
         </div>
     </div>

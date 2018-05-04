@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+using ShitForum.ViewComponents.Models;
 using System.Linq;
 
 namespace ShitForum.ViewComponents
