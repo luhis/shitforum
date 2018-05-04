@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Domain.IpHash;
@@ -96,5 +97,7 @@ namespace ShitForum.ImageValidation
                 return new Pass();
             }, () => Task.FromResult<ResType>(new Pass()));
         }
+
+        IEnumerable<string> IValidateImage.AllowedExtensions() => new List<string>() { ".jpg", ".png", ".gif" };
     }
 }
