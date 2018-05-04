@@ -19,7 +19,7 @@
         <div class="col">
             @post.Name
             <vc:date-time-view p="post" />
-            No. <a asp-route-id="@Model.Thread.ThreadId" asp-route-replyto="@post.Id">@post.Id</a>
+            No. <a asp-route-id="@Model.Thread.ThreadId" asp-route-replyto="@post.Id"><vc:friendly-guid g="post.Id" /></a>
             @if (Model.IsAdmin)
             {
                 <a asp-route-id="@post.Id" asp-page="DeletePost">[Delete]</a>

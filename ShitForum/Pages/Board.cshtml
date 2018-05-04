@@ -26,7 +26,9 @@
         <div class="col">
             @thread.OP.Name
             <vc:date-time-view p="thread.OP" />
-            No. <a asp-page="Thread" asp-route-boardKey="@Model.Threads.Board.BoardKey" asp-route-threadId="@thread.ThreadId" asp-route-subject="@thread.Subject">@thread.ThreadId</a>
+            No. <a asp-page="Thread" asp-route-boardKey="@Model.Threads.Board.BoardKey" asp-route-threadId="@thread.ThreadId" asp-route-subject="@thread.Subject">
+                <vc:friendly-guid g="thread.ThreadId" />
+            </a>
         </div>
     </div>
     <div class="media">

@@ -1,0 +1,11 @@
+﻿@model System.Guid
+@{ 
+    var s = Model.ToString();
+}
+
+<span class="d-none d-lg-inline">
+    @s
+</span>
+<span class="d-lg-none">
+    @s.Substring(24)
+</span>
