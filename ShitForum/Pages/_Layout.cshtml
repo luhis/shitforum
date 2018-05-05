@@ -1,19 +1,13 @@
 ﻿<!DOCTYPE html>
 @inject ShitForum.SettingsObjects.ForumSettings ForumSettings
-<html>
+<html lang="en-gb">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - @ForumSettings.ForumName</title>
 
-    <environment include="Development">
-        <link rel="stylesheet" href="~/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
-    </environment>
-    <environment exclude="Development">
-        <link rel="stylesheet" href="~/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-    </environment>
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     <script src='https://www.google.com/recaptcha/api.js'></script>
 </head>
 <body>
@@ -40,18 +34,9 @@
         </footer>
     </div>
 
-    <environment include="Development">
-        <script src="~/js/jquery.min.js"></script>
-        <script src="~/js/bootstrap.min.js"></script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
-    </environment>
-    <environment exclude="Development">
-        <script src="~/js/jquery.min.js">
-        </script>
-        <script src="~/js/bootstrap.min.js">
-        </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
-    </environment>
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/site.min.js" asp-append-version="true"></script>
 
     @RenderSection("Scripts", required: false)
 </body>
