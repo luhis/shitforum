@@ -120,13 +120,20 @@ namespace UnitTests
         [Fact]
         public void GetById()
         {
-
+            var id = Guid.NewGuid();
+            this.postRepository.Setup(a => a.GetById(id)).Returns(Task.FromResult(Option.Some(new Post())));
+            this.ps.GetById(id);
+            this.repo.VerifyAll();
         }
 
         [Fact]
         public void Delete()
         {
+            var id = Guid.NewGuid();
+            this.postRepository.Setup(a => a.GetById(id)).Returns(Task.FromResult(Option.Some(new Post())));
 
+            this.ps.DeletePost(id);
+            this.repo.VerifyAll();
         }
     }
 }
