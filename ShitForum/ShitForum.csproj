@@ -17,6 +17,11 @@
     <Content Remove="NuGet.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="create-publish.bat" />
+    <None Remove="publish.7z" />
+    <None Remove="shitForum.db" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="2.6.375" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.0.3" />

@@ -45,7 +45,7 @@
   {
     "outputFileName": "wwwroot/js/jquery.min.js",
     "inputFiles": [
-      "node_modules/jquery/dist/jquery.js"
+      "node_modules/jquery/dist/jquery.slim.js"
     ],
     // Optionally specify minification options
     "minify": {
