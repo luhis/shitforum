@@ -99,11 +99,11 @@ namespace ShitForum.Pages
                             this.cookieStorage.SetNameCookie(this.Response, this.Post.Name);
                             if (options.NoNoko)
                             {
-                                return RedirectToPage("Board", new {id = thread.Board.BoardId});
+                                return RedirectToPage("Board", new {boardKey = thread.Board.BoardKey});
                             }
                             else
                             {
-                                return RedirectToPage("Thread", new { id = this.Post.ThreadId }).ToIAR();
+                                return RedirectToPage("Thread", new { boardKey = thread.Board.BoardKey, threadId = this.Post.ThreadId }).ToIAR();
                             }
                         },
                         _ => RedirectToPage("Banned").ToIAR(),

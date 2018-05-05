@@ -39,7 +39,7 @@ namespace ShitForum.Pages
             return await p.Match(async post =>
             {
                 await postService.DeletePost(id);
-                return new RedirectToPageResult("Thread", new { id = post.ThreadId }).ToIAR();
+                return new RedirectToPageResult("Thread", new { boardKey = post.Board.BoardKey, threadId = post.ThreadId }).ToIAR();
             }, () => new StatusCodeResult(StatusCodes.Status500InternalServerError).ToIART());
         }
     }
