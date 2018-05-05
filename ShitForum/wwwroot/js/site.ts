@@ -1,4 +1,15 @@
-﻿function onSubmit()
+﻿
+var v = new aspnetValidation.ValidationService();
+v.bootstrap();
+
+function onSubmit(a)
 {
-	document.getElementById("post-form").submit();
+	
 }
+
+function onSubmitClick() {
+	grecaptcha.execute();
+	$("#post-form").submit();
+}
+
+document.getElementById("submit").onclick = onSubmitClick;

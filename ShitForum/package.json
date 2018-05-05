@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "aspnet-validation": "^0.0.4",
     "bootstrap": "^4.0.0",
     "jquery": "^3.3.1"
   }

@@ -18,6 +18,7 @@
   {
     "outputFileName": "wwwroot/js/site.min.js",
     "inputFiles": [
+      "node_modules/aspnet-validation/dist/aspnet-validation.min.js",
       "wwwroot/js/site.ts",
       "wwwroot/js/cookies.js"
     ],
