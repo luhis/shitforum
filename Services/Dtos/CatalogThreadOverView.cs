@@ -6,12 +6,12 @@ namespace Services.Dtos
 {
     public sealed class CatalogThreadOverView 
     {
-        public CatalogThreadOverView(Guid threadId, string subject, Board board, PostOverView firstPost)
+        public CatalogThreadOverView(Guid threadId, string subject, Board board, PostOverView op)
         {
             this.ThreadId = EnsureArg.IsNotEmpty(threadId, nameof(threadId));
             Board = EnsureArg.IsNotNull(board, nameof(board));
             Subject = EnsureArg.IsNotNull(subject, nameof(subject));
-            FirstPost = EnsureArg.IsNotNull(firstPost, nameof(firstPost));
+            OP = EnsureArg.IsNotNull(op, nameof(op));
         }
 
         public Guid ThreadId { get; }
@@ -20,6 +20,6 @@ namespace Services.Dtos
 
         public Board Board { get; }
 
-        public PostOverView FirstPost { get; }
+        public PostOverView OP { get; }
     }
 }
