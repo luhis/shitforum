@@ -1,4 +1,10 @@
 ﻿@model System.DateTime
-<span>
-    @(Model.ToString("s"))UTC
+@{
+    var s = Model.ToString("s");
+}
+<span class="d-none d-lg-inline">
+    @(s)UTC
+</span>
+<span class="d-lg-none">
+    @s.Substring(2).Replace("T", " ")
 </span>

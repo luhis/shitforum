@@ -15,7 +15,7 @@
 <div class="row">
     @foreach (var thread in Model.Threads)
     {
-        <div class="col-4">
+        <div class="col-md-4 col-sm-6">
             <div class="card">
                 <a asp-page="Thread" asp-route-threadId="@thread.ThreadId" asp-route-subject="@thread.Subject">
                     <img class="card-img-top" src="@Url.Action("GetPostThumbnail", "Images", new { id = thread.OP.Id })" alt="@thread.Subject">
@@ -25,7 +25,7 @@
                         @thread.Subject
                         @thread.OP.Name
                         <vc:date-time-view p="thread.OP" />
-                        No. <a asp-page="Thread" asp-route-id="@thread.ThreadId"><vc:friendly-guid g="thread.ThreadId" /></a>
+                        No. <a asp-page="Thread" asp-route-threadId="@thread.ThreadId"><vc:friendly-guid g="thread.ThreadId" /></a>
                     </span>
                     <p class="card-text">@thread.OP.Comment</p>
                 </div>
