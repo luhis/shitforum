@@ -1,11 +1,11 @@
 ﻿using Moq;
 using ShitForum.Pages;
 using System;
-using System.Threading.Tasks;
 using Xunit;
 using Services;
 using Optional;
 using Services.Dtos;
+using UnitTests.Tooling;
 
 namespace UnitTests.Pages
 {
@@ -30,11 +30,11 @@ namespace UnitTests.Pages
         {
             var boardId = Guid.NewGuid();
 
-            this.threadService.Setup(a => a.GetOrderedCatalogThreads("bee")).Returns(Task.FromResult(Option.Some(
+            this.threadService.Setup(a => a.GetOrderedCatalogThreads("bee")).ReturnsT(Option.Some(
                 new CatalogThreadOverViewSet(new Domain.Board(boardId, "b", "bbb"), new CatalogThreadOverView[] {
                     new CatalogThreadOverView(Guid.NewGuid(), "subject", new Domain.Board(boardId, "b", "board"), 
-                    new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", Option.None<Domain.File>())) })
-                )));
+                        new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", Option.None<Domain.File>())) })
+            ));
             thread.OnGet("bee").Wait();
 
             this.repo.VerifyAll();
