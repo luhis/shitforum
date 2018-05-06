@@ -73,10 +73,11 @@
     <div class="form-group">Comment: <textarea class="form-control" asp-for="Thread.Comment"></textarea></div>
     <div class="form-group">File: <input class="form-control-file" asp-for="Thread.File" type="file" accept="@string.Join(",", validateImage.AllowedExtensions())" /></div>
     <input asp-for="Thread.BoardId" type="hidden" />
+    <input type="hidden" name="gRecaptchaResponse" id="gRecaptchaResponse" value="" />
     <div class="g-recaptcha"
          data-sitekey="@RecaptchaSettings.PublicKey"
-         data-callback="onSubmit"
+         data-callback="SubmitRegistration"
          data-size="invisible">
     </div>
-    <input id="submit" type="submit" class="btn btn-primary" value="Post"/>
+    <input id="SubmitButton" type="submit" class="btn btn-primary" value="Post" />
 </form>
