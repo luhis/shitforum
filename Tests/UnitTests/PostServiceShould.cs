@@ -132,6 +132,52 @@ namespace UnitTests
 
             var r = this.ps.GetById(postId).Result;
             r.Should().NotBeNull();
+            r.HasValue.Should().BeTrue();
+            this.repo.VerifyAll();
+        }
+
+        [Fact]
+        public void NotGetByIdWhenBoardNotFound()
+        {
+            var postId = Guid.NewGuid();
+            var threadId = Guid.NewGuid();
+            var boardId = Guid.NewGuid();
+            this.postRepository.Setup(a => a.GetById(postId)).ReturnsT(Option.Some(
+                new Post(postId, threadId, DateTime.UtcNow, "matt", "comment", false, "::0")));
+            this.threadRepository.Setup(a => a.GetById(threadId)).ReturnsT(Option.Some(new Thread(threadId, boardId, "")));
+            this.boardRepository.Setup(a => a.GetById(boardId)).ReturnsT(Option.None<Board>());
+            this.fileRepository.Setup(a => a.GetPostFile(postId)).ReturnsT(Option.Some(new File()));
+
+            var r = this.ps.GetById(postId).Result;
+            r.Should().NotBeNull();
+            r.HasValue.Should().BeFalse();
+            this.repo.VerifyAll();
+        }
+
+        [Fact]
+        public void NotGetByIdWhenThreadNotFound()
+        {
+            var postId = Guid.NewGuid();
+            var threadId = Guid.NewGuid();
+            this.postRepository.Setup(a => a.GetById(postId)).ReturnsT(Option.Some(
+                new Post(postId, threadId, DateTime.UtcNow, "matt", "comment", false, "::0")));
+            this.threadRepository.Setup(a => a.GetById(threadId)).ReturnsT(Option.None<Thread>());
+
+            var r = this.ps.GetById(postId).Result;
+            r.Should().NotBeNull();
+            r.HasValue.Should().BeFalse();
+            this.repo.VerifyAll();
+        }
+
+        [Fact]
+        public void NotGetByIdWhenPostNotFound()
+        {
+            var postId = Guid.NewGuid();
+            this.postRepository.Setup(a => a.GetById(postId)).ReturnsT(Option.None<Post>());
+
+            var r = this.ps.GetById(postId).Result;
+            r.Should().NotBeNull();
+            r.HasValue.Should().BeFalse();
             this.repo.VerifyAll();
         }
 
