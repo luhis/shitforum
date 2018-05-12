@@ -32,7 +32,7 @@ namespace ShitForum.Pages
         {
             Task<IActionResult> Func()
             {
-                this.Model = new AdminViewModel("", Option.None<IReadOnlyList<BannedImage>>(), Option.None<IReadOnlyList<BannedIp>>());
+                this.Model = new AdminViewModel("", false, new List<BannedImage>(), new List<BannedIp>());
                 return Page().ToIART();
             }
 
@@ -42,7 +42,7 @@ namespace ShitForum.Pages
                 var res = adminSettings.IsValid(some);
                 return res.Match(async _ =>
                 {
-                    this.Model = new AdminViewModel("You are already logged in", Option.Some(await fileService.GetAllBannedImages()), Option.Some(await this.userService.GetAllBans()));
+                    this.Model = new AdminViewModel("You are already logged in", true, await fileService.GetAllBannedImages(), await this.userService.GetAllBans());
                     return Page().ToIAR();
                 }, Func);
             }, Func);
@@ -56,7 +56,7 @@ namespace ShitForum.Pages
             return res.Match(async success =>
             {
                 var (_, key) = success;
-                this.Model = new AdminViewModel("You are now logged in", Option.Some(await fileService.GetAllBannedImages()), Option.Some(await this.userService.GetAllBans()));
+                this.Model = new AdminViewModel("You are now logged in", true, await fileService.GetAllBannedImages(), await this.userService.GetAllBans());
                 cookieStorage.SetAdminCookie(this.HttpContext.Response, key);
                 return Page().ToIAR();
             }, () =>

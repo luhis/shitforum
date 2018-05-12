@@ -17,3 +17,24 @@
     <input name="key" placeholder="Key" />
     <input class="btn btn-primary" type="submit" />
 </form>
+
+@if (Model.Model.IsAdmin)
+{
+    <div class="row"><div class="col">Banned IPs - @Model.Model.BannedUsers.Count</div></div>
+    foreach (var a in Model.Model.BannedUsers)
+    {
+        <div class="row">
+            <div class="col-4">@a.IpHash</div>
+            <div class="col-4">@a.Expiry</div>
+            <div class="col-4">@a.Reason</div>
+        </div>
+    }
+    <div class="row"><div class="col">Banned Images - @Model.Model.BannedImages.Count</div></div>
+    foreach (var a in Model.Model.BannedImages)
+    {
+        <div class="row">
+            <div class="col-6">@a.Hash</div>
+            <div class="col-6">@a.Reason</div>
+        </div>
+    }
+}
