@@ -55,7 +55,7 @@ namespace ShitForum.Pages
         public async Task<IActionResult> OnGet(string boardKey, Guid threadId, Guid replyTo)
         {
             EnsureArg.IsNotEmpty(threadId, nameof(threadId));
-            var t = await this.threadService.GetThread(threadId).ConfigureAwait(false);
+            var t = await this.threadService.GetThread(threadId, Constants.PageSize).ConfigureAwait(false);
             return t.Match(thread =>
             {
                 this.IsAdmin = this.isAdmin.IsAdmin(this.HttpContext);
@@ -76,7 +76,7 @@ namespace ShitForum.Pages
             var key = $"{nameof(this.Post)}.{nameof(this.Post.File)}";
             this.bannedImageLogger.Log(this.ModelState[key], ip, ipHash);
 
-            var t = await this.threadService.GetThread(this.Post.ThreadId).ConfigureAwait(false);
+            var t = await this.threadService.GetThread(this.Post.ThreadId, Constants.PageSize).ConfigureAwait(false);
             return await t.Match(async thread =>
             {
                 if (!this.ModelState.IsValid)

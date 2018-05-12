@@ -77,7 +77,7 @@ namespace ShitForum.Pages
 
             var filterOption = NullableMapper.ToOption(filter);
 
-            var t = await this.threadService.GetOrderedThreads(boardKey, filterOption, 100, pageNumber);
+            var t = await this.threadService.GetOrderedThreads(boardKey, filterOption, Constants.PageSize, pageNumber);
             return await t.Match(async threads =>
             {
                 if (!ModelState.IsValid)

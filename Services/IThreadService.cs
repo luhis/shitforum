@@ -11,6 +11,6 @@ namespace Services
 
         Task<Option<CatalogThreadOverViewSet>> GetOrderedCatalogThreads(string boardKey);
 
-        Task<Option<ThreadDetailView>> GetThread(Guid threadId);
+        Task<Option<ThreadDetailView>> GetThread(Guid threadId, int pageSize);
     }
 }

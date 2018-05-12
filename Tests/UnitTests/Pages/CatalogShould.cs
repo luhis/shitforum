@@ -33,7 +33,7 @@ namespace UnitTests.Pages
             this.threadService.Setup(a => a.GetOrderedCatalogThreads("bee")).ReturnsT(Option.Some(
                 new CatalogThreadOverViewSet(new Domain.Board(boardId, "b", "bbb"), new CatalogThreadOverView[] {
                     new CatalogThreadOverView(Guid.NewGuid(), "subject", new Domain.Board(boardId, "b", "board"), 
-                        new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "comment", Option.None<Domain.File>())) })
+                        new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "IP", "comment", Option.None<Domain.File>())) })
             ));
             thread.OnGet("bee").Wait();
 

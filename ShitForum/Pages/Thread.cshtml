@@ -12,6 +12,19 @@
         <li class="breadcrumb-item active" aria-current="page">@Model.Thread.ThreadId - @Model.Thread.Subject</li>
     </ol>
 </nav>
+<hr />
+<div class="row">
+    <div class="col">
+        <span>[<a asp-page="Board" asp-route-id="@Model.Thread.Board.BoardId">Board</a>]</span>
+        <span>[<a asp-page="Catalog" asp-route-id="@Model.Thread.Board.BoardId">Catalog</a>]</span>
+    </div>
+    <div class="col">
+        <div class="float-right">
+            @($"{Model.Thread.Stats.Replies} / {Model.Thread.Stats.Images} / {Model.Thread.Stats.Posters} / {Model.Thread.Stats.Page}")
+        </div>
+    </div>
+</div>
+<hr />
 
 @foreach (var post in Model.Thread.Posts)
 {

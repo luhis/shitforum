@@ -39,12 +39,13 @@ namespace UnitTests
             var threadId = Guid.NewGuid();
             var boardId = Guid.NewGuid();
             var postId = Guid.NewGuid();
+            this.threadRepository.Setup(a => a.GetAll()).Returns(new TestAsyncEnumerable<Thread>(new Thread[] { new Thread(threadId, boardId, "subject"),  }));
             this.threadRepository.Setup(a => a.GetById(threadId)).ReturnsT(Option.Some(new Thread(threadId, boardId, "my thread")));
             this.postRepository.Setup(a => a.GetAll()).Returns(new TestAsyncEnumerable<Post>(new Domain.Post[] { new Domain.Post(postId, threadId, DateTime.UtcNow, "name", "comment", false, "") }));
             this.boardRepository.Setup(a => a.GetById(boardId)).ReturnsT(Option.Some(new Board(boardId, "b", "bbb")));
             this.fileRepository.Setup(a => a.GetPostFile(postId)).ReturnsT(Option.Some(new File()));
 
-            var r = ts.GetThread(threadId).Result;
+            var r = ts.GetThread(threadId, 100).Result;
 
             r.Should().NotBeNull();
             r.HasValue.Should().BeTrue();
@@ -60,8 +61,7 @@ namespace UnitTests
             this.threadRepository.Setup(a => a.GetById(threadId)).ReturnsT(Option.Some(new Thread(threadId, boardId, "my thread")));
             this.postRepository.Setup(a => a.GetAll()).Returns(new TestAsyncEnumerable<Post>(new Domain.Post[] { new Domain.Post(postId, threadId, DateTime.UtcNow, "name", "comment", false, "") }));
             this.boardRepository.Setup(a => a.GetById(boardId)).ReturnsT(Option.None<Board>());
-            this.fileRepository.Setup(a => a.GetPostFile(postId)).ReturnsT(Option.Some(new File()));
-            var r = ts.GetThread(threadId).Result;
+            var r = ts.GetThread(threadId, 100).Result;
             r.Should().NotBeNull();
             r.HasValue.Should().BeFalse();
             repo.VerifyAll();
