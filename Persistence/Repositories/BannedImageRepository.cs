@@ -22,7 +22,7 @@ namespace Persistence.Repositories
             return this.client.SaveChangesAsync();
         }
 
-        public Task<IReadOnlyList<BannedImage>> GetAll()
+        Task<IReadOnlyList<BannedImage>> IBannedImageRepository.GetAll()
         {
             return this.client.BannedImages.ToReadOnlyAsync();
         }

@@ -1,10 +1,5 @@
-﻿using System.Collections.Generic;
-using Domain;
-using EnsureThat;
-
-namespace Services.Dtos
+﻿namespace Services.Dtos
 {
-
     public class PageData
     {
         public PageData(int pageNumber, int numberOfPages)

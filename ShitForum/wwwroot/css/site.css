@@ -36,3 +36,7 @@ body {
     padding-top: 1rem;
     padding-bottom: 1rem;
 }
+
+.post-comment {
+    white-space: pre-wrap;
+}
