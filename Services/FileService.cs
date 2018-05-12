@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain;
 using Domain.Repositories;
@@ -25,6 +26,11 @@ namespace Services
         Task IFileService.BanImage(ImageHash imageHash, string reason)
         {
             return this.bannedImageRepository.Ban(imageHash, reason);
+        }
+
+        Task<IReadOnlyList<BannedImage>> IFileService.GetAllBannedImages()
+        {
+            return this.bannedImageRepository.GetAll();
         }
     }
 }

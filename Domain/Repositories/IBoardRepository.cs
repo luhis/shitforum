@@ -7,8 +7,10 @@ namespace Domain.Repositories
 {
     public interface IBoardRepository
     {
-        Task<IEnumerable<Board>> GetAll();
+        Task<IReadOnlyList<Board>> GetAll();
+
         Task<Option<Board>> GetById(Guid boardId);
+
         Task<Option<Board>> GetByKey(string key);
     }
 }

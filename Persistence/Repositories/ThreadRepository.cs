@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Domain;
 using Domain.Repositories;
-using Microsoft.EntityFrameworkCore;
 using Optional;
 
 namespace Persistence.Repositories
@@ -23,10 +22,9 @@ namespace Persistence.Repositories
             return this.client.SaveChangesAsync();
         }
 
-        async Task<Option<Thread>> IThreadRepository.GetById(Guid threadId)
+        Task<Option<Thread>> IThreadRepository.GetById(Guid threadId)
         {
-            var r = await this.client.Threads.Where(a => a.Id == threadId).SingleOrDefaultAsync();
-            return r == null ? Option.None<Thread>(): Option.Some(r);
+            return this.client.Threads.SingleOrNone(a => a.Id == threadId);
         }
 
         IQueryable<Thread> IThreadRepository.GetAll()

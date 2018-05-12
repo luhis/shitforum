@@ -31,7 +31,7 @@ namespace Persistence.Repositories
             {
                 logger.LogError(e, "Error saving outer: " + e.Message);
                 logger.LogError(e, "Error saving inner: " + e.InnerException.Message);
-                throw e;
+                throw;
             }
         }
 
@@ -40,10 +40,9 @@ namespace Persistence.Repositories
             return this.client.Posts;
         }
 
-        async Task<Option<Post>> IPostRepository.GetById(Guid postId)
+        Task<Option<Post>> IPostRepository.GetById(Guid postId)
         {
-            var r = await this.client.Posts.Where(a => a.Id == postId).SingleOrDefaultAsync();
-            return r == null ? Option.None<Post>() : Option.Some(r);
+            return this.client.Posts.SingleOrNone(a => a.Id == postId);
         }
 
         Task<int> IPostRepository.GetThreadPostCount(Guid threadId)

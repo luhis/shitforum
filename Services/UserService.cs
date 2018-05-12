@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Domain;
 using Domain.IpHash;
 using Domain.Repositories;
 using Optional;
@@ -27,6 +29,11 @@ namespace Services
             var post = await this.postRepository.GetById(postId);
                 
             return post.Match(some => Option.Some<IIpHash>(new IpHash(some.IpAddress)), Option.None<IIpHash>);
+        }
+
+        Task<IReadOnlyList<BannedIp>> IUserService.GetAllBans()
+        {
+            return this.bannedIpRepository.GetAll();
         }
     }
 }

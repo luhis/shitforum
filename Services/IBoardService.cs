@@ -6,6 +6,6 @@ namespace Services
 {
     public interface IBoardService
     {
-        Task<IEnumerable<Board>> GetAll();
+        Task<IReadOnlyList<Board>> GetAll();
     }
 }

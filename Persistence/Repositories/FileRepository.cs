@@ -18,11 +18,11 @@ namespace Persistence.Repositories
             this.client = client;
         }
 
-        async Task IFileRepository.Add(File file)
+        Task IFileRepository.Add(File file)
         {
             EnsureArg.IsNotNull(file, nameof(file));
             this.client.Files.Add(file);
-            await client.SaveChangesAsync();
+            return client.SaveChangesAsync();
         }
 
         Task<int> IFileRepository.GetImageCount(Guid threadId)
@@ -32,10 +32,9 @@ namespace Persistence.Repositories
             return client.Files.CountAsync(a => posts.Contains(a.Id));
         }
 
-        async Task<Option<File>> IFileRepository.GetPostFile(Guid postId)
+        Task<Option<File>> IFileRepository.GetPostFile(Guid postId)
         {
-            var f = await client.Files.SingleOrDefaultAsync(a => a.Id == postId);
-            return f != null ? Option.Some(f) : Option.None<File>();
+            return client.Files.SingleOrNone(a => a.Id == postId);
         }
     }
 }

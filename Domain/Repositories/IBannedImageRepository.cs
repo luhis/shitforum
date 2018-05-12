@@ -1,4 +1,4 @@
-﻿
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Domain.Repositories
@@ -8,5 +8,7 @@ namespace Domain.Repositories
         Task<bool> IsBanned(ImageHash hash);
 
         Task Ban(ImageHash hash, string reason);
+
+        Task<IReadOnlyList<BannedImage>> GetAll();
     }
 }

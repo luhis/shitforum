@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain;
 using Domain.IpHash;
@@ -22,9 +23,14 @@ namespace Persistence.Repositories
             return this.client.SaveChangesAsync();
         }
 
+        Task<IReadOnlyList<BannedIp>> IBannedIpRepository.GetAll()
+        {
+            return this.client.BannedIp.ToReadOnlyAsync();
+        }
+
         Task<bool> IBannedIpRepository.IsBanned(IIpHash hash)
         {
-            return this.client.BannedImages.AnyAsync(a => a.Hash == hash.Val);
+            return this.client.BannedIp.AnyAsync(a => a.IpHash == hash.Val);
         }
     }
 }

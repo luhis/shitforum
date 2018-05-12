@@ -14,7 +14,7 @@ namespace Services
             this.boardRepository = boardRepository;
         }
 
-        Task<IEnumerable<Board>> IBoardService.GetAll()
+        Task<IReadOnlyList<Board>> IBoardService.GetAll()
         {
             return this.boardRepository.GetAll();
         }

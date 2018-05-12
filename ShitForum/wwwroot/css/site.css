@@ -27,7 +27,6 @@ body {
     }
 }
 
-
 .post {
     background-color: #e9ecef;
 }
@@ -36,8 +35,4 @@ body {
     margin-bottom: 1rem;
     padding-top: 1rem;
     padding-bottom: 1rem;
-}
-
-.post-comment {
-    white-space: pre;
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain;
 using Domain.Repositories;
@@ -19,6 +20,11 @@ namespace Persistence.Repositories
         {
             this.client.BannedImages.Add(new BannedImage(Guid.NewGuid(), hash.Val, reason));
             return this.client.SaveChangesAsync();
+        }
+
+        public Task<IReadOnlyList<BannedImage>> GetAll()
+        {
+            return this.client.BannedImages.ToReadOnlyAsync();
         }
 
         Task<bool> IBannedImageRepository.IsBanned(ImageHash hash)
