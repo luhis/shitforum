@@ -1,7 +1,7 @@
 ﻿@page "{boardKey}"
 @model ShitForum.Pages.BoardModel
 @inject ReCaptchaCore.RecaptchaSettings RecaptchaSettings
-@inject ImageValidation.IValidateImage validateImage
+@inject ImageValidation.IValidateImage ValidateImage
 @{
     ViewData["Title"] = "Board";
 }
@@ -48,7 +48,7 @@
     </div>
     <div class="row">
         <div class="col">
-            @($"{thread.PostCount} replies and {thread.ImageCount} images omitted.")
+            @($"{thread.Stats.PostCount} replies and {thread.Stats.ImageCount} images omitted.")
             <a asp-page="Thread" asp-route-boardKey="@Model.Threads.Board.BoardKey" asp-route-threadId="@thread.ThreadId">Click here</a> to view.
         </div>
     </div>
@@ -71,7 +71,7 @@
     <div class="form-group">Options: <input class="form-control" asp-for="Thread.Options" /></div>
     <div class="form-group">Subject: <input class="form-control" asp-for="Thread.Subject" /></div>
     <div class="form-group">Comment: <textarea class="form-control" asp-for="Thread.Comment"></textarea></div>
-    <div class="form-group">File: <input class="form-control-file" asp-for="Thread.File" type="file" accept="@string.Join(",", validateImage.AllowedExtensions())" /></div>
+    <div class="form-group">File: <input class="form-control-file" asp-for="Thread.File" type="file" accept="@string.Join(",", ValidateImage.AllowedExtensions())" /></div>
     <input asp-for="Thread.BoardId" type="hidden" />
     <button class="btn btn-primary g-recaptcha" data-callback="onSubmit" data-sitekey="@RecaptchaSettings.PublicKey">
         Post

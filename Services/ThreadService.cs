@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Domain;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Optional;
@@ -18,9 +17,9 @@ namespace Services
         private readonly IPostRepository postRepository;
 
         public ThreadService(
-            IThreadRepository threadRepository, 
-            IPostRepository postRepository, 
-            IFileRepository filesRepository, 
+            IThreadRepository threadRepository,
+            IPostRepository postRepository,
+            IFileRepository filesRepository,
             IBoardRepository boardRepository)
         {
             this.threadRepository = threadRepository;
@@ -71,10 +70,9 @@ namespace Services
                         var file = await this.fileRepository.GetPostFile(p.Id);
                         return PostMapper.Map(p, file);
                     }))).OrderBy(a => a.Created).ToList();
-                    var shownPosts = lastPosts.Concat(new[] { firstPost });
-                    var postCount = posts.Count() - shownPosts.Count();
-                    var imageCount = (await this.fileRepository.GetImageCount(thread.Id)) - shownPosts.Count(p => p.File.HasValue);
-                    return new ThreadOverView(thread.Id, thread.Subject, firstPost, lastPosts, postCount, imageCount);
+                    var shownPosts = lastPosts.Concat(new[] { firstPost }).ToList();
+                    var stats = await GetOveriewStats(thread.Id, posts, shownPosts);
+                    return new ThreadOverView(thread.Id, thread.Subject, firstPost, lastPosts, stats);
                 }).ToArray());
                 var numberOfPages = (threadIds.Count() / pageSize) + 1;
                 return Option.Some(new ThreadOverViewSet(some, l, new PageData(pageNumber, numberOfPages)));
@@ -90,6 +88,8 @@ namespace Services
 
         async Task<Option<ThreadDetailView>> IThreadService.GetThread(Guid threadId, int pageSize)
         {
+            Task<Option<ThreadDetailView>> None() => Task.FromResult(Option.None<ThreadDetailView>());
+
             var thread = await this.threadRepository.GetById(threadId);
             return await thread.Match(async t =>
             {
@@ -104,9 +104,8 @@ namespace Services
                         return Option.Some(new ThreadDetailView(threadId, t.Subject, stats,
                             new BoardOverView(some.Id, some.BoardName, some.BoardKey), postsMapped.ToList()));
                     },
-                    () => Task.FromResult(Option.None<ThreadDetailView>()));
-
-            }, () => Task.FromResult(Option.None<ThreadDetailView>()));
+                    None);
+            }, None);
         }
 
         private async Task<int> GetThreadPageNumber(Guid boardId, Guid threadId, int pageSize)
@@ -122,6 +121,13 @@ namespace Services
             var posters = posts.Select(p => p.IpHash).Distinct().Count();
             var page = await GetThreadPageNumber(boardId, threadId, pageSize);
             return new ThreadStats(replies, images, posters, page);
+        }
+
+        private async Task<ThreadOverViewStats> GetOveriewStats(Guid threadId, IQueryable<Domain.Post> posts, IReadOnlyList<PostOverView> shownPosts)
+        {
+            var postCount = posts.Count() - shownPosts.Count;
+            var imageCount = await this.fileRepository.GetImageCount(threadId) - shownPosts.Count(p => p.File.HasValue);
+            return new ThreadOverViewStats(postCount, imageCount);
         }
     }
 }

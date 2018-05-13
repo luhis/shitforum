@@ -6,14 +6,13 @@ namespace Services.Dtos
 {
     public sealed class ThreadOverView 
     {
-        public ThreadOverView(Guid threadId, string subject, PostOverView firstPost, IReadOnlyList<PostOverView> finalPosts, int postCount, int imageCount)
+        public ThreadOverView(Guid threadId, string subject, PostOverView firstPost, IReadOnlyList<PostOverView> finalPosts, ThreadOverViewStats stats)
         {
             this.ThreadId = EnsureArg.IsNotEmpty(threadId, nameof(threadId));
             Subject = EnsureArg.IsNotNull(subject, nameof(subject));
             OP = EnsureArg.IsNotNull(firstPost, nameof(firstPost));
             FinalPosts = EnsureArg.IsNotNull(finalPosts, nameof(finalPosts));
-            PostCount = EnsureArg.IsGte(postCount, 0, nameof(PostCount));
-            ImageCount = EnsureArg.IsGte(imageCount, 0, nameof(ImageCount));
+            Stats = EnsureArg.IsNotNull(stats, nameof(stats));
         }
 
         public Guid ThreadId { get; }
@@ -24,8 +23,6 @@ namespace Services.Dtos
 
         public IReadOnlyList<PostOverView> FinalPosts { get; }
 
-        public int PostCount { get; }
-
-        public int ImageCount { get; }
+        public ThreadOverViewStats Stats { get; }
     }
 }

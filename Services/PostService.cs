@@ -75,7 +75,7 @@ namespace Services
 
         async Task<Option<PostContextView>> IPostService.GetById(Guid id)
         {
-            Func<Task<Option<PostContextView>>> noneRes = () => Task.FromResult(Option.None<PostContextView>());
+            Task<Option<PostContextView>> NoneRes() => Task.FromResult(Option.None<PostContextView>());
             var post = await this.postRepository.GetById(id);
 
             return await post.Match(async some =>
@@ -89,8 +89,8 @@ namespace Services
                         board => 
                         Option.Some(new PostContextView(thread.Id, thread.Subject, new BoardOverView(board.Id, board.BoardName, board.BoardKey), PostMapper.Map(some, file))),
                         Option.None<PostContextView>);
-                }, noneRes);
-            }, noneRes);
+                }, NoneRes);
+            }, NoneRes);
         }
 
         async Task<bool> IPostService.DeletePost(Guid id)
