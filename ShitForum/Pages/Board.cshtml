@@ -52,7 +52,7 @@
             <a asp-page="Thread" asp-route-boardKey="@Model.Threads.Board.BoardKey" asp-route-threadId="@thread.ThreadId">Click here</a> to view.
         </div>
     </div>
-    @foreach (var p in thread.FinalPosts)
+    foreach (var p in thread.FinalPosts)
     {
         <div class="row">
             <div class="col"></div>
