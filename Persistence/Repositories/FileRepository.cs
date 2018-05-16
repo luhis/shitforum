@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Domain;
 using Domain.Repositories;
@@ -25,16 +26,16 @@ namespace Persistence.Repositories
             return client.SaveChangesAsync();
         }
 
-        Task<int> IFileRepository.GetImageCount(Guid threadId)
+        Task<int> IFileRepository.GetImageCount(Guid threadId, CancellationToken cancellationToken)
         {
             var posts = client.Posts.Where(a => a.ThreadId == threadId).Select(a => a.Id);
 
-            return client.Files.CountAsync(a => posts.Contains(a.Id));
+            return client.Files.CountAsync(a => posts.Contains(a.Id), cancellationToken);
         }
 
-        Task<Option<File>> IFileRepository.GetPostFile(Guid postId)
+        Task<Option<File>> IFileRepository.GetPostFile(Guid postId, CancellationToken cancellationToken)
         {
-            return client.Files.SingleOrNone(a => a.Id == postId);
+            return client.Files.SingleOrNone(a => a.Id == postId, cancellationToken);
         }
     }
 }

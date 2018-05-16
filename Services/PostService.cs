@@ -2,11 +2,13 @@
 using Domain.Repositories;
 using Optional;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Domain.IpHash;
 using Services.Dtos;
 using OneOf;
 using Services.Results;
+using Thread = Domain.Thread;
 
 namespace Services
 {
@@ -30,22 +32,19 @@ namespace Services
         private const int ImageLimit = 50;
         private const int PostLimit = 50;
 
-        private Task<int> GetImageCount(Guid threadId) => this.fileRepository.GetImageCount(threadId);
-        private Task<int> GetPostCountAsync(Guid threadId) => this.postRepository.GetThreadPostCount(threadId);
-
-        async Task<OneOf<Success, Banned, ImageCountExceeded, PostCountExceeded>> IPostService.Add(Guid postId, Guid threadId, TripCodedName name, string comment, bool isSage, IIpHash ipAddress, Option<File> file)
+        async Task<OneOf<Success, Banned, ImageCountExceeded, PostCountExceeded>> IPostService.Add(Guid postId, Guid threadId, TripCodedName name, string comment, bool isSage, IIpHash ipAddress, Option<File> file, CancellationToken cancellationToken)
         {
-            if (await this.bannedIpRepository.IsBanned(ipAddress))
+            if (await this.bannedIpRepository.IsBanned(ipAddress, cancellationToken))
             {
                 return new Banned();
             }
 
-            if (ImageLimit <= await this.GetImageCount(threadId))
+            if (ImageLimit <= await this.fileRepository.GetImageCount(threadId, cancellationToken))
             {
                 return new ImageCountExceeded();
             }
 
-            if (PostLimit <= await this.GetPostCountAsync(threadId))
+            if (PostLimit <= await this.postRepository.GetThreadPostCount(threadId, cancellationToken))
             {
                 return new PostCountExceeded();
             }
@@ -57,9 +56,9 @@ namespace Services
             return new Success();
         }
 
-        async Task<OneOf<Success, Banned>> IPostService.AddThread(Guid postId, Guid threadId, Guid boardId, string subject, TripCodedName name, string comment, bool isSage, IIpHash ipAddress, Option<File> file)
+        async Task<OneOf<Success, Banned>> IPostService.AddThread(Guid postId, Guid threadId, Guid boardId, string subject, TripCodedName name, string comment, bool isSage, IIpHash ipAddress, Option<File> file, CancellationToken cancellationToken)
         { 
-            if (await this.bannedIpRepository.IsBanned(ipAddress))
+            if (await this.bannedIpRepository.IsBanned(ipAddress, cancellationToken))
             {
                 return new Banned();
             }
@@ -73,18 +72,18 @@ namespace Services
             return new Success();
         }
 
-        async Task<Option<PostContextView>> IPostService.GetById(Guid id)
+        async Task<Option<PostContextView>> IPostService.GetById(Guid id, CancellationToken cancellationToken)
         {
             Task<Option<PostContextView>> NoneRes() => Task.FromResult(Option.None<PostContextView>());
-            var post = await this.postRepository.GetById(id);
+            var post = await this.postRepository.GetById(id, cancellationToken);
 
             return await post.Match(async some =>
             {
-                var t = await this.threadRepository.GetById(some.ThreadId);
+                var t = await this.threadRepository.GetById(some.ThreadId, cancellationToken);
                 return await t.Match(async thread =>
                 {
-                    var b = await this.boardRepository.GetById(thread.BoardId);
-                    var file = await this.fileRepository.GetPostFile(some.Id);
+                    var b = await this.boardRepository.GetById(thread.BoardId, cancellationToken);
+                    var file = await this.fileRepository.GetPostFile(some.Id, cancellationToken);
                     return b.Match(
                         board => 
                         Option.Some(new PostContextView(thread.Id, thread.Subject, new BoardOverView(board.Id, board.BoardName, board.BoardKey), PostMapper.Map(some, file))),
@@ -93,16 +92,16 @@ namespace Services
             }, NoneRes);
         }
 
-        async Task<bool> IPostService.DeletePost(Guid id)
+        async Task<bool> IPostService.DeletePost(Guid id, CancellationToken cancellationToken)
         {
-            var p = await this.postRepository.GetById(id);
+            var p = await this.postRepository.GetById(id, cancellationToken);
             return await p.Match(async post =>
             {
-                var postCount = await this.postRepository.GetThreadPostCount(post.ThreadId);
+                var postCount = await this.postRepository.GetThreadPostCount(post.ThreadId, cancellationToken);
                 await this.postRepository.Delete(post);
                 if (postCount == 1)
                 {
-                    var thread = await this.threadRepository.GetById(post.ThreadId);
+                    var thread = await this.threadRepository.GetById(post.ThreadId, cancellationToken);
                     await thread.Match(some => this.threadRepository.Delete(some), () => Task.CompletedTask);
                 }
                 return true;

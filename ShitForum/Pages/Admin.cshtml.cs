@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Optional;
 using Services;
 using ShitForum.Cookies;
 using ShitForum.Models;
@@ -18,7 +18,8 @@ namespace ShitForum.Pages
         private readonly IUserService userService;
         private readonly IFileService fileService;
 
-        public AdminModel(ICookieStorage cookieStorage, AdminSettings adminSettings, IUserService userService, IFileService fileService)
+        public AdminModel(ICookieStorage cookieStorage, AdminSettings adminSettings, IUserService userService,
+            IFileService fileService)
         {
             this.cookieStorage = cookieStorage;
             this.adminSettings = adminSettings;
@@ -28,7 +29,7 @@ namespace ShitForum.Pages
 
         public AdminViewModel Model { get; private set; }
 
-        public Task<IActionResult> OnGet()
+        public Task<IActionResult> OnGet(CancellationToken cancellationToken)
         {
             Task<IActionResult> Func()
             {
@@ -42,7 +43,8 @@ namespace ShitForum.Pages
                 var res = adminSettings.IsValid(some);
                 return res.Match(async _ =>
                 {
-                    this.Model = new AdminViewModel("You are already logged in", true, await fileService.GetAllBannedImages(), await this.userService.GetAllBans());
+                    this.Model = new AdminViewModel("You are already logged in", true,
+                        await fileService.GetAllBannedImages(cancellationToken), await this.userService.GetAllBans(cancellationToken));
                     return Page().ToIAR();
                 }, Func);
             }, Func);
@@ -50,13 +52,14 @@ namespace ShitForum.Pages
 
 
         [ValidateAntiForgeryToken]
-        public Task<IActionResult> OnPost(Guid k)
+        public Task<IActionResult> OnPost(Guid k, CancellationToken cancellationToken)
         {
             var res = adminSettings.IsValid(k);
             return res.Match(async success =>
             {
                 var (_, key) = success;
-                this.Model = new AdminViewModel("You are now logged in", true, await fileService.GetAllBannedImages(), await this.userService.GetAllBans());
+                this.Model = new AdminViewModel("You are now logged in", true,
+                    await fileService.GetAllBannedImages(cancellationToken), await this.userService.GetAllBans(cancellationToken));
                 cookieStorage.SetAdminCookie(this.HttpContext.Response, key);
                 return Page().ToIAR();
             }, () =>

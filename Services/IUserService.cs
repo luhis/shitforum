@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Domain;
 using Domain.IpHash;
@@ -11,8 +12,8 @@ namespace Services
     {
         Task BanUser(IIpHash hash, string reason, DateTime expiry);
 
-        Task<Option<IIpHash>> GetHashForPost(Guid postId);
+        Task<Option<IIpHash>> GetHashForPost(Guid postId, CancellationToken cancellationToken);
 
-        Task<IReadOnlyList<BannedIp>> GetAllBans();
+        Task<IReadOnlyList<BannedIp>> GetAllBans(CancellationToken cancellationToken);
     }
 }

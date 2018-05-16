@@ -4,12 +4,14 @@ using Moq;
 using Optional;
 using Services;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Domain.IpHash;
 using Services.Dtos;
 using Xunit;
 using FluentAssertions;
 using UnitTests.Tooling;
+using Thread = Domain.Thread;
 
 namespace UnitTests
 {
@@ -23,6 +25,7 @@ namespace UnitTests
         private readonly Mock<IFileRepository> fileRepository;
         private readonly Mock<IBannedIpRepository> bannedIpRepository;
         private readonly Mock<IBoardRepository> boardRepository;
+        private readonly CancellationToken ct = CancellationToken.None;
 
         public PostServiceShould()
         {
@@ -43,11 +46,11 @@ namespace UnitTests
             var threadId = Guid.NewGuid();
             var ip = new IpUnHashed("127.0.0.1");
 
-            this.fileRepository.Setup(a => a.GetImageCount(threadId)).ReturnsT(1);
-            this.postRepository.Setup(a => a.GetThreadPostCount(threadId)).ReturnsT(1);
-            this.bannedIpRepository.Setup(a => a.IsBanned(ip)).ReturnsT(false);
+            this.fileRepository.Setup(a => a.GetImageCount(threadId, ct)).ReturnsT(1);
+            this.postRepository.Setup(a => a.GetThreadPostCount(threadId, ct)).ReturnsT(1);
+            this.bannedIpRepository.Setup(a => a.IsBanned(ip, ct)).ReturnsT(false);
             this.postRepository.Setup(a => a.Add(It.IsAny<Domain.Post>())).Returns(Task.CompletedTask);
-            this.ps.Add(postId, threadId, new TripCodedName("Matt"), "comment", false, ip, Option.None<File>()).Wait();
+            this.ps.Add(postId, threadId, new TripCodedName("Matt"), "comment", false, ip, Option.None<File>(), ct).Wait();
 
             this.repo.VerifyAll();
         }
@@ -59,10 +62,10 @@ namespace UnitTests
             var threadId = Guid.NewGuid();
             var ip = new IpUnHashed("127.0.0.1");
 
-            this.fileRepository.Setup(a => a.GetImageCount(threadId)).ReturnsT(1);
-            this.postRepository.Setup(a => a.GetThreadPostCount(threadId)).ReturnsT(200);
-            this.bannedIpRepository.Setup(a => a.IsBanned(ip)).ReturnsT(false);
-            var r = this.ps.Add(postId, threadId, new TripCodedName("Matt"), "comment", false, ip, Option.None<File>()).Result;
+            this.fileRepository.Setup(a => a.GetImageCount(threadId, ct)).ReturnsT(1);
+            this.postRepository.Setup(a => a.GetThreadPostCount(threadId, ct)).ReturnsT(200);
+            this.bannedIpRepository.Setup(a => a.IsBanned(ip, ct)).ReturnsT(false);
+            var r = this.ps.Add(postId, threadId, new TripCodedName("Matt"), "comment", false, ip, Option.None<File>(), ct).Result;
 
             r.AsT3.Should().NotBeNull();
 
@@ -76,9 +79,9 @@ namespace UnitTests
             var threadId = Guid.NewGuid();
             var ip = new IpUnHashed("127.0.0.1");
 
-            this.fileRepository.Setup(a => a.GetImageCount(threadId)).ReturnsT(200);
-            this.bannedIpRepository.Setup(a => a.IsBanned(ip)).ReturnsT(false);
-            var r = this.ps.Add(postId, threadId, new TripCodedName("Matt"), "comment", false, ip, Option.None<File>()).Result;
+            this.fileRepository.Setup(a => a.GetImageCount(threadId, ct)).ReturnsT(200);
+            this.bannedIpRepository.Setup(a => a.IsBanned(ip, ct)).ReturnsT(false);
+            var r = this.ps.Add(postId, threadId, new TripCodedName("Matt"), "comment", false, ip, Option.None<File>(), ct).Result;
 
             r.AsT2.Should().NotBeNull();
 
@@ -93,11 +96,11 @@ namespace UnitTests
             var boardId = Guid.NewGuid();
             var ip = new IpUnHashed("127.0.0.1");
             
-            this.bannedIpRepository.Setup(a => a.IsBanned(ip)).ReturnsT(false);
+            this.bannedIpRepository.Setup(a => a.IsBanned(ip, ct)).ReturnsT(false);
             this.postRepository.Setup(a => a.Add(It.IsAny<Domain.Post>())).Returns(Task.CompletedTask);
             this.threadRepository.Setup(a => a.Add(It.IsAny<Domain.Thread>())).Returns(Task.CompletedTask);
 
-            var r = this.ps.AddThread(postId, threadId, boardId, "subject", new TripCodedName("Matt"), "comment", false, ip, Option.None<File>()).Result;
+            var r = this.ps.AddThread(postId, threadId, boardId, "subject", new TripCodedName("Matt"), "comment", false, ip, Option.None<File>(), ct).Result;
             r.IsT0.Should().BeTrue();
 
             this.repo.VerifyAll();
@@ -111,8 +114,8 @@ namespace UnitTests
             var boardId = Guid.NewGuid();
             var ip = new IpUnHashed("127.0.0.1");
 
-            this.bannedIpRepository.Setup(a => a.IsBanned(ip)).ReturnsT(true);
-            var r = this.ps.AddThread(postId, threadId, boardId, "subject", new TripCodedName("Matt"), "comment", false, ip, Option.None<File>()).Result;
+            this.bannedIpRepository.Setup(a => a.IsBanned(ip, ct)).ReturnsT(true);
+            var r = this.ps.AddThread(postId, threadId, boardId, "subject", new TripCodedName("Matt"), "comment", false, ip, Option.None<File>(), ct).Result;
             r.IsT1.Should().BeTrue();
 
             this.repo.VerifyAll();
@@ -124,13 +127,13 @@ namespace UnitTests
             var postId = Guid.NewGuid();
             var threadId = Guid.NewGuid();
             var boardId = Guid.NewGuid();
-            this.postRepository.Setup(a => a.GetById(postId)).ReturnsT(Option.Some(
+            this.postRepository.Setup(a => a.GetById(postId, ct)).ReturnsT(Option.Some(
                 new Post(postId, threadId, DateTime.UtcNow, "matt", "comment", false, "::0")));
-            this.threadRepository.Setup(a => a.GetById(threadId)).ReturnsT(Option.Some(new Thread(threadId, boardId, "")));
-            this.boardRepository.Setup(a => a.GetById(boardId)).ReturnsT(Option.Some(new Board(boardId, "tezt", "pol")));
-            this.fileRepository.Setup(a => a.GetPostFile(postId)).ReturnsT(Option.Some(new File()));
+            this.threadRepository.Setup(a => a.GetById(threadId, ct)).ReturnsT(Option.Some(new Thread(threadId, boardId, "")));
+            this.boardRepository.Setup(a => a.GetById(boardId, ct)).ReturnsT(Option.Some(new Board(boardId, "tezt", "pol")));
+            this.fileRepository.Setup(a => a.GetPostFile(postId, ct)).ReturnsT(Option.Some(new File()));
 
-            var r = this.ps.GetById(postId).Result;
+            var r = this.ps.GetById(postId, ct).Result;
             r.Should().NotBeNull();
             r.HasValue.Should().BeTrue();
             this.repo.VerifyAll();
@@ -142,13 +145,13 @@ namespace UnitTests
             var postId = Guid.NewGuid();
             var threadId = Guid.NewGuid();
             var boardId = Guid.NewGuid();
-            this.postRepository.Setup(a => a.GetById(postId)).ReturnsT(Option.Some(
+            this.postRepository.Setup(a => a.GetById(postId, ct)).ReturnsT(Option.Some(
                 new Post(postId, threadId, DateTime.UtcNow, "matt", "comment", false, "::0")));
-            this.threadRepository.Setup(a => a.GetById(threadId)).ReturnsT(Option.Some(new Thread(threadId, boardId, "")));
-            this.boardRepository.Setup(a => a.GetById(boardId)).ReturnsT(Option.None<Board>());
-            this.fileRepository.Setup(a => a.GetPostFile(postId)).ReturnsT(Option.Some(new File()));
+            this.threadRepository.Setup(a => a.GetById(threadId, ct)).ReturnsT(Option.Some(new Thread(threadId, boardId, "")));
+            this.boardRepository.Setup(a => a.GetById(boardId, ct)).ReturnsT(Option.None<Board>());
+            this.fileRepository.Setup(a => a.GetPostFile(postId, ct)).ReturnsT(Option.Some(new File()));
 
-            var r = this.ps.GetById(postId).Result;
+            var r = this.ps.GetById(postId, ct).Result;
             r.Should().NotBeNull();
             r.HasValue.Should().BeFalse();
             this.repo.VerifyAll();
@@ -159,11 +162,11 @@ namespace UnitTests
         {
             var postId = Guid.NewGuid();
             var threadId = Guid.NewGuid();
-            this.postRepository.Setup(a => a.GetById(postId)).ReturnsT(Option.Some(
+            this.postRepository.Setup(a => a.GetById(postId, ct)).ReturnsT(Option.Some(
                 new Post(postId, threadId, DateTime.UtcNow, "matt", "comment", false, "::0")));
-            this.threadRepository.Setup(a => a.GetById(threadId)).ReturnsT(Option.None<Thread>());
+            this.threadRepository.Setup(a => a.GetById(threadId, ct)).ReturnsT(Option.None<Thread>());
 
-            var r = this.ps.GetById(postId).Result;
+            var r = this.ps.GetById(postId, ct).Result;
             r.Should().NotBeNull();
             r.HasValue.Should().BeFalse();
             this.repo.VerifyAll();
@@ -173,9 +176,9 @@ namespace UnitTests
         public void NotGetByIdWhenPostNotFound()
         {
             var postId = Guid.NewGuid();
-            this.postRepository.Setup(a => a.GetById(postId)).ReturnsT(Option.None<Post>());
+            this.postRepository.Setup(a => a.GetById(postId, ct)).ReturnsT(Option.None<Post>());
 
-            var r = this.ps.GetById(postId).Result;
+            var r = this.ps.GetById(postId, ct).Result;
             r.Should().NotBeNull();
             r.HasValue.Should().BeFalse();
             this.repo.VerifyAll();
@@ -187,11 +190,11 @@ namespace UnitTests
             var postId = Guid.NewGuid();
             var threadId = Guid.NewGuid();
             var p = new Post(postId, threadId, DateTime.UtcNow, "matt", "comment", false, "::0");
-            this.postRepository.Setup(a => a.GetById(postId)).ReturnsT(Option.Some(p));
-            this.postRepository.Setup(a => a.GetThreadPostCount(threadId)).ReturnsT(200);
+            this.postRepository.Setup(a => a.GetById(postId, ct)).ReturnsT(Option.Some(p));
+            this.postRepository.Setup(a => a.GetThreadPostCount(threadId, ct)).ReturnsT(200);
             this.postRepository.Setup(a => a.Delete(p)).Returns(Task.CompletedTask);
 
-            var r = this.ps.DeletePost(postId).Result;
+            var r = this.ps.DeletePost(postId, ct).Result;
             r.Should().BeTrue();
             this.repo.VerifyAll();
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using EnsureThat;
 using Microsoft.AspNetCore.Mvc;
@@ -29,13 +30,13 @@ namespace ShitForum.Pages
 
         public PostContextView Post { get; private set; }
 
-        public async Task<IActionResult> OnGet(Guid id)
+        public async Task<IActionResult> OnGet(Guid id, CancellationToken cancellationToken)
         {
             EnsureArg.IsNotEmpty(id, nameof(id));
-            var hash = await this.userService.GetHashForPost(id);
+            var hash = await this.userService.GetHashForPost(id, cancellationToken);
             return await hash.Match(async some =>
             {
-                var p = await this.postService.GetById(id);
+                var p = await this.postService.GetById(id, cancellationToken);
                 return p.Match(post =>
                 { 
                     this.Post = post;
@@ -45,10 +46,10 @@ namespace ShitForum.Pages
             }, () => new NotFoundResult().ToIART());
         }
 
-        public async Task<IActionResult> OnPostAsync(Guid id)
+        public async Task<IActionResult> OnPostAsync(Guid id, CancellationToken cancellationToken)
         {
             EnsureArg.IsNotEmpty(id, nameof(id));
-            var hash = await this.userService.GetHashForPost(id);
+            var hash = await this.userService.GetHashForPost(id, cancellationToken);
             return await hash.Match(async some =>
             {
                 await userService.BanUser(some, Reason, Expiry);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Domain;
 using Domain.Repositories;
@@ -18,19 +19,19 @@ namespace Services
             this.bannedImageRepository = bannedImageRepository;
         }
 
-        Task<Option<File>> IFileService.GetPostFile(Guid postId)
+        Task<Option<File>> IFileService.GetPostFile(Guid postId, CancellationToken cancellationToken)
         {
-            return fileRepository.GetPostFile(postId);
+            return fileRepository.GetPostFile(postId, cancellationToken);
         }
 
-        Task IFileService.BanImage(ImageHash imageHash, string reason)
+        Task IFileService.BanImage(ImageHash imageHash, string reason, CancellationToken cancellationToken)
         {
-            return this.bannedImageRepository.Ban(imageHash, reason);
+            return this.bannedImageRepository.Ban(imageHash, reason, cancellationToken);
         }
 
-        Task<IReadOnlyList<BannedImage>> IFileService.GetAllBannedImages()
+        Task<IReadOnlyList<BannedImage>> IFileService.GetAllBannedImages(CancellationToken cancellationToken)
         {
-            return this.bannedImageRepository.GetAll();
+            return this.bannedImageRepository.GetAll(cancellationToken);
         }
     }
 }

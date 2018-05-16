@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Domain;
 using Domain.Repositories;
@@ -40,14 +41,14 @@ namespace Persistence.Repositories
             return this.client.Posts;
         }
 
-        Task<Option<Post>> IPostRepository.GetById(Guid postId)
+        Task<Option<Post>> IPostRepository.GetById(Guid postId, CancellationToken cancellationToken)
         {
-            return this.client.Posts.SingleOrNone(a => a.Id == postId);
+            return this.client.Posts.SingleOrNone(a => a.Id == postId, cancellationToken);
         }
 
-        Task<int> IPostRepository.GetThreadPostCount(Guid threadId)
+        Task<int> IPostRepository.GetThreadPostCount(Guid threadId, CancellationToken cancellationToken)
         {
-            return this.client.Posts.Where(a => a.ThreadId == threadId).CountAsync();
+            return this.client.Posts.CountAsync(a => a.ThreadId == threadId, cancellationToken);
         }
 
         Task IPostRepository.Delete(Post post)

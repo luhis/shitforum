@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using EnsureThat;
 using Microsoft.AspNetCore.Mvc;
@@ -52,10 +53,10 @@ namespace ShitForum.Pages
 
         [BindProperty] public AddPost Post { get; set; }
 
-        public async Task<IActionResult> OnGet(string boardKey, Guid threadId, Guid replyTo)
+        public async Task<IActionResult> OnGet(string boardKey, Guid threadId, Guid replyTo, CancellationToken cancellationToken)
         {
             EnsureArg.IsNotEmpty(threadId, nameof(threadId));
-            var t = await this.threadService.GetThread(threadId, Constants.PageSize).ConfigureAwait(false);
+            var t = await this.threadService.GetThread(threadId, Constants.PageSize, cancellationToken).ConfigureAwait(false);
             return t.Match(thread =>
             {
                 this.IsAdmin = this.isAdmin.IsAdmin(this.HttpContext);
@@ -68,7 +69,7 @@ namespace ShitForum.Pages
 
         [Recaptcha]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
         {
             var ip = this.getIp.GetIp(this.Request);
             var ipHash = this.ipHasher.Hash(ip);
@@ -76,7 +77,7 @@ namespace ShitForum.Pages
             var key = $"{nameof(this.Post)}.{nameof(this.Post.File)}";
             this.bannedImageLogger.Log(this.ModelState[key], ip, ipHash);
 
-            var t = await this.threadService.GetThread(this.Post.ThreadId, Constants.PageSize).ConfigureAwait(false);
+            var t = await this.threadService.GetThread(this.Post.ThreadId, Constants.PageSize, cancellationToken).ConfigureAwait(false);
             return await t.Match(async thread =>
             {
                 if (!this.ModelState.IsValid)
@@ -92,7 +93,7 @@ namespace ShitForum.Pages
                     var postId = Guid.NewGuid();
                     var f = UploadMapper.Map(this.Post.File, postId);
                     var result = await this.postService.Add(postId, this.Post.ThreadId, trip, this.Post.Comment, options.Sage,
-                        ipHash, f);
+                        ipHash, f, cancellationToken);
                     return result.Match(
                         _ =>
                         {

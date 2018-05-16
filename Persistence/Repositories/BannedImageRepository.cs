@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Domain;
 using Domain.Repositories;
@@ -16,20 +17,20 @@ namespace Persistence.Repositories
             this.client = client;
         }
 
-        Task IBannedImageRepository.Ban(ImageHash hash, string reason)
+        Task IBannedImageRepository.Ban(ImageHash hash, string reason, CancellationToken cancellationToken)
         {
             this.client.BannedImages.Add(new BannedImage(Guid.NewGuid(), hash.Val, reason));
-            return this.client.SaveChangesAsync();
+            return this.client.SaveChangesAsync(cancellationToken);
         }
 
-        Task<IReadOnlyList<BannedImage>> IBannedImageRepository.GetAll()
+        Task<IReadOnlyList<BannedImage>> IBannedImageRepository.GetAll(CancellationToken cancellationToken)
         {
-            return this.client.BannedImages.ToReadOnlyAsync();
+            return this.client.BannedImages.ToReadOnlyAsync(cancellationToken);
         }
 
-        Task<bool> IBannedImageRepository.IsBanned(ImageHash hash)
+        Task<bool> IBannedImageRepository.IsBanned(ImageHash hash, CancellationToken cancellationToken)
         {
-            return this.client.BannedImages.AnyAsync(a => a.Hash == hash.Val);
+            return this.client.BannedImages.AnyAsync(a => a.Hash == hash.Val, cancellationToken);
         }
     }
 }

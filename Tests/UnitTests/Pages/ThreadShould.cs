@@ -8,6 +8,7 @@ using Xunit;
 using Microsoft.AspNetCore.Http;
 using ShitForum.Models;
 using System.Net;
+using System.Threading;
 using Optional;
 using Services;
 using Services.Dtos;
@@ -32,6 +33,7 @@ namespace UnitTests.Pages
         private readonly Mock<IPostService> postService;
         private readonly Mock<IBannedImageLogger> bannedImageLogger;
         private readonly Mock<IIsAdmin> iIsAdmin;
+        private readonly CancellationToken ct = CancellationToken.None;
 
         public ThreadShould()
         {
@@ -62,11 +64,11 @@ namespace UnitTests.Pages
             var threadId = Guid.NewGuid();
             var boardId = Guid.NewGuid();
             this.iIsAdmin.Setup(a => a.IsAdmin(It.IsAny<HttpContext>())).Returns(false);
-            this.threadService.Setup(a => a.GetThread(threadId, 100)).ReturnsT(
+            this.threadService.Setup(a => a.GetThread(threadId, 100, ct)).ReturnsT(
                 Option.Some(new ThreadDetailView(threadId, "subject", new ThreadStats(10, 1, 10, 1), new BoardOverView(boardId, "random", "bee"), new List<PostOverView>() {
                     new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "IP", "comment", Option.None<Domain.File>()) })));
             this.cookieStorage.Setup(a => a.ReadName(It.IsAny<HttpRequest>())).Returns("Matt");
-            thread.OnGet("bee", threadId, Guid.NewGuid()).Wait();
+            thread.OnGet("bee", threadId, Guid.NewGuid(), CancellationToken.None).Wait();
 
             this.repo.VerifyAll();
         }
@@ -79,12 +81,12 @@ namespace UnitTests.Pages
             thread.Post = new AddPost(threadId, "Matt", "sage", "comment", null);
             this.getIp.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
             this.cookieStorage.Setup(a => a.SetNameCookie(It.IsAny<HttpResponse>(), "Matt"));
-            this.postService.Setup(a => a.Add(It.IsAny<Guid>(), threadId, It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IIpHash>(), Option.None<Domain.File>())).Returns(
+            this.postService.Setup(a => a.Add(It.IsAny<Guid>(), threadId, It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IIpHash>(), Option.None<Domain.File>(), ct)).Returns(
                 Task.FromResult<OneOf<Success, Banned, ImageCountExceeded, PostCountExceeded>>(new Success()));
-            this.threadService.Setup(a => a.GetThread(threadId, 100)).ReturnsT(Option.Some(new ThreadDetailView(threadId, "aaa", new ThreadStats(10, 1, 10, 1), new BoardOverView(Guid.NewGuid(), "bbbb", "b"), new List<PostOverView>() )));
+            this.threadService.Setup(a => a.GetThread(threadId, 100, ct)).ReturnsT(Option.Some(new ThreadDetailView(threadId, "aaa", new ThreadStats(10, 1, 10, 1), new BoardOverView(Guid.NewGuid(), "bbbb", "b"), new List<PostOverView>() )));
             this.bannedImageLogger.Setup(a => a.Log(null, IPAddress.Loopback, It.IsAny<IIpHash>()));
 
-            thread.OnPostAsync().Wait();
+            thread.OnPostAsync(ct).Wait();
 
             this.repo.VerifyAll();
         }
@@ -98,11 +100,11 @@ namespace UnitTests.Pages
             thread.Post = new AddPost(threadId, "Matt", "sage", "comment", file.Object);
             this.getIp.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
             this.cookieStorage.Setup(a => a.SetNameCookie(It.IsAny<HttpResponse>(), "Matt"));
-            this.threadService.Setup(a => a.GetThread(threadId, 100)).ReturnsT(Option.Some(new ThreadDetailView(threadId, "aaa", new ThreadStats(10, 1, 10, 1), new BoardOverView(Guid.NewGuid(), "bbbb", "b"), new List<PostOverView>())));
+            this.threadService.Setup(a => a.GetThread(threadId, 100, ct)).ReturnsT(Option.Some(new ThreadDetailView(threadId, "aaa", new ThreadStats(10, 1, 10, 1), new BoardOverView(Guid.NewGuid(), "bbbb", "b"), new List<PostOverView>())));
             this.bannedImageLogger.Setup(a => a.Log(null, IPAddress.Loopback, It.IsAny<IIpHash>()));
-            this.postService.Setup(a => a.Add(It.IsAny<Guid>(), threadId, It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IIpHash>(), It.IsAny<Option<Domain.File>>()))
+            this.postService.Setup(a => a.Add(It.IsAny<Guid>(), threadId, It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IIpHash>(), It.IsAny<Option<Domain.File>>(), ct))
                 .ReturnsT(OneOf<Success, Banned, ImageCountExceeded, PostCountExceeded>.FromT0(new Success()));
-            thread.OnPostAsync().Wait();
+            thread.OnPostAsync(ct).Wait();
 
             this.repo.VerifyAll();
         }
@@ -118,12 +120,12 @@ namespace UnitTests.Pages
 
             this.iIsAdmin.Setup(a => a.IsAdmin(It.IsAny<HttpContext>())).Returns(false);
             this.getIp.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
-            this.threadService.Setup(a => a.GetThread(threadId, 100)).Returns(
+            this.threadService.Setup(a => a.GetThread(threadId, 100, ct)).Returns(
                 Task.FromResult(Option.Some(new ThreadDetailView(threadId, "subject", new ThreadStats(10, 1, 10, 1), new BoardOverView(boardId, "random", "bee"), new List<PostOverView>() {
                     new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "IP", "comment", Option.None<Domain.File>()) }))));
             this.bannedImageLogger.Setup(a => a.Log(null, IPAddress.Loopback, It.IsAny<IIpHash>()));
 
-            thread.OnPostAsync().Wait();
+            thread.OnPostAsync(ct).Wait();
 
             this.repo.VerifyAll();
         }

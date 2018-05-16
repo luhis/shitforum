@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Domain;
 using EnsureThat;
@@ -19,10 +20,10 @@ namespace ShitForum.Pages
             this.threadService = threadService;
         }
 
-        public async Task<IActionResult> OnGet(string boardKey)
+        public async Task<IActionResult> OnGet(string boardKey, CancellationToken cancellationToken)
         {
             EnsureArg.IsNotEmpty(boardKey, nameof(boardKey));
-            var t = await this.threadService.GetOrderedCatalogThreads(boardKey);
+            var t = await this.threadService.GetOrderedCatalogThreads(boardKey, cancellationToken);
             return t.Match(threads =>
             {
                 this.Threads = threads.Threads;

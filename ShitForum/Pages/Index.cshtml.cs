@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Domain;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -8,18 +9,18 @@ namespace ShitForum.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly IBoardService boardRepository;
+        private readonly IBoardService boardService;
 
         public IEnumerable<Board> Boards { get; private set; }
 
-        public IndexModel(IBoardService boardRepository)
+        public IndexModel(IBoardService boardService)
         {
-            this.boardRepository = boardRepository;
+            this.boardService = boardService;
         }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(CancellationToken cancellationToken)
         {
-            this.Boards = await this.boardRepository.GetAll().ConfigureAwait(false);
+            this.Boards = await this.boardService.GetAll(cancellationToken).ConfigureAwait(false);
         }
     }
 }

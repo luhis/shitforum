@@ -7,8 +7,10 @@ using Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnitTests.Tooling;
 using Xunit;
+using Thread = Domain.Thread;
 
 namespace UnitTests
 {
@@ -21,6 +23,7 @@ namespace UnitTests
         private readonly Mock<IPostRepository> postRepository;
         private readonly Mock<IBoardRepository> boardRepository;
         private readonly Mock<IFileRepository> fileRepository;
+        private readonly CancellationToken ct = CancellationToken.None;
 
         public ThreadServiceShould()
         {
@@ -40,12 +43,12 @@ namespace UnitTests
             var boardId = Guid.NewGuid();
             var postId = Guid.NewGuid();
             this.threadRepository.Setup(a => a.GetAll()).Returns(new TestAsyncEnumerable<Thread>(new Thread[] { new Thread(threadId, boardId, "subject"),  }));
-            this.threadRepository.Setup(a => a.GetById(threadId)).ReturnsT(Option.Some(new Thread(threadId, boardId, "my thread")));
+            this.threadRepository.Setup(a => a.GetById(threadId, ct)).ReturnsT(Option.Some(new Thread(threadId, boardId, "my thread")));
             this.postRepository.Setup(a => a.GetAll()).Returns(new TestAsyncEnumerable<Post>(new Domain.Post[] { new Domain.Post(postId, threadId, DateTime.UtcNow, "name", "comment", false, "") }));
-            this.boardRepository.Setup(a => a.GetById(boardId)).ReturnsT(Option.Some(new Board(boardId, "b", "bbb")));
-            this.fileRepository.Setup(a => a.GetPostFile(postId)).ReturnsT(Option.Some(new File()));
+            this.boardRepository.Setup(a => a.GetById(boardId, ct)).ReturnsT(Option.Some(new Board(boardId, "b", "bbb")));
+            this.fileRepository.Setup(a => a.GetPostFile(postId, ct)).ReturnsT(Option.Some(new File()));
 
-            var r = ts.GetThread(threadId, 100).Result;
+            var r = ts.GetThread(threadId, 100, ct).Result;
 
             r.Should().NotBeNull();
             r.HasValue.Should().BeTrue();
@@ -58,10 +61,10 @@ namespace UnitTests
             var threadId = Guid.NewGuid();
             var boardId = Guid.NewGuid();
             var postId = Guid.NewGuid();
-            this.threadRepository.Setup(a => a.GetById(threadId)).ReturnsT(Option.Some(new Thread(threadId, boardId, "my thread")));
+            this.threadRepository.Setup(a => a.GetById(threadId, ct)).ReturnsT(Option.Some(new Thread(threadId, boardId, "my thread")));
             this.postRepository.Setup(a => a.GetAll()).Returns(new TestAsyncEnumerable<Post>(new Domain.Post[] { new Domain.Post(postId, threadId, DateTime.UtcNow, "name", "comment", false, "") }));
-            this.boardRepository.Setup(a => a.GetById(boardId)).ReturnsT(Option.None<Board>());
-            var r = ts.GetThread(threadId, 100).Result;
+            this.boardRepository.Setup(a => a.GetById(boardId, ct)).ReturnsT(Option.None<Board>());
+            var r = ts.GetThread(threadId, 100, ct).Result;
             r.Should().NotBeNull();
             r.HasValue.Should().BeFalse();
             repo.VerifyAll();
@@ -72,9 +75,9 @@ namespace UnitTests
         {
             var boardId = Guid.NewGuid();
             this.postRepository.Setup(a => a.GetAll()).Returns(new Domain.Post[] { }.AsQueryable());
-            this.boardRepository.Setup(a => a.GetByKey("bee")).ReturnsT(Option.Some(new Board(boardId, "b", "bee")));
+            this.boardRepository.Setup(a => a.GetByKey("bee", ct)).ReturnsT(Option.Some(new Board(boardId, "b", "bee")));
             this.threadRepository.Setup(a => a.GetAll()).Returns(new TestAsyncEnumerable<Thread>(new List<Thread> { new Thread(Guid.NewGuid(), boardId, "subject") }));
-            var r = ts.GetOrderedCatalogThreads("bee").Result;
+            var r = ts.GetOrderedCatalogThreads("bee", ct).Result;
             r.Should().NotBeNull();
 
             repo.VerifyAll();
@@ -85,11 +88,11 @@ namespace UnitTests
         {
             var boardId = Guid.NewGuid();
             this.postRepository.Setup(a => a.GetAll()).Returns(new Domain.Post[] { }.AsQueryable());
-            this.boardRepository.Setup(a => a.GetByKey("bee")).ReturnsT(Option.Some(new Board(boardId, "b", "bbb")));
+            this.boardRepository.Setup(a => a.GetByKey("bee", ct)).ReturnsT(Option.Some(new Board(boardId, "b", "bbb")));
             var thread = new Thread(Guid.NewGuid(), boardId, "subject");
             this.threadRepository.Setup(a => a.GetAll()).
                 Returns(new TestAsyncEnumerable<Thread>(new List<Thread> { thread }));
-            var r = ts.GetOrderedThreads("bee", Option.None<string>(), 100, 1).Result;
+            var r = ts.GetOrderedThreads("bee", Option.None<string>(), 100, 1, ct).Result;
             r.Should().NotBeNull();
 
             repo.VerifyAll();
@@ -100,9 +103,9 @@ namespace UnitTests
         {
             var boardId = Guid.NewGuid();
             this.postRepository.Setup(a => a.GetAll()).Returns(new Domain.Post[] { }.AsQueryable());
-            this.boardRepository.Setup(a => a.GetByKey("bee")).ReturnsT(Option.Some(new Board(boardId, "b", "bbb")));
+            this.boardRepository.Setup(a => a.GetByKey("bee", ct)).ReturnsT(Option.Some(new Board(boardId, "b", "bbb")));
             this.threadRepository.Setup(a => a.GetAll()).Returns(new TestAsyncEnumerable<Thread>(new List<Thread> {new Thread(Guid.NewGuid(), boardId, "subject")}));
-            var r = ts.GetOrderedThreads("bee", Option.Some("matt"), 100, 1).Result;
+            var r = ts.GetOrderedThreads("bee", Option.Some("matt"), 100, 1, ct).Result;
             r.Should().NotBeNull();
 
             repo.VerifyAll();

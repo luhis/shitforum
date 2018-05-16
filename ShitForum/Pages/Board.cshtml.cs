@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using EnsureThat;
 using Microsoft.AspNetCore.Mvc;
@@ -44,12 +45,12 @@ namespace ShitForum.Pages
             this.bannedImageLogger = bannedImageLogger;
         }
 
-        public async Task<IActionResult> OnGet(string boardKey, string filter, int pageNumber = 1)
+        public async Task<IActionResult> OnGet(string boardKey, string filter, CancellationToken cancellationToken, int pageNumber = 1)
         {
             EnsureArg.IsNotNull(boardKey, nameof(boardKey));
             this.Filter = filter;
             var filterOption = NullableMapper.ToOption(filter);
-            var t = await this.threadService.GetOrderedThreads(boardKey, filterOption, 100, pageNumber);
+            var t = await this.threadService.GetOrderedThreads(boardKey, filterOption, 100, pageNumber, cancellationToken);
             return t.Match(ts =>
             {
                 this.Threads = ts;
@@ -68,7 +69,7 @@ namespace ShitForum.Pages
 
         [Recaptcha]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OnPostAsync(string boardKey, string filter, int pageNumber = 1)
+        public async Task<IActionResult> OnPostAsync(string boardKey, string filter, CancellationToken cancellationToken, int pageNumber = 1)
         {
             var ip = this.getIp.GetIp(this.Request);
             var ipHash = this.ipHasher.Hash(ip);
@@ -77,7 +78,7 @@ namespace ShitForum.Pages
 
             var filterOption = NullableMapper.ToOption(filter);
 
-            var t = await this.threadService.GetOrderedThreads(boardKey, filterOption, Constants.PageSize, pageNumber);
+            var t = await this.threadService.GetOrderedThreads(boardKey, filterOption, Constants.PageSize, pageNumber, cancellationToken);
             return await t.Match(async threads =>
             {
                 if (!ModelState.IsValid)
@@ -92,7 +93,7 @@ namespace ShitForum.Pages
                 var options = OptionsMapper.Map(this.Thread.Options);
                 var f = UploadMapper.Map(this.Thread.File, postId);
 
-                var result = await this.postService.AddThread(postId, threadId, this.Thread.BoardId, this.Thread.Subject ?? string.Empty, trip, this.Thread.Comment, options.Sage, ipHash, f);
+                var result = await this.postService.AddThread(postId, threadId, this.Thread.BoardId, this.Thread.Subject ?? string.Empty, trip, this.Thread.Comment, options.Sage, ipHash, f, cancellationToken);
 
                 return result.Match(
                     _ =>

@@ -1,6 +1,7 @@
 ﻿using Moq;
 using ShitForum.Pages;
 using System;
+using System.Threading;
 using Xunit;
 using Services;
 using Optional;
@@ -14,6 +15,7 @@ namespace UnitTests.Pages
         private readonly MockRepository repo;
         private readonly Mock<IThreadService> threadService;
         private readonly CatalogModel thread;
+        private readonly CancellationToken ct = CancellationToken.None;
 
         public CatalogShould()
         {
@@ -30,12 +32,12 @@ namespace UnitTests.Pages
         {
             var boardId = Guid.NewGuid();
 
-            this.threadService.Setup(a => a.GetOrderedCatalogThreads("bee")).ReturnsT(Option.Some(
+            this.threadService.Setup(a => a.GetOrderedCatalogThreads("bee", ct)).ReturnsT(Option.Some(
                 new CatalogThreadOverViewSet(new Domain.Board(boardId, "b", "bbb"), new CatalogThreadOverView[] {
                     new CatalogThreadOverView(Guid.NewGuid(), "subject", new Domain.Board(boardId, "b", "board"), 
                         new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "IP", "comment", Option.None<Domain.File>())) })
             ));
-            thread.OnGet("bee").Wait();
+            thread.OnGet("bee", ct).Wait();
 
             this.repo.VerifyAll();
         }

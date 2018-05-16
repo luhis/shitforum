@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using Domain;
 using Domain.Repositories;
 using Optional;
+using Thread = Domain.Thread;
 
 namespace Persistence.Repositories
 {
@@ -22,9 +23,9 @@ namespace Persistence.Repositories
             return this.client.SaveChangesAsync();
         }
 
-        Task<Option<Thread>> IThreadRepository.GetById(Guid threadId)
+        Task<Option<Thread>> IThreadRepository.GetById(Guid threadId, CancellationToken cancellationToken)
         {
-            return this.client.Threads.SingleOrNone(a => a.Id == threadId);
+            return this.client.Threads.SingleOrNone(a => a.Id == threadId, cancellationToken);
         }
 
         IQueryable<Thread> IThreadRepository.GetAll()

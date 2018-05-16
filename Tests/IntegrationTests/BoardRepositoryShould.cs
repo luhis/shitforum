@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using Domain.Repositories;
 using FluentAssertions;
 using Persistence;
@@ -20,7 +21,7 @@ namespace IntegrationTests
         [Fact]
         public void Test()
         {
-            var r = boards.GetAll().Result;
+            var r = boards.GetAll(CancellationToken.None).Result;
             r.Should().NotBeNull();
             var arr = r.ToArray();
             arr.Should().NotBeNull();

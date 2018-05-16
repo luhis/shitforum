@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Domain;
 using Domain.IpHash;
@@ -24,16 +25,16 @@ namespace Services
             return this.bannedIpRepository.Ban(hash, reason, expiry);
         }
 
-        async Task<Option<IIpHash>> IUserService.GetHashForPost(Guid postId)
+        async Task<Option<IIpHash>> IUserService.GetHashForPost(Guid postId, CancellationToken cancellationToken)
         {
-            var post = await this.postRepository.GetById(postId);
+            var post = await this.postRepository.GetById(postId, cancellationToken);
                 
             return post.Match(some => Option.Some<IIpHash>(new IpHash(some.IpAddress)), Option.None<IIpHash>);
         }
 
-        Task<IReadOnlyList<BannedIp>> IUserService.GetAllBans()
+        Task<IReadOnlyList<BannedIp>> IUserService.GetAllBans(CancellationToken cancellationToken)
         {
-            return this.bannedIpRepository.GetAll();
+            return this.bannedIpRepository.GetAll(cancellationToken);
         }
     }
 }
