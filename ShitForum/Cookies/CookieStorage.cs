@@ -7,15 +7,14 @@ namespace ShitForum.Cookies
 {
     public class CookieStorage : ICookieStorage
     {
-        private readonly IHostingEnvironment env;
-
         public CookieStorage(IHostingEnvironment env)
         {
-            this.env = env;
+            this.options = new CookieOptions() {HttpOnly = true, Secure = (!env.IsDevelopment())};
         }
 
         private const string CookieName = "name";
         private const string CookieAdmin = "adminKey";
+        private readonly CookieOptions options;
 
         void ICookieStorage.SetNameCookie(HttpResponse r,string name)
         {
@@ -25,7 +24,7 @@ namespace ShitForum.Cookies
             }
             else
             {
-                r.Cookies.Append(CookieName, name, new CookieOptions() {HttpOnly = true, Secure=(!env.IsDevelopment()) });
+                r.Cookies.Append(CookieName, name, options);
             }
         }
 
@@ -33,7 +32,7 @@ namespace ShitForum.Cookies
 
         void ICookieStorage.SetAdminCookie(HttpResponse r, Guid key)
         {
-            r.Cookies.Append(CookieAdmin, key.ToString(), new CookieOptions() { HttpOnly = true, Secure = (!env.IsDevelopment()) });
+            r.Cookies.Append(CookieAdmin, key.ToString(), options);
         }
 
         Option<Guid> ICookieStorage.ReadAdmin(HttpRequest r)
