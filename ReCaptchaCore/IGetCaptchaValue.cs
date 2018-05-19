@@ -2,7 +2,6 @@
 
 namespace ReCaptchaCore
 {
-
     public interface IGetCaptchaValue
     {
         string Get(HttpRequest req);
