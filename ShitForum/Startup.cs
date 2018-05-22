@@ -34,13 +34,7 @@ namespace ShitForum
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.Events.OnRedirectToLogin = context =>
-                    {
-                        context.RedirectUri = "~/Login";
-                        context.Response.Headers["Location"] = "~/Login";
-                        context.Response.StatusCode = 401;
-                        return Task.CompletedTask;
-                    };
+                    options.AccessDeniedPath = "/Login";
                 });
         }
 
