@@ -13,5 +13,9 @@ namespace Domain.Repositories
         Task<Option<Board>> GetById(Guid boardId, CancellationToken cancellationToken);
 
         Task<Option<Board>> GetByKey(string key, CancellationToken cancellationToken);
+
+        Task Remove(Board board);
+
+        Task Add(Board board);
     }
 }

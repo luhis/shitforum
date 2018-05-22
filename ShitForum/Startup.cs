@@ -36,7 +36,8 @@ namespace ShitForum
                 {
                     options.Events.OnRedirectToLogin = context =>
                     {
-                        context.Response.Headers["Location"] = "~/Admin";
+                        context.RedirectUri = "~/Login";
+                        context.Response.Headers["Location"] = "~/Login";
                         context.Response.StatusCode = 401;
                         return Task.CompletedTask;
                     };

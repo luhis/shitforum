@@ -12,6 +12,7 @@ namespace Services
 {
     public interface IPostService
     {
+        //todo primitive obsession
         Task<OneOf<Success, Banned, ImageCountExceeded, PostCountExceeded>> Add(Guid postId, Guid threadId, TripCodedName name, string comment, bool isSage, IIpHash ipAddress, Option<File> file, CancellationToken cancellationToken);
 
         Task<Option<PostContextView>> GetById(Guid id, CancellationToken cancellationToken);

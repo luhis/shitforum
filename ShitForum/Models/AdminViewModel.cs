@@ -6,17 +6,15 @@ namespace ShitForum.Models
 {
     public class AdminViewModel
     {
-        public AdminViewModel(string message, bool isAdmin, IReadOnlyList<BannedImage> bannedImages, IReadOnlyList<BannedIp> bannedUsers)
+        public AdminViewModel(IReadOnlyList<BannedImage> bannedImages, IReadOnlyList<BannedIp> bannedUsers, IReadOnlyList<Board> boards)
         {
-            Message = EnsureArg.IsNotNull(message, nameof(message));
-            IsAdmin = isAdmin;
             BannedImages = EnsureArg.IsNotNull(bannedImages, nameof(bannedImages));
             BannedUsers = EnsureArg.IsNotNull(bannedUsers, nameof(bannedUsers));
+            Boards = EnsureArg.IsNotNull(boards, nameof(boards));
         }
-
-        public string Message { get; }
-        public bool IsAdmin { get; }
+        
         public IReadOnlyList<BannedImage> BannedImages { get; }
         public IReadOnlyList<BannedIp> BannedUsers { get; }
+        public IReadOnlyList<Board> Boards { get; }
     }
 }

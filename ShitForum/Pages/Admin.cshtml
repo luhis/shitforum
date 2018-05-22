@@ -11,30 +11,53 @@
 </nav>
 
 <h2>Admin</h2>
-@Model.Model.Message
+
+<hr />
+<div class="row">
+    <div class="col"><h6>Banned IPs - @(Model.Model.BannedUsers.Count)</h6></div>
+</div>
+@foreach (var a in Model.Model.BannedUsers)
+{
+    <div class="row">
+        <div class="col-4">@a.IpHash</div>
+        <div class="col-4">@a.Expiry</div>
+        <div class="col-4">@a.Reason</div>
+    </div>
+}
+<hr />
+<div class="row">
+    <div class="col"><h6>Banned Images - @(Model.Model.BannedImages.Count)</h6></div>
+</div>
+@foreach (var a in Model.Model.BannedImages)
+{
+    <div class="row">
+        <div class="col-6">@a.Hash</div>
+        <div class="col-6">@a.Reason</div>
+    </div>
+}
+<hr />
+<div class="row">
+    <div class="col">
+        <h6>Boards - @(Model.Model.Boards.Count)</h6>
+    </div>
+</div>
+@foreach (var board in Model.Model.Boards)
+{
+    <div class="row">
+        <div class="col-4">@board.BoardKey</div>
+        <div class="col-4">@board.BoardName</div>
+        <div class="col-4">
+            <form method="post">
+                <input type="hidden" name="boardId" value="@board.Id" />
+                <button class="btn btn-primary" asp-page-handler="Delete">Delete</button>
+            </form>
+        </div>
+    </div>
+}
 <div asp-validation-summary="All"></div>
 <form method="post">
-    <input name="key" placeholder="Key" />
-    <input class="btn btn-primary" type="submit" />
+    <div class="form-group">Key: <input class="form-control" asp-for="Board.BoardKey" /></div>
+    <div class="form-group">Name: <input class="form-control" asp-for="Board.BoardName" /></div>
+    <button class="btn btn-primary" asp-page-handler="AddBoard">Submit</button>
 </form>
 
-@if (Model.Model.IsAdmin)
-{
-    <div class="row"><div class="col">Banned IPs - @Model.Model.BannedUsers.Count</div></div>
-    foreach (var a in Model.Model.BannedUsers)
-    {
-        <div class="row">
-            <div class="col-4">@a.IpHash</div>
-            <div class="col-4">@a.Expiry</div>
-            <div class="col-4">@a.Reason</div>
-        </div>
-    }
-    <div class="row"><div class="col">Banned Images - @Model.Model.BannedImages.Count</div></div>
-    foreach (var a in Model.Model.BannedImages)
-    {
-        <div class="row">
-            <div class="col-6">@a.Hash</div>
-            <div class="col-6">@a.Reason</div>
-        </div>
-    }
-}

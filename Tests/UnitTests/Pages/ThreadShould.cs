@@ -15,10 +15,10 @@ using Services.Dtos;
 using Services.Results;
 using OneOf;
 using Domain.IpHash;
-using ShitForum;
 using ShitForum.BannedImageLogger;
 using ShitForum.Cookies;
 using ShitForum.GetIp;
+using ShitForum.IsAdmin;
 using UnitTests.Tooling;
 
 namespace UnitTests.Pages

@@ -5,6 +5,7 @@ using ShitForum.GetIp;
 using ShitForum.Hasher;
 using ShitForum.ImageValidation;
 using Persistence;
+using ShitForum.IsAdmin;
 using ShitForum.SettingsObjects;
 
 namespace ShitForum
@@ -16,7 +17,7 @@ namespace ShitForum
             services.AddSingleton<IValidateImage, ValidateImage>();
             services.AddSingleton<IShitForumDbConfig, ShitForumDbConfig>();
             services.AddSingleton<ICookieStorage, CookieStorage>();
-            services.AddSingleton<IIsAdmin, IsAdmin>();
+            services.AddSingleton<IIsAdmin, IsAdmin.IsAdmin>();
             services.AddSingleton<IBannedImageLogger, BannedImageLogger.BannedImageLogger>();
             services.AddSingleton<IGetIp, GetIp.GetIp>();
             services.AddSingleton<IpHasherFactory>();

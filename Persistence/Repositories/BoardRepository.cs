@@ -31,5 +31,17 @@ namespace Persistence.Repositories
         {
             return client.Boards.SingleOrNone(a => a.BoardKey == key, cancellationToken);
         }
+
+        Task IBoardRepository.Remove(Board board)
+        {
+            this.client.Boards.Remove(board);
+            return client.SaveChangesAsync();
+        }
+
+        Task IBoardRepository.Add(Board board)
+        {
+            this.client.Boards.Add(board);
+            return client.SaveChangesAsync();
+        }
     }
 }

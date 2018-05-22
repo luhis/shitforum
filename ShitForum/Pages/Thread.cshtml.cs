@@ -11,6 +11,7 @@ using ShitForum.BannedImageLogger;
 using ShitForum.Cookies;
 using ShitForum.GetIp;
 using ShitForum.Hasher;
+using ShitForum.IsAdmin;
 using ShitForum.Mappers;
 using ShitForum.Models;
 

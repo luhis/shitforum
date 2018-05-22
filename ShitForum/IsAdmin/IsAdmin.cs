@@ -1,13 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using ShitForum.Cookies;
 
-namespace ShitForum
+namespace ShitForum.IsAdmin
 {
-    public interface IIsAdmin
-    {
-        bool IsAdmin(HttpContext httpContext);
-    }
-
     public class IsAdmin : IIsAdmin
     {
         private readonly ICookieStorage cookieStorage;
@@ -35,5 +30,4 @@ namespace ShitForum
             }, () => false);
         }
     }
-
 }

@@ -25,10 +25,6 @@ namespace ShitForum.Attributes
                 {
                     context.Result = new ForbidResult();
                 }
-                else
-                {
-                    return;
-                }
             }, () => context.Result = new ForbidResult());
         }
 
