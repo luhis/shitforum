@@ -2,6 +2,7 @@
 using System.Threading;
 using Domain.Repositories;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Repositories;
 using Xunit;
@@ -14,7 +15,8 @@ namespace IntegrationTests
 
         public BoardRepositoryShould()
         {
-            var cf = new ForumContext(new Config("../ShitForum.db"));
+            var cf = new ForumContext(new DbContextOptionsBuilder<ForumContext>()
+                .UseSqlite("Data Source=../ShitForum.db").Options);
             this.boards = new BoardRepository(cf);
         }
 

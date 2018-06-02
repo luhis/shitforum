@@ -7,11 +7,8 @@ namespace Persistence
 {
     public class ForumContext : DbContext
     {
-        private readonly string DbLocation;
-
-        public ForumContext(IShitForumDbConfig config)
+        public ForumContext(DbContextOptions options) : base(options)
         {
-            this.DbLocation = config.DbLocation;
         }
 
         public DbSet<Board> Boards { get; private set; }
@@ -20,11 +17,6 @@ namespace Persistence
         public DbSet<File> Files { get; private set; }
         public DbSet<BannedImage> BannedImages { get; private set; }
         public DbSet<BannedIp> BannedIp { get; private set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlite($"Data Source={DbLocation}");
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

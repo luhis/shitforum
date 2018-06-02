@@ -14,7 +14,6 @@ namespace UnitTests.Mappers
             res.NoNoko.Should().BeFalse();
         }
 
-
         [Fact]
         public void FindSAGE()
         {
