@@ -1,16 +1,16 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Services.Dtos;
 
-namespace ShitForum.Hasher
+namespace Hashers
 {
     public class TripCodeHasher
     {
         private readonly Guid salt;
 
-        private static IEnumerable<string> Break(string s, string breakOn) => s.Split(breakOn, 2);
+        private static string[] Break(string s, string breakOn) => s.Split(breakOn.ToCharArray(), 2);
 
         private readonly IReadOnlyDictionary<string, Func<string, string>> rules;
 
@@ -21,7 +21,7 @@ namespace ShitForum.Hasher
             {
                 {"##", s =>
                     {
-                        var broken = Break(s, "##").ToArray();
+                        var broken = Break(s, "##");
                         return broken[0] + "!!" + Repeater.DoXTimes(salt + broken[1], Sha256Hasher.Hash, 10);
                     }
                 },
@@ -29,7 +29,7 @@ namespace ShitForum.Hasher
                     "#",
                     s =>
                     {
-                        var broken = Break(s, "#").ToArray();
+                        var broken = Break(s, "#");
                         return broken[0] + "!" + Repeater.DoXTimes(broken[1], Sha256Hasher.Hash, 10);
                     }
                 },

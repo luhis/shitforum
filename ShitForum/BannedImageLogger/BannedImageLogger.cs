@@ -3,7 +3,7 @@ using System.Net;
 using Domain.IpHash;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
-using ShitForum.ImageValidation;
+using ImageValidation;
 
 namespace ShitForum.BannedImageLogger
 {

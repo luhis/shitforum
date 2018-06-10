@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Moq;
 using Optional;
 using Services;
-using ShitForum.Hasher;
+using Hashers;
 using ShitForum.Models;
 using ShitForum.Pages;
 using System;
@@ -70,7 +70,7 @@ namespace UnitTests.Pages
                         {
                             new ThreadOverView(Guid.NewGuid(), "subject",
                                 new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "IP", "comment",
-                                    Option.None<Domain.File>()), new List<PostOverView>() { }, new ThreadOverViewStats(1, 1))
+                                    Option.None<Domain.File>()), new List<PostOverView> { }, new ThreadOverViewStats(1, 1))
                         }, new PageData(1, 11))));
 
             this.cookieStorage.Setup(a => a.ReadName(It.IsAny<HttpRequest>())).Returns("Matt");
@@ -109,7 +109,7 @@ namespace UnitTests.Pages
             this.threadService.Setup(a => a.GetOrderedThreads("bee", Option.None<string>(), 100, 1, ct))
                 .ReturnsT(Option.Some(new ThreadOverViewSet(new Board(boardId, "bbbb", "b"), new List<ThreadOverView>(), new PageData(1, 11))));
             this.bannedImageLogger.Setup(a => a.Log(null, IPAddress.Loopback, It.IsAny<IIpHash>()));
-            this.postService.Setup(a => 
+            this.postService.Setup(a =>
                 a.AddThread(It.IsAny<Guid>(), It.IsAny<Guid>(), boardId,
                     "subject", It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IpUnHashed>(), It.IsAny<Option<File>>(), ct)).
                 ReturnsT(OneOf<Success, Banned>.FromT0(new Success()));
@@ -136,7 +136,7 @@ namespace UnitTests.Pages
                         {
                             new ThreadOverView(Guid.NewGuid(), "subject",
                                 new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "IP", "comment",
-                                    Option.None<File>()), new List<PostOverView>() { }, new ThreadOverViewStats(1, 1))
+                                    Option.None<File>()), new List<PostOverView> { }, new ThreadOverViewStats(1, 1))
                         }, new PageData(1, 11))));
             this.bannedImageLogger.Setup(a =>
                 a.Log(It.IsAny<ModelStateEntry>(), IPAddress.Loopback, It.IsAny<IIpHash>()));

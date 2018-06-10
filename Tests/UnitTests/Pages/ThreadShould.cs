@@ -1,5 +1,5 @@
 ﻿using Moq;
-using ShitForum.Hasher;
+using Hashers;
 using ShitForum.Pages;
 using System;
 using System.Collections.Generic;
@@ -53,7 +53,7 @@ namespace UnitTests.Pages
                 this.getIp.Object,
                 this.threadService.Object,
                 this.postService.Object,
-                this.bannedImageLogger.Object, 
+                this.bannedImageLogger.Object,
                 iIsAdmin.Object)
             { PageContext = new Microsoft.AspNetCore.Mvc.RazorPages.PageContext(), };
         }

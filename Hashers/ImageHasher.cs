@@ -1,9 +1,9 @@
-﻿using Domain;
+using Domain;
 using EnsureThat;
 using System;
 using System.Security.Cryptography;
 
-namespace ShitForum.Hasher
+namespace Hashers
 {
     public static class ImageHasher
     {

@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using Microsoft.Extensions.Configuration;
 
-namespace ShitForum.Hasher
+namespace Hashers
 {
     public class IpHasherFactory
     {

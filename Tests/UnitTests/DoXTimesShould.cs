@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using ShitForum.Hasher;
+using Hashers;
 using Xunit;
 
 namespace UnitTests

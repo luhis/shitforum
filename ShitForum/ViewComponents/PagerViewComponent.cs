@@ -8,7 +8,7 @@ namespace ShitForum.ViewComponents
     {
         public IViewComponentResult Invoke(int pageNumber, int numberOfPages)
         {
-            var ps = Enumerable.Range(pageNumber -2, 5).Where(a => a >= 1 && a <= numberOfPages).ToList();
+            var ps = Enumerable.Range(pageNumber - 2, 5).Where(a => a >= 1 && a <= numberOfPages).ToList();
             return View(new PagerViewModel(pageNumber, ps, numberOfPages));
         }
     }

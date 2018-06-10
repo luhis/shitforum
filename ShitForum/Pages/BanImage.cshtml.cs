@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Services;
 using Services.Dtos;
 using ShitForum.Attributes;
-using ShitForum.Hasher;
+using Hashers;
 
 namespace ShitForum.Pages
 {

@@ -1,11 +1,10 @@
-﻿using Optional;
+using Optional;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 
-using ResType = OneOf.OneOf<ShitForum.ImageValidation.Pass, ShitForum.ImageValidation.SizeExceeded, ShitForum.ImageValidation.InvalidImage, ShitForum.ImageValidation.BannedImage>;
+using ResType = OneOf.OneOf<ImageValidation.Pass, ImageValidation.SizeExceeded, ImageValidation.InvalidImage, ImageValidation.BannedImage>;
 
-namespace ShitForum.ImageValidation
+namespace ImageValidation
 {
     public interface IValidateImage
     {

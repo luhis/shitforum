@@ -1,16 +1,16 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain.Repositories;
+using Hashers;
 using Microsoft.Extensions.Logging;
 using Optional;
-using ShitForum.Hasher;
 using SixLabors.ImageSharp;
 
-using ResType = OneOf.OneOf<ShitForum.ImageValidation.Pass, ShitForum.ImageValidation.SizeExceeded, ShitForum.ImageValidation.InvalidImage, ShitForum.ImageValidation.BannedImage>;
+using ResType = OneOf.OneOf<ImageValidation.Pass, ImageValidation.SizeExceeded, ImageValidation.InvalidImage, ImageValidation.BannedImage>;
 
-namespace ShitForum.ImageValidation
+namespace ImageValidation
 {
     public class ValidateImage : IValidateImage
     {

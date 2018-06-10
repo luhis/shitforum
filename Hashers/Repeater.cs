@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Net;
 using Domain.IpHash;
 
-namespace ShitForum.Hasher
+namespace Hashers
 {
 
     public static class Repeater

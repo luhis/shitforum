@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Services.Dtos;
-using ShitForum.Hasher;
+using Hashers;
 using Xunit;
 
 namespace UnitTests

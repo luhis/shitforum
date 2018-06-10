@@ -1,4 +1,4 @@
-﻿namespace ShitForum.ImageValidation
+namespace ImageValidation
 {
     public class SizeExceeded
     {
