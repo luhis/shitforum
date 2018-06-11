@@ -27,13 +27,6 @@ namespace ImageValidation
 
         public static readonly string BannedImageString = "Banned image";
 
-        Option<string> IValidateImage.MapToErrorString(ResType r) =>
-            r.Match(
-                _ => Option.None<string>(),
-                s => Option.Some<string>($"Image must not exceed {s.MaxSize} bytes"),
-                _ => Option.Some<string>("Invalid image format"),
-                _ => Option.Some<string>(BannedImageString));
-
         Task<ResType> IValidateImage.ValidateAsync(Option<byte[]> data)
         {
             return data.Match(async some =>

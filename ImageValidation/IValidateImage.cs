@@ -9,7 +9,6 @@ namespace ImageValidation
     public interface IValidateImage
     {
         Task<ResType> ValidateAsync(Option<byte[]> data);
-        Option<string> MapToErrorString(ResType r);
         IEnumerable<string> AllowedExtensions();
     }
 }
