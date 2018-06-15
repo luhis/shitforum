@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
-using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Processing.Transforms;
 
@@ -15,7 +14,7 @@ namespace ShitForum
 
             using (var ms = new MemoryStream())
             {
-                using (Image<Rgba32> image = Image.Load(input))
+                using (var image = Image.Load(input))
                 {
                     image.Mutate(x => x
                         .Resize(size, size));
