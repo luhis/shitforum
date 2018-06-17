@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Persistence;
 using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ShitForum
@@ -24,6 +23,7 @@ namespace ShitForum
             Persistence.DIModule.Add(services);
             Services.DIModule.Add(services);
             ReCaptchaCore.DIModule.Add(services);
+            ThumbNailer.DIModule.Add(services);
             ShitForum.DIModule.Add(services);
 
             services.Configure<RouteOptions>(options => {

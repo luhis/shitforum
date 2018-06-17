@@ -10,6 +10,7 @@ using ImageValidation;
 using Persistence;
 using ShitForum.IsAdmin;
 using ShitForum.SettingsObjects;
+using ShitForum.Mappers;
 
 namespace ShitForum
 {
@@ -21,6 +22,7 @@ namespace ShitForum
         public static void Add(IServiceCollection services)
         {
             services.AddSingleton<IValidateImage, ValidateImage>();
+            services.AddSingleton<IUploadMapper, UploadMapper>();
             services.AddSingleton<DbContextOptions>(GetDbOptions);
             services.AddSingleton<ICookieStorage, CookieStorage>();
             services.AddSingleton<IIsAdmin, IsAdmin.IsAdmin>();

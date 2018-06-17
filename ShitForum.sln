@@ -25,9 +25,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		readme.md = readme.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageValidation", "ImageValidation\ImageValidation.csproj", "{F20369E4-24D1-4AF8-B0DE-4FA34AAAEC71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageValidation", "ImageValidation\ImageValidation.csproj", "{F20369E4-24D1-4AF8-B0DE-4FA34AAAEC71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashers", "Hashers\Hashers.csproj", "{8BDFF404-2C37-4802-A454-E5862E7B319B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hashers", "Hashers\Hashers.csproj", "{8BDFF404-2C37-4802-A454-E5862E7B319B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThumbNailer", "ThumbNailer\ThumbNailer.csproj", "{9F5BFBD1-C75D-43D9-AC95-EE92B0E1A77D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +73,10 @@ Global
 		{8BDFF404-2C37-4802-A454-E5862E7B319B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BDFF404-2C37-4802-A454-E5862E7B319B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8BDFF404-2C37-4802-A454-E5862E7B319B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F5BFBD1-C75D-43D9-AC95-EE92B0E1A77D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F5BFBD1-C75D-43D9-AC95-EE92B0E1A77D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F5BFBD1-C75D-43D9-AC95-EE92B0E1A77D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F5BFBD1-C75D-43D9-AC95-EE92B0E1A77D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

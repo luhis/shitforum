@@ -16,6 +16,7 @@ namespace UnitTests
                     new KeyValuePair<string, string>("TripCodeSalt", "20849c9c-6960-44a6-9f2d-51cc17ef0ee4"),
                     new KeyValuePair<string, string>("IpHash:Enable", "true"),
                     new KeyValuePair<string, string>("IpHash:Salt", "20849c9c-6960-44a6-9f2d-51cc17ef0ee5"),
+                    new KeyValuePair<string, string>("FfmpegLocation", "C:\\ProgramData\\chocolatey\\lib\\ffmpeg\\tools\\ffmpeg\\bin\\ffmpeg.exe"),
                 }
             };
             builder.Add(a);

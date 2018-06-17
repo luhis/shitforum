@@ -20,6 +20,8 @@ using ShitForum.Cookies;
 using ShitForum.GetIp;
 using ShitForum.IsAdmin;
 using UnitTests.Tooling;
+using ShitForum.Mappers;
+using ThumbNailer;
 
 namespace UnitTests.Pages
 {
@@ -33,6 +35,7 @@ namespace UnitTests.Pages
         private readonly Mock<IPostService> postService;
         private readonly Mock<IBannedImageLogger> bannedImageLogger;
         private readonly Mock<IIsAdmin> iIsAdmin;
+        private readonly IUploadMapper uploadMapper;
         private readonly CancellationToken ct = CancellationToken.None;
 
         public ThreadShould()
@@ -45,6 +48,7 @@ namespace UnitTests.Pages
             this.postService = this.repo.Create<IPostService>();
             this.bannedImageLogger = this.repo.Create<IBannedImageLogger>();
             this.iIsAdmin = this.repo.Create<IIsAdmin>();
+            this.uploadMapper = new UploadMapper(new Thumbnailer(conf));
 
             this.thread = new ThreadModel(
                 new IpHasherFactory(conf),
@@ -54,7 +58,8 @@ namespace UnitTests.Pages
                 this.threadService.Object,
                 this.postService.Object,
                 this.bannedImageLogger.Object,
-                iIsAdmin.Object)
+                this.iIsAdmin.Object,
+                this.uploadMapper)
             { PageContext = new Microsoft.AspNetCore.Mvc.RazorPages.PageContext(), };
         }
 

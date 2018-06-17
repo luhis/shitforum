@@ -41,19 +41,19 @@ namespace ImageValidation
                     return new BannedImage();
                 }
 
-                try
-                {
-                    Image.Load(some);
-                }
-                catch (Exception)
-                {
-                    return new InvalidImage();
-                }
+                ////try
+                ////{
+                ////    Image.Load(some);
+                ////}
+                ////catch (Exception)
+                ////{
+                ////    return new InvalidImage();
+                ////}
 
                 return new Pass();
             }, () => Task.FromResult<ResType>(new Pass()));
         }
 
-        IEnumerable<string> IValidateImage.AllowedExtensions() => new List<string>() { ".jpg", ".png", ".gif" };
+        IReadOnlyList<string> IValidateImage.AllowedExtensions() => new List<string>() { ".jpg", ".png", ".gif", ".webm" };
     }
 }

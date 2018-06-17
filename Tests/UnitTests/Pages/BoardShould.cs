@@ -20,8 +20,10 @@ using OneOf;
 using ShitForum.BannedImageLogger;
 using ShitForum.Cookies;
 using ShitForum.GetIp;
+using ShitForum.Mappers;
 using UnitTests.Tooling;
 using File = Domain.File;
+using ThumbNailer;
 
 namespace UnitTests.Pages
 {
@@ -34,6 +36,7 @@ namespace UnitTests.Pages
         private readonly Mock<IThreadService> threadService;
         private readonly Mock<IPostService> postService;
         private readonly Mock<IBannedImageLogger> bannedImageLogger;
+        private readonly IUploadMapper uploadMapper;
         private readonly CancellationToken ct = CancellationToken.None;
 
         public BoardShould()
@@ -45,6 +48,7 @@ namespace UnitTests.Pages
             this.threadService = this.repo.Create<IThreadService>();
             this.postService = this.repo.Create<IPostService>();
             this.bannedImageLogger = this.repo.Create<IBannedImageLogger>();
+            this.uploadMapper = new UploadMapper(new Thumbnailer(conf));
 
             this.board = new BoardModel(
                 new IpHasherFactory(conf),
@@ -53,7 +57,8 @@ namespace UnitTests.Pages
                 this.getIp.Object,
                 this.threadService.Object,
                 this.postService.Object,
-                this.bannedImageLogger.Object)
+                this.bannedImageLogger.Object,
+                this.uploadMapper)
             { PageContext = new Microsoft.AspNetCore.Mvc.RazorPages.PageContext(), };
         }
 

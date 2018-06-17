@@ -26,15 +26,17 @@ namespace ShitForum.Pages
         private readonly IThreadService threadService;
         private readonly IPostService postService;
         private readonly IBannedImageLogger bannedImageLogger;
+        private readonly IUploadMapper uploadMapper;
 
         public BoardModel(
-            IpHasherFactory ipHasherFactory, 
+            IpHasherFactory ipHasherFactory,
             TripCodeHasher tripCodeHasher,
             ICookieStorage cookieStorage,
-            IGetIp getIp, 
+            IGetIp getIp,
             IThreadService threadService,
             IPostService postService,
-            IBannedImageLogger bannedImageLogger)
+            IBannedImageLogger bannedImageLogger,
+            IUploadMapper uploadMapper)
         {
             this.ipHasher = ipHasherFactory.GetHasher();
             this.tripCodeHasher = tripCodeHasher;
@@ -43,6 +45,7 @@ namespace ShitForum.Pages
             this.threadService = threadService;
             this.postService = postService;
             this.bannedImageLogger = bannedImageLogger;
+            this.uploadMapper = uploadMapper;
         }
 
         public async Task<IActionResult> OnGet(string boardKey, string filter, CancellationToken cancellationToken, int pageNumber = 1)
@@ -91,7 +94,7 @@ namespace ShitForum.Pages
                 var postId = Guid.NewGuid();
                 var trip = tripCodeHasher.Hash(StringFuncs.MapString(this.Thread.Name, "anonymous"));
                 var options = OptionsMapper.Map(this.Thread.Options);
-                var f = UploadMapper.Map(this.Thread.File, postId);
+                var f = uploadMapper.Map(this.Thread.File, postId);
 
                 var result = await this.postService.AddThread(postId, threadId, this.Thread.BoardId, this.Thread.Subject ?? string.Empty, trip, this.Thread.Comment, options.Sage, ipHash, f, cancellationToken);
 

@@ -39,7 +39,7 @@ namespace UnitTests
         public void SecureHashTheCode()
         {
             var res = hasher.Hash("Matt M ##abcdefg");
-            res.Should().BeEquivalentTo(new TripCodedName("Matt M !!Jtgr1iw+iOJ/KKq6nvRKwxwBUGOPmeogezudsZDQSXg="));
+            res.Should().BeEquivalentTo(new TripCodedName("Matt M !!bG++RzsrUa9zadnPIIbnXvqZaFQiFOq+R0j+6gZ3/BA="));
         }
     }
 }

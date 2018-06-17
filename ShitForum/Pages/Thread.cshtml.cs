@@ -28,6 +28,7 @@ namespace ShitForum.Pages
         private readonly IPostService postService;
         private readonly IBannedImageLogger bannedImageLogger;
         private readonly IIsAdmin isAdmin;
+        private readonly IUploadMapper uploadMapper;
 
         public ThreadModel(
             IpHasherFactory ipHasherFactory,
@@ -37,7 +38,8 @@ namespace ShitForum.Pages
             IThreadService threadService,
             IPostService postService,
             IBannedImageLogger bannedImageLogger,
-            IIsAdmin isAdmin)
+            IIsAdmin isAdmin,
+            IUploadMapper uploadMapper)
         {
             this.ipHasher = ipHasherFactory.GetHasher();
             this.tripCodeHasher = tripCodeHasher;
@@ -47,6 +49,7 @@ namespace ShitForum.Pages
             this.postService = postService;
             this.bannedImageLogger = bannedImageLogger;
             this.isAdmin = isAdmin;
+            this.uploadMapper = uploadMapper;
         }
 
         public ThreadDetailView Thread { get; private set; }
@@ -92,7 +95,7 @@ namespace ShitForum.Pages
                     var trip = tripCodeHasher.Hash(StringFuncs.MapString(this.Post.Name, "anonymous"));
                     var options = OptionsMapper.Map(this.Post.Options);
                     var postId = Guid.NewGuid();
-                    var f = UploadMapper.Map(this.Post.File, postId);
+                    var f = uploadMapper.Map(this.Post.File, postId);
                     var result = await this.postService.Add(postId, this.Post.ThreadId, trip, this.Post.Comment, options.Sage,
                         ipHash, f, cancellationToken);
                     return result.Match(

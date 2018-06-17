@@ -9,6 +9,6 @@ namespace ImageValidation
     public interface IValidateImage
     {
         Task<ResType> ValidateAsync(Option<byte[]> data);
-        IEnumerable<string> AllowedExtensions();
+        IReadOnlyList<string> AllowedExtensions();
     }
 }
