@@ -17,4 +17,10 @@
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0003" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Optional">
+      <HintPath>..\..\..\..\..\.nuget\packages\optional\4.0.0\lib\netstandard2.0\Optional.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
