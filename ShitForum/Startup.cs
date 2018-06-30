@@ -7,12 +7,13 @@ using Microsoft.Extensions.Logging;
 using Persistence;
 using System;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using ThumbNailer;
 
 namespace ShitForum
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, ILogger<Startup> logger)
+        public Startup(ILogger<Startup> logger)
         {
             logger.LogInformation($"Starting up ShitForum {DateTime.UtcNow}");
         }
@@ -39,7 +40,7 @@ namespace ShitForum
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
@@ -72,6 +73,12 @@ namespace ShitForum
 
             var fac = app.ApplicationServices.GetService<ForumContext>();
             fac.SeedData().Wait();
+
+            var thumbNailer = app.ApplicationServices.GetService<IThumbNailer>();
+            if (!thumbNailer.IsSettingValid())
+            {
+                logger.LogInformation("cannot locate FFMPEG executable.");
+            }
         }
     }
 }

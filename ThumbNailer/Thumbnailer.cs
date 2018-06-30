@@ -20,20 +20,20 @@ namespace ThumbNailer
         private const int Size = 150;
 
         private readonly string ffmpegLocation;
-        private readonly Func<string, byte[], byte[]> Match; 
+        private readonly Func<string, byte[], byte[]> preThumbNailingProcess;
 
-        public Thumbnailer(IConfiguration configurtion)
+        public Thumbnailer(IConfiguration configuration)
         {
-            this.ffmpegLocation = configurtion.GetSection("FfmpegLocation").Get<string>();
+            this.ffmpegLocation = configuration.GetSection("FfmpegLocation").Get<string>();
             var caseOptions = new Dictionary<Option<string>, Func<byte[], byte[]>>()
             {
                 {Option.Some(".webm"), b => GetVideoThumbNail(b, ".webm")},
                 {Option.None<string>(), b => b},
             };
-            this.Match = (z, data) => FunctionalCase.Exec(caseOptions, ItemCompare, z, data);
+            this.preThumbNailingProcess = (z, data) => FunctionalCase.Exec(caseOptions, ItemCompare, z, data);
         }
 
-        private static bool ItemCompare(Option<string> o, string val) => 
+        private static bool ItemCompare(Option<string> o, string val) =>
             o.HasValue && string.Equals(o.ValueOrFailure(), val, StringComparison.InvariantCultureIgnoreCase);
 
         private static byte[] MakeFromImage(byte[] input) =>
@@ -51,7 +51,7 @@ namespace ThumbNailer
 
         bool IThumbNailer.IsSettingValid() => File.Exists(this.ffmpegLocation);
 
-        private T WithTempFile<T>(string extension, Func<string, T> f)
+        private static T WithTempFile<T>(string extension, Func<string, T> f)
         {
             var tempInputName = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + extension);
             var r = f(tempInputName);
@@ -59,7 +59,7 @@ namespace ThumbNailer
             return r;
         }
 
-        byte[] IThumbNailer.Make(byte[] input, string extension) => MakeFromImage(Match(extension, input));
+        byte[] IThumbNailer.Make(byte[] input, string extension) => MakeFromImage(preThumbNailingProcess(extension, input));
 
         private byte[] GetVideoThumbNail(byte[] input, string extension) =>
             WithTempFile(extension, inputFileName =>
@@ -73,8 +73,7 @@ namespace ThumbNailer
                         var outputFile = new MediaFile(outputFileName);
                         engine.GetThumbnail(inputFile, outputFile, options);
 
-                        var r = File.ReadAllBytes(outputFileName);
-                        return r;
+                        return File.ReadAllBytes(outputFileName);
                     })));
     }
 }
