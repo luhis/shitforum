@@ -20,18 +20,18 @@ namespace Persistence.Repositories
 
         Task IBannedIpRepository.Ban(IIpHash hash, string reason, DateTime expiry)
         {
-            this.client.BannedIp.Add(new BannedIp(Guid.NewGuid(), hash.Val, reason, expiry));
+            this.client.BannedIps.Add(new BannedIp(Guid.NewGuid(), hash.Val, reason, expiry));
             return this.client.SaveChangesAsync();
         }
 
         Task<IReadOnlyList<BannedIp>> IBannedIpRepository.GetAll(CancellationToken cancellationToken)
         {
-            return this.client.BannedIp.ToReadOnlyAsync(cancellationToken);
+            return this.client.BannedIps.ToReadOnlyAsync(cancellationToken);
         }
 
         Task<bool> IBannedIpRepository.IsBanned(IIpHash hash, CancellationToken cancellationToken)
         {
-            return this.client.BannedIp.AnyAsync(a => a.IpHash == hash.Val, cancellationToken);
+            return this.client.BannedIps.AnyAsync(a => a.IpHash == hash.Val, cancellationToken);
         }
     }
 }

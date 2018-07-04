@@ -1,0 +1,27 @@
+﻿@page
+@model AnalyticsModel
+@{
+    ViewData["Title"] = "Analytics";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-page="Index">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Analytics</li>
+    </ol>
+</nav>
+
+<h2>Analytics</h2>
+
+<hr />
+<div class="row">
+    <div class="col"><h6>Hits - @(Model.Model.Hits.Count)</h6></div>
+</div>
+@foreach (var a in Model.Model.Hits)
+{
+    <div class="row">
+        <div class="col-4">@a.Name</div>
+        <div class="col-4">@a.Hits</div>
+        <div class="col-4">@a.UniqueHits</div>
+    </div>
+}

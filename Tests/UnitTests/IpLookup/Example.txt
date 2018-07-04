@@ -1,0 +1,17 @@
+﻿{
+   "businessName" : "",
+   "businessWebsite" : "",
+   "city" : "Brighton",
+   "continent" : "Europe",
+   "country" : "United Kingdom",
+   "countryCode" : "GB",
+   "ipName" : "deadbeef.bb.sly.com",
+   "ipType" : "Residential",
+   "isp" : "Sly Broadband",
+   "lat" : "50.0",
+   "lon" : "-0.0",
+   "org" : "Sly UK Limited",
+   "query" : "1.1.1.1",
+   "region" : "Brighton and Hove",
+   "status" : "success"
+}

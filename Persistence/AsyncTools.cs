@@ -13,7 +13,7 @@ namespace Persistence
     {
         public static async Task<IReadOnlyList<T>> ToReadOnlyAsync<T>(this DbSet<T> set, CancellationToken cancellationToken) where T : class
         {
-           return (IReadOnlyList<T>) await set.ToListAsync(cancellationToken);
+           return await set.ToListAsync(cancellationToken);
         }
 
         public static async Task<Option<T>> SingleOrNone<T>(this DbSet<T> set, Expression<Func<T, bool>> f, CancellationToken cancellationToken) where T : class

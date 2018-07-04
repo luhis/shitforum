@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ExtremeIpLookup\ExtremeIpLookup.csproj" />
     <ProjectReference Include="..\..\ShitForum\ShitForum.csproj" />
   </ItemGroup>
 

@@ -11,7 +11,7 @@ namespace UnitTests.Repositories
 {
     public class BoardRepositoryShould
     {
-        private static readonly Guid BId = new System.Guid("1f5f47db-dd27-4b58-9229-4ae72829621e");
+        private static readonly Guid BId = new Guid("1f5f47db-dd27-4b58-9229-4ae72829621e");
         private static IBoardRepository MakeRepo(ForumContext ctx) => new BoardRepository(ctx);
 
         [Fact]

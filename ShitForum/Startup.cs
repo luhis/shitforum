@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Persistence;
 using System;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ThumbNailer;
+using ShitForum.Analytics;
 
 namespace ShitForum
 {
@@ -68,6 +68,7 @@ namespace ShitForum
             app.UseXContentTypeOptions();
             app.UseXDownloadOptions();
             app.UseRedirectValidation();
+            app.UseAnalyticsMiddleware();
 
             app.UseMvc();
 

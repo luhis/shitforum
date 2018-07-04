@@ -131,7 +131,7 @@ namespace UnitTests
                 new Post(postId, threadId, DateTime.UtcNow, "matt", "comment", false, "::0")));
             this.threadRepository.Setup(a => a.GetById(threadId, ct)).ReturnsT(Option.Some(new Thread(threadId, boardId, "")));
             this.boardRepository.Setup(a => a.GetById(boardId, ct)).ReturnsT(Option.Some(new Board(boardId, "tezt", "pol")));
-            this.fileRepository.Setup(a => a.GetPostFile(postId, ct)).ReturnsT(Option.Some(new File()));
+            this.fileRepository.Setup(a => a.GetPostFile(postId, ct)).ReturnsT(Option.Some(new File(Guid.NewGuid(), "file.jpg", new byte[0], new byte[0], "jpg")));
 
             var r = this.ps.GetById(postId, ct).Result;
             r.Should().NotBeNull();
@@ -149,7 +149,7 @@ namespace UnitTests
                 new Post(postId, threadId, DateTime.UtcNow, "matt", "comment", false, "::0")));
             this.threadRepository.Setup(a => a.GetById(threadId, ct)).ReturnsT(Option.Some(new Thread(threadId, boardId, "")));
             this.boardRepository.Setup(a => a.GetById(boardId, ct)).ReturnsT(Option.None<Board>());
-            this.fileRepository.Setup(a => a.GetPostFile(postId, ct)).ReturnsT(Option.Some(new File()));
+            this.fileRepository.Setup(a => a.GetPostFile(postId, ct)).ReturnsT(Option.Some(new File(Guid.NewGuid(), "file.jpg", new byte[0], new byte[0], "jpg")));
 
             var r = this.ps.GetById(postId, ct).Result;
             r.Should().NotBeNull();

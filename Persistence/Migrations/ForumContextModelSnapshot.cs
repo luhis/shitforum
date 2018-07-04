@@ -17,7 +17,24 @@ namespace Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.2-rtm-10011");
+                .HasAnnotation("ProductVersion", "2.0.3-rtm-10026");
+
+            modelBuilder.Entity("Domain.AnalyticsReport", b =>
+                {
+                    b.Property<Guid>("Id");
+
+                    b.Property<string>("Location")
+                        .IsRequired();
+
+                    b.Property<string>("ThumbPrint")
+                        .IsRequired();
+
+                    b.Property<DateTime>("Time");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AnalyticsReports");
+                });
 
             modelBuilder.Entity("Domain.BannedImage", b =>
                 {
@@ -48,7 +65,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BannedIp");
+                    b.ToTable("BannedIps");
                 });
 
             modelBuilder.Entity("Domain.Board", b =>

@@ -16,7 +16,8 @@ namespace Persistence
         public DbSet<Post> Posts { get; private set; }
         public DbSet<File> Files { get; private set; }
         public DbSet<BannedImage> BannedImages { get; private set; }
-        public DbSet<BannedIp> BannedIp { get; private set; }
+        public DbSet<BannedIp> BannedIps { get; private set; }
+        public DbSet<AnalyticsReport> AnalyticsReports { get; private set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,6 +27,7 @@ namespace Persistence
             SetupFileTable.Setup(modelBuilder.Entity<File>());
             SetupBannedImage.Setup(modelBuilder.Entity<BannedImage>());
             SetupBannedIp.Setup(modelBuilder.Entity<BannedIp>());
+            SetupAnalyticsReport.Setup(modelBuilder.Entity<AnalyticsReport>());
         }
 
         public async Task SeedData()

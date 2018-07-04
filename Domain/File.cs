@@ -13,10 +13,6 @@ namespace Domain
             Data = EnsureArg.IsNotNull(data, nameof(data));
             MimeType = EnsureArg.IsNotNullOrWhiteSpace(mimeType, nameof(mimeType));
         }
-
-        public File()
-        {
-        }
         
         public Post Post { get; private set; }
 

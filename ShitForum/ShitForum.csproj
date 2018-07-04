@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\ExtremeIpLookup\ExtremeIpLookup.csproj" />
     <ProjectReference Include="..\ImageValidation\ImageValidation.csproj" />
     <ProjectReference Include="..\Persistence\Persistence.csproj" />
     <ProjectReference Include="..\ReCaptchaCore\ReCaptchaCore.csproj" />

@@ -11,6 +11,7 @@ namespace Services
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IFileService, FileService>();
             services.AddSingleton<IBoardService, BoardService>();
+            services.AddSingleton<IAnalyticsService, AnalyticsService>();
         }
     }
 }
