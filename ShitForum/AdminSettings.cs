@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using EnsureThat;
+using Microsoft.Extensions.Configuration;
 using Optional;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace ShitForum
 
         public AdminSettings(IConfiguration conf)
         {
+            EnsureArg.IsNotNull(conf, nameof(conf));
             admins = conf.GetSection("Gods").Get<List<Guid>>().Select(a => Tuple.Create("admin", a)).ToList().AsReadOnly();
         }
 

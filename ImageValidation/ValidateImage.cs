@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,7 +5,6 @@ using Domain.Repositories;
 using Hashers;
 using Microsoft.Extensions.Logging;
 using Optional;
-using SixLabors.ImageSharp;
 
 using ResType = OneOf.OneOf<ImageValidation.Pass, ImageValidation.SizeExceeded, ImageValidation.InvalidImage, ImageValidation.BannedImage>;
 
@@ -40,15 +38,6 @@ namespace ImageValidation
                 {
                     return new BannedImage();
                 }
-
-                ////try
-                ////{
-                ////    Image.Load(some);
-                ////}
-                ////catch (Exception)
-                ////{
-                ////    return new InvalidImage();
-                ////}
 
                 return new Pass();
             }, () => Task.FromResult<ResType>(new Pass()));
