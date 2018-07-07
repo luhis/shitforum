@@ -16,7 +16,7 @@ namespace UnitTests.Attributes
     public class ImageValidationAttributeShould
     {
         [Fact]
-        public void Test()
+        public void Success()
         {
             var mr = new MockRepository(MockBehavior.Strict);
             var attr = new ImageValidationAttribute();
@@ -33,8 +33,31 @@ namespace UnitTests.Attributes
             sp.Setup(a => a.GetService(typeof(IUploadMapper))).Returns(um.Object);
             var vc = new ValidationContext(new object(), sp.Object, new Dictionary<object, object>());
             var res = attr.GetValidationResult(file.Object, vc);
+
+            res.Should().BeNull();
+        }
+
+        [Fact]
+        public void NotSuccess()
+        {
+            var mr = new MockRepository(MockBehavior.Strict);
+            var attr = new ImageValidationAttribute();
+            var file = mr.Create<IFormFile>();
+            var vi = mr.Create<IValidateImage>();
+            vi.Setup(a => a.ValidateAsync(It.IsAny<Option<byte[]>>())).ReturnsT(OneOf.OneOf<Pass, SizeExceeded, InvalidImage, BannedImage>.FromT1(new SizeExceeded(1024)));
+
+            var sp = mr.Create<IServiceProvider>();
+
+            var um = mr.Create<IUploadMapper>();
+            um.Setup(a => a.ExtractData(It.IsAny<IFormFile>())).Returns(Option.None<byte[]>());
+
+            sp.Setup(a => a.GetService(typeof(IValidateImage))).Returns(vi.Object);
+            sp.Setup(a => a.GetService(typeof(IUploadMapper))).Returns(um.Object);
+            var vc = new ValidationContext(new object(), sp.Object, new Dictionary<object, object>());
+            var res = attr.GetValidationResult(file.Object, vc);
+
             res.Should().NotBeNull();
-            res.ErrorMessage.Should().BeNull();
+            res.ErrorMessage.Should().Be("Image must not exceed 1024 bytes");
         }
     }
 }
