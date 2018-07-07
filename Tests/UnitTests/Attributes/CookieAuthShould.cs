@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Configuration;
 using Moq;
 using Optional;
 using ShitForum;
@@ -10,32 +9,38 @@ using ShitForum.Attributes;
 using ShitForum.Cookies;
 using System;
 using System.Collections.Generic;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using Xunit;
 
 namespace UnitTests.Attributes
 {
     public class CookieAuthShould
     {
-        [Fact]
-        public void Run()
+        private static HttpContext GetHttpContext(MockRepository mr, IServiceProvider sp)
         {
-            var cfb = new ConfigurationBuilder();
-            cfb.AddInMemoryCollection(new[] { KeyValuePair.Create("Gods:0", Guid.NewGuid().ToString()) });
-            var mr = new MockRepository(MockBehavior.Strict);
-            var attr = new CookieAuthAttribute() as IPageFilter;
             var httpCtx = mr.Create<HttpContext>();
-            var httpReq = mr.Create<HttpRequest>();
-            httpCtx.Setup(s => s.Request).Returns(httpReq.Object);
-            var sp = mr.Create<IServiceProvider>();
-            sp.Setup(a => a.GetService(typeof(AdminSettings))).Returns(new AdminSettings(cfb.Build()));
+            httpCtx.Setup(s => s.Request).Returns(mr.Create<HttpRequest>().Object);
+            httpCtx.Setup(s => s.RequestServices).Returns(sp);
+            return httpCtx.Object;
+        }
+
+        private readonly MockRepository mr = new MockRepository(MockBehavior.Strict);
+        private readonly IPageFilter attr = new CookieAuthAttribute();
+
+        [Fact]
+        public void NoToken()
+        {
             var recapchaVerifierMock = mr.Create<ICookieStorage>();
             recapchaVerifierMock.Setup(a => a.ReadAdmin(It.IsAny<HttpRequest>())).Returns(Option.None<Guid>());
+            var sp = mr.Create<IServiceProvider>();
             sp.Setup(a => a.GetService(typeof(ICookieStorage))).Returns(recapchaVerifierMock.Object);
-      
-            httpCtx.Setup(s => s.RequestServices).Returns(sp.Object);
+            sp.Setup(a => a.GetService(typeof(AdminSettings))).Returns(new AdminSettings(MockConfig.Get()));
+
+            var httpCtx = GetHttpContext(mr, sp.Object);
             var pageContext = new PageContext()
             {
-                HttpContext = httpCtx.Object,
+                HttpContext = httpCtx,
                 RouteData = mr.Create<RouteData>().Object,
                 ActionDescriptor = mr.Create<CompiledPageActionDescriptor>().Object
             };
@@ -43,6 +48,55 @@ namespace UnitTests.Attributes
                 pageContext,
                 new List<IFilterMetadata>(), null, new Dictionary<string, object>(), new object());
             attr.OnPageHandlerExecuting(ctx);
+            ctx.Result.Should().BeOfType<ForbidResult>();
+            mr.VerifyAll();
+        }
+
+        [Fact]
+        public void WrongToken()
+        {
+            var recapchaVerifierMock = mr.Create<ICookieStorage>();
+            recapchaVerifierMock.Setup(a => a.ReadAdmin(It.IsAny<HttpRequest>())).Returns(Option.Some(new Guid("FF68640c-5759-4be2-ab50-d6cd5cd6ba68")));
+            var sp = mr.Create<IServiceProvider>();
+            sp.Setup(a => a.GetService(typeof(ICookieStorage))).Returns(recapchaVerifierMock.Object);
+            sp.Setup(a => a.GetService(typeof(AdminSettings))).Returns(new AdminSettings(MockConfig.Get()));
+
+            var httpCtx = GetHttpContext(mr, sp.Object);
+            var pageContext = new PageContext()
+            {
+                HttpContext = httpCtx,
+                RouteData = mr.Create<RouteData>().Object,
+                ActionDescriptor = mr.Create<CompiledPageActionDescriptor>().Object
+            };
+            var ctx = new PageHandlerExecutingContext(
+                pageContext,
+                new List<IFilterMetadata>(), null, new Dictionary<string, object>(), new object());
+            attr.OnPageHandlerExecuting(ctx);
+            ctx.Result.Should().BeOfType<ForbidResult>();
+            mr.VerifyAll();
+        }
+
+        [Fact]
+        public void Success()
+        {
+            var recapchaVerifierMock = mr.Create<ICookieStorage>();
+            recapchaVerifierMock.Setup(a => a.ReadAdmin(It.IsAny<HttpRequest>())).Returns(Option.Some(new Guid("3c68640c-5759-4be2-ab50-d6cd5cd6ba68")));
+            var sp = mr.Create<IServiceProvider>();
+            sp.Setup(a => a.GetService(typeof(ICookieStorage))).Returns(recapchaVerifierMock.Object);
+            sp.Setup(a => a.GetService(typeof(AdminSettings))).Returns(new AdminSettings(MockConfig.Get()));
+
+            var httpCtx = GetHttpContext(mr, sp.Object);
+            var pageContext = new PageContext()
+            {
+                HttpContext = httpCtx,
+                RouteData = mr.Create<RouteData>().Object,
+                ActionDescriptor = mr.Create<CompiledPageActionDescriptor>().Object
+            };
+            var ctx = new PageHandlerExecutingContext(
+                pageContext,
+                new List<IFilterMetadata>(), null, new Dictionary<string, object>(), new object());
+            attr.OnPageHandlerExecuting(ctx);
+            ctx.Result.Should().BeNull();
             mr.VerifyAll();
         }
     }
