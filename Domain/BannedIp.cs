@@ -9,7 +9,7 @@ namespace Domain
         {
             IpHash = EnsureArg.IsNotNull(ipHash, nameof(ipHash));
             Reason = EnsureArg.IsNotNull(reason, nameof(reason));
-            Expiry = EnsureArg.IsNotNull(expiry, nameof(expiry));
+            Expiry = EnsureArg.IsNotDefault(expiry, nameof(expiry));
         }
 
         public BannedIp()
