@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ensure.That" Version="7.2.1" />
+    <PackageReference Include="Ensure.That" Version="8.0.0" />
     <PackageReference Include="Optional" Version="4.0.0" />
   </ItemGroup>
 
