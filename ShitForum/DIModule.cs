@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShitForum.BannedImageLogger;
-using ShitForum.Cookies;
 using ShitForum.GetIp;
 using Hashers;
 using ImageValidation;
@@ -24,7 +23,6 @@ namespace ShitForum
             services.AddSingleton<IValidateImage, ValidateImage>();
             services.AddSingleton<IUploadMapper, UploadMapper>();
             services.AddSingleton<DbContextOptions>(GetDbOptions);
-            services.AddSingleton<ICookieStorage, CookieStorage>();
             services.AddSingleton<IIsAdmin, IsAdmin.IsAdmin>();
             services.AddSingleton<IBannedImageLogger, BannedImageLogger.BannedImageLogger>();
             services.AddSingleton<IGetIp, GetIp.GetIp>();

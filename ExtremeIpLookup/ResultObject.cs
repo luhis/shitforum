@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ExtremeIpLookup
+﻿namespace ExtremeIpLookup
 {
     public class ResultObject
     {
@@ -10,5 +8,4 @@ namespace ExtremeIpLookup
         public string BusinessName { get; set; }
         public string IpType { get; set; }
     }
-
 }

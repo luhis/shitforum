@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using ShitForum.Cookies;
+﻿using Cookies;
+using Microsoft.AspNetCore.Http;
 
 namespace ShitForum.IsAdmin
 {

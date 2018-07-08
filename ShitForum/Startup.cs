@@ -26,6 +26,7 @@ namespace ShitForum
             ReCaptchaCore.DIModule.Add(services);
             ThumbNailer.DIModule.Add(services);
             ShitForum.DIModule.Add(services);
+            Cookies.DIModule.Add(services);
 
             services.Configure<RouteOptions>(options => {
                 options.LowercaseUrls = true;

@@ -1,7 +1,7 @@
 ﻿using System;
+using Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using ShitForum.Cookies;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ShitForum.Attributes

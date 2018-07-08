@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Services;
 using ShitForum.Attributes;
-using ShitForum.Cookies;
 using ShitForum.Models;
 
 namespace ShitForum.Pages

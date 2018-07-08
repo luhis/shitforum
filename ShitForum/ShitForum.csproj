@@ -1,8 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningsAsErrors />
   </PropertyGroup>
@@ -44,6 +42,7 @@
     <None Include="NuGet.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cookies\Cookies.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\ExtremeIpLookup\ExtremeIpLookup.csproj" />
     <ProjectReference Include="..\ImageValidation\ImageValidation.csproj" />

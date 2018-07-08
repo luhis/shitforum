@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace ExtremeIpLookup
 {
-    public static class ExtremeIpLookup
+    public class ExtremeIpLookup : IExtremeIpLookup
     {
         private static string GetUrl(IPAddress ip) => $"https://extreme-ip-lookup.com/json/{ip}";
         private static readonly HttpClient client = new HttpClient();
 
-        public static async Task<ResultObject> GetIpDetailsAsync(IPAddress ip)
+        async Task<ResultObject> IExtremeIpLookup.GetIpDetailsAsync(IPAddress ip)
         {
             var json = await client.GetStringAsync(GetUrl(ip));
             return Deserialise(json);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Cookies;
 using EnsureThat;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -8,7 +9,6 @@ using Services;
 using Services.Dtos;
 using ShitForum.Attributes;
 using ShitForum.BannedImageLogger;
-using ShitForum.Cookies;
 using ShitForum.GetIp;
 using Hashers;
 using ShitForum.IsAdmin;

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
+using Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using ShitForum.Cookies;
 
 namespace ShitForum.Pages
 {
