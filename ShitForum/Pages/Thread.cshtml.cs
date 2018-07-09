@@ -11,6 +11,7 @@ using ShitForum.Attributes;
 using ShitForum.BannedImageLogger;
 using ShitForum.GetIp;
 using Hashers;
+using Services.Interfaces;
 using ShitForum.IsAdmin;
 using ShitForum.Mappers;
 using ShitForum.Models;

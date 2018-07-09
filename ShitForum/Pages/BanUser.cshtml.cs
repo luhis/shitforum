@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Services;
 using Services.Dtos;
+using Services.Interfaces;
 using ShitForum.Attributes;
 
 namespace ShitForum.Pages

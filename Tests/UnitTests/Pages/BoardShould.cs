@@ -18,6 +18,7 @@ using Services.Dtos;
 using Xunit;
 using Services.Results;
 using OneOf;
+using Services.Interfaces;
 using ShitForum.BannedImageLogger;
 using ShitForum.GetIp;
 using ShitForum.Mappers;

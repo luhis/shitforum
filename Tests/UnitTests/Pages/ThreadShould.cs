@@ -16,6 +16,7 @@ using Services.Dtos;
 using Services.Results;
 using OneOf;
 using Domain.IpHash;
+using Services.Interfaces;
 using ShitForum.BannedImageLogger;
 using ShitForum.GetIp;
 using ShitForum.IsAdmin;

@@ -1,10 +1,10 @@
-﻿using Optional;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Optional;
 using Services.Dtos;
 
-namespace Services
+namespace Services.Interfaces
 {
     public interface IThreadService
     {

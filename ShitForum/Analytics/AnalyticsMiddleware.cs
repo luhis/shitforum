@@ -6,6 +6,7 @@ using System.Threading;
 using System;
 using Cookies;
 using ExtremeIpLookup;
+using Services.Interfaces;
 using static ExtremeIpLookup.ResultObjectExtensions;
 
 namespace ShitForum.Analytics

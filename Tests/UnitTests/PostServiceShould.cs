@@ -10,6 +10,7 @@ using Domain.IpHash;
 using Services.Dtos;
 using Xunit;
 using FluentAssertions;
+using Services.Interfaces;
 using UnitTests.Tooling;
 using Thread = Domain.Thread;
 

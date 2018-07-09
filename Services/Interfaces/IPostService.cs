@@ -1,14 +1,14 @@
-﻿using Domain;
-using Optional;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Domain;
 using Domain.IpHash;
-using Services.Dtos;
 using OneOf;
+using Optional;
+using Services.Dtos;
 using Services.Results;
 
-namespace Services
+namespace Services.Interfaces
 {
     public interface IPostService
     {

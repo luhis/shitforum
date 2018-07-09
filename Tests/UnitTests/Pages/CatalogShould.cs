@@ -6,6 +6,7 @@ using Xunit;
 using Services;
 using Optional;
 using Services.Dtos;
+using Services.Interfaces;
 using UnitTests.Tooling;
 
 namespace UnitTests.Pages

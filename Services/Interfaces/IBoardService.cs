@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Domain;
 
-namespace Services
+namespace Services.Interfaces
 {
     public interface IBoardService
     {

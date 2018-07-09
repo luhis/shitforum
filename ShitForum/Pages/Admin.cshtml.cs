@@ -5,6 +5,7 @@ using Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Services;
+using Services.Interfaces;
 using ShitForum.Attributes;
 using ShitForum.Models;
 

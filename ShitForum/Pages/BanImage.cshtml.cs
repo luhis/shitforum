@@ -8,6 +8,7 @@ using Services;
 using Services.Dtos;
 using ShitForum.Attributes;
 using Hashers;
+using Services.Interfaces;
 
 namespace ShitForum.Pages
 {

@@ -6,7 +6,7 @@ using Domain;
 using Domain.IpHash;
 using Optional;
 
-namespace Services
+namespace Services.Interfaces
 {
     public interface IUserService
     {

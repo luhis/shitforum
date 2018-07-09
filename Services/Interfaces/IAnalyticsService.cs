@@ -1,10 +1,10 @@
-﻿using Domain;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Threading;
 using System.Threading.Tasks;
+using Domain;
 
-namespace Services
+namespace Services.Interfaces
 {
     public interface IAnalyticsService
     {
