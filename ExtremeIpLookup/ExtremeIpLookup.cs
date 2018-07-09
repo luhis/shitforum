@@ -8,11 +8,11 @@ namespace ExtremeIpLookup
     public class ExtremeIpLookup : IExtremeIpLookup
     {
         private static string GetUrl(IPAddress ip) => $"https://extreme-ip-lookup.com/json/{ip}";
-        private static readonly HttpClient client = new HttpClient();
+        private static readonly HttpClient Client = new HttpClient();
 
         async Task<ResultObject> IExtremeIpLookup.GetIpDetailsAsync(IPAddress ip)
         {
-            var json = await client.GetStringAsync(GetUrl(ip));
+            var json = await Client.GetStringAsync(GetUrl(ip));
             return Deserialise(json);
         }
 

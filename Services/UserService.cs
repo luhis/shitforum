@@ -6,6 +6,7 @@ using Domain;
 using Domain.IpHash;
 using Domain.Repositories;
 using Optional;
+using Services.Interfaces;
 
 namespace Services
 {

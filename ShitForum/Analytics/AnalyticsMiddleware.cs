@@ -44,8 +44,7 @@ namespace ShitForum.Analytics
                 var thumb = GetThumbPrint(cookies, context.Request, context.Response);
                 return svc.Add(new Domain.AnalyticsReport(Guid.NewGuid(), DateTime.UtcNow, o.City, thumb.ToString()), CancellationToken.None);
             }, _ => Task.CompletedTask);
-
-            // Call the next delegate/middleware in the pipeline
+            
             await this.next(context);
         }
     }

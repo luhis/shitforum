@@ -7,6 +7,7 @@ using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Optional;
 using Services.Dtos;
+using Services.Interfaces;
 
 namespace Services
 {

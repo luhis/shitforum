@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Domain.IpHash;
 using Services.Dtos;
 using OneOf;
+using Services.Interfaces;
 using Services.Results;
 using Thread = Domain.Thread;
 
