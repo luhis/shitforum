@@ -45,7 +45,7 @@ namespace UnitTests
             var postId = Guid.NewGuid();
             this.threadRepository.Setup(a => a.GetAll()).Returns(new TestAsyncEnumerable<Thread>(new Thread[] { new Thread(threadId, boardId, "subject"),  }));
             this.threadRepository.Setup(a => a.GetById(threadId, ct)).ReturnsT(Option.Some(new Thread(threadId, boardId, "my thread")));
-            this.postRepository.Setup(a => a.GetAll()).Returns(new TestAsyncEnumerable<Post>(new Post[] { new Post(postId, threadId, DateTime.UtcNow, "name", "comment", false, "") }));
+            this.postRepository.Setup(a => a.GetAll()).Returns(new TestAsyncEnumerable<Post>(new[] { new Post(postId, threadId, DateTime.UtcNow, "name", "comment", false, "") }));
             this.boardRepository.Setup(a => a.GetById(boardId, ct)).ReturnsT(Option.Some(new Board(boardId, "b", "bbb")));
             this.fileRepository.Setup(a => a.GetPostFile(postId, ct)).ReturnsT(Option.Some(new File(Guid.NewGuid(), "file.jpg", new byte[0], new byte[0], "jpg")));
 
