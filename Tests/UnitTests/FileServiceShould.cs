@@ -33,6 +33,7 @@ namespace UnitTests
             this.bir.Setup(a => a.GetAll(ct))
                 .ReturnsT(new List<BannedImage>() {new BannedImage(Guid.NewGuid(), "", "")});
             var r = this.fs.GetAllBannedImages(ct).Result;
+            repo.VerifyAll();
         }
     }
 }

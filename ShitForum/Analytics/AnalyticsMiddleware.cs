@@ -1,13 +1,11 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading;
 using System;
 using Cookies;
 using ExtremeIpLookup;
 using Services.Interfaces;
-using static ExtremeIpLookup.ResultObjectExtensions;
 
 namespace ShitForum.Analytics
 {

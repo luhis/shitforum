@@ -31,6 +31,7 @@ namespace UnitTests
             this.br.Setup(a => a.GetAll(ct))
                 .ReturnsT(new List<Board>() { new Board(Guid.NewGuid(), "a", "b") });
             var r = this.fs.GetAll(ct).Result;
+            repo.VerifyAll();
         }
     }
 }
