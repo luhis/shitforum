@@ -17,6 +17,7 @@ namespace IntegrationTests
         {
             var cf = new ForumContext(new DbContextOptionsBuilder<ForumContext>()
                 .UseSqlite("Data Source=../ShitForum.db").Options);
+            cf.SeedData().Wait();
             this.boards = new BoardRepository(cf);
         }
 
