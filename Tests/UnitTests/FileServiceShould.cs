@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Domain;
 using Domain.Repositories;
 using Moq;
+using Optional;
 using Services;
 using Services.Interfaces;
 using UnitTests.Tooling;
@@ -28,11 +30,29 @@ namespace UnitTests
         }
 
         [Fact]
-        public void Test()
+        public void GetAll()
         {
             this.bir.Setup(a => a.GetAll(ct))
                 .ReturnsT(new List<BannedImage>() {new BannedImage(Guid.NewGuid(), "", "")});
             var r = this.fs.GetAllBannedImages(ct).Result;
+            repo.VerifyAll();
+        }
+
+        [Fact]
+        public void GetById()
+        {
+            var postId = Guid.NewGuid();
+            this.fr.Setup(a => a.GetPostFile(postId, ct)).ReturnsT(new Option<File>());
+            var r = this.fs.GetPostFile(postId, ct).Result;
+            repo.VerifyAll();
+        }
+
+        [Fact]
+        public void BanImage()
+        {
+            var ih = new ImageHash("aaaa");
+            this.bir.Setup(a => a.Ban(ih, "reason", ct)).Returns(Task.CompletedTask);
+            this.fs.BanImage(ih, "reason", ct).Wait();
             repo.VerifyAll();
         }
     }

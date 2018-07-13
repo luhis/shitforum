@@ -43,7 +43,7 @@ namespace UnitTests
             var threadId = Guid.NewGuid();
             var boardId = Guid.NewGuid();
             var postId = Guid.NewGuid();
-            this.threadRepository.Setup(a => a.GetAll()).Returns(new TestAsyncEnumerable<Thread>(new Thread[] { new Thread(threadId, boardId, "subject"),  }));
+            this.threadRepository.Setup(a => a.GetAll()).Returns(new TestAsyncEnumerable<Thread>(new[] { new Thread(threadId, boardId, "subject"),  }));
             this.threadRepository.Setup(a => a.GetById(threadId, ct)).ReturnsT(Option.Some(new Thread(threadId, boardId, "my thread")));
             this.postRepository.Setup(a => a.GetAll()).Returns(new TestAsyncEnumerable<Post>(new[] { new Post(postId, threadId, DateTime.UtcNow, "name", "comment", false, "") }));
             this.boardRepository.Setup(a => a.GetById(boardId, ct)).ReturnsT(Option.Some(new Board(boardId, "b", "bbb")));
