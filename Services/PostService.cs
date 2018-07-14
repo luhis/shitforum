@@ -10,6 +10,7 @@ using OneOf;
 using Services.Interfaces;
 using Services.Results;
 using Thread = Domain.Thread;
+using static  Services.TaskOptionExtensions;
 
 namespace Services
 {
@@ -85,10 +86,9 @@ namespace Services
                 {
                     var b = await this.boardRepository.GetById(thread.BoardId, cancellationToken);
                     var file = await this.fileRepository.GetPostFile(some.Id, cancellationToken);
-                    return b.Match(
+                    return b.Map(
                         board => 
-                        Option.Some(new PostContextView(thread.Id, thread.Subject, new BoardOverView(board.Id, board.BoardName, board.BoardKey), PostMapper.Map(some, file))),
-                        Option.None<PostContextView>);
+                        new PostContextView(thread.Id, thread.Subject, new BoardOverView(board.Id, board.BoardName, board.BoardKey), PostMapper.Map(some, file)));
                 }, NoneRes);
             }, NoneRes);
         }
@@ -105,6 +105,7 @@ namespace Services
                     var thread = await this.threadRepository.GetById(post.ThreadId, cancellationToken);
                     await thread.Match(some => this.threadRepository.Delete(some), () => Task.CompletedTask);
                 }
+
                 return true;
             }, () => Task.FromResult(false));
         }
