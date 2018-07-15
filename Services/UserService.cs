@@ -30,7 +30,7 @@ namespace Services
         {
             var post = await this.postRepository.GetById(postId, cancellationToken);
                 
-            return post.Match(some => Option.Some<IIpHash>(new IpHash(some.IpAddress)), Option.None<IIpHash>);
+            return post.Map(some => new IpHash(some.IpAddress) as IIpHash);
         }
 
         Task<IReadOnlyList<BannedIp>> IUserService.GetAllBans(CancellationToken cancellationToken)
