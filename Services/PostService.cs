@@ -77,27 +77,26 @@ namespace Services
 
         async Task<Option<PostContextView>> IPostService.GetById(Guid id, CancellationToken cancellationToken)
         {
-            Task<Option<PostContextView>> NoneRes() => Task.FromResult(Option.None<PostContextView>());
             var post = await this.postRepository.GetById(id, cancellationToken);
 
-            return await post.Match(async some =>
+            return await post.MapToTask(async some =>
             {
                 var t = await this.threadRepository.GetById(some.ThreadId, cancellationToken);
-                return await t.Match(async thread =>
+                return await t.MapToTask(async thread =>
                 {
                     var b = await this.boardRepository.GetById(thread.BoardId, cancellationToken);
                     var file = await this.fileRepository.GetPostFile(some.Id, cancellationToken);
                     return b.Map(
                         board => 
                         new PostContextView(thread.Id, thread.Subject, new BoardOverView(board.Id, board.BoardName, board.BoardKey), PostMapper.Map(some, file)));
-                }, NoneRes);
-            }, NoneRes);
+                }, Option.None<PostContextView>());
+            }, Option.None<PostContextView>());
         }
 
         async Task<bool> IPostService.DeletePost(Guid id, CancellationToken cancellationToken)
         {
             var p = await this.postRepository.GetById(id, cancellationToken);
-            return await p.Match(async post =>
+            return await p.MapToTask(async post =>
             {
                 var postCount = await this.postRepository.GetThreadPostCount(post.ThreadId, cancellationToken);
                 await this.postRepository.Delete(post);
@@ -108,7 +107,7 @@ namespace Services
                 }
 
                 return true;
-            }, () => Task.FromResult(false));
+            }, false);
         }
     }
 }

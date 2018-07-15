@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Domain;
 using Optional;
 
 namespace Services
@@ -26,5 +27,10 @@ namespace Services
         ////
 
         public static Task MapToTask<T>(this Option<T> o, Func<T, Task> f) => o.Match(f, () => Task.CompletedTask);
+
+        public static Task<TO> MapToTask<T, TO>(this Option<T> o, Func<T, Task<TO>> f, TO deff)
+        {
+            return o.Match(f, () => Task.FromResult(deff));
+        }
     }
 }

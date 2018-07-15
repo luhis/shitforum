@@ -27,6 +27,7 @@ namespace ShitForum
             ThumbNailer.DIModule.Add(services);
             ShitForum.DIModule.Add(services);
             Cookies.DIModule.Add(services);
+            ExtremeIpLookup.DIModule.Add(services);
 
             services.Configure<RouteOptions>(options => {
                 options.LowercaseUrls = true;

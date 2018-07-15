@@ -35,7 +35,7 @@ namespace ShitForum.Analytics
             var ipLookup = context.RequestServices.GetService<IExtremeIpLookup>();
             var ip = context.Connection.RemoteIpAddress;
             var deats = await ipLookup.GetIpDetailsAsync(ip);
-
+            
             await deats.Match(o =>
             {
                 var cookies = context.RequestServices.GetService<ICookieStorage>();
