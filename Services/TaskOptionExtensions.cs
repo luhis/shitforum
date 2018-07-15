@@ -32,5 +32,10 @@ namespace Services
         {
             return o.Match(f, () => Task.FromResult(deff));
         }
+
+        public static Task<Option<TO>> MapToTaskX<T, TO>(this Option<T> o, Func<T, Task<Option<TO>>> f)
+        {
+            return o.Match(f, () => Task.FromResult(Option.None<TO>()));
+        }
     }
 }

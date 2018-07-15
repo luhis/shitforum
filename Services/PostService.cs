@@ -79,18 +79,18 @@ namespace Services
         {
             var post = await this.postRepository.GetById(id, cancellationToken);
 
-            return await post.MapToTask(async some =>
+            return await post.MapToTaskX(async some =>
             {
                 var t = await this.threadRepository.GetById(some.ThreadId, cancellationToken);
-                return await t.MapToTask(async thread =>
+                return await t.MapToTaskX(async thread =>
                 {
                     var b = await this.boardRepository.GetById(thread.BoardId, cancellationToken);
                     var file = await this.fileRepository.GetPostFile(some.Id, cancellationToken);
                     return b.Map(
                         board => 
                         new PostContextView(thread.Id, thread.Subject, new BoardOverView(board.Id, board.BoardName, board.BoardKey), PostMapper.Map(some, file)));
-                }, Option.None<PostContextView>());
-            }, Option.None<PostContextView>());
+                });
+            });
         }
 
         async Task<bool> IPostService.DeletePost(Guid id, CancellationToken cancellationToken)
