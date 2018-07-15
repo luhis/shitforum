@@ -73,7 +73,7 @@ namespace Services
                         return PostMapper.Map(p, file);
                     }))).OrderBy(a => a.Created).ToList();
                     var shownPosts = lastPosts.Concat(new[] { firstPost }).ToList();
-                    var stats = await GetOveriewStats(thread.Id, posts, shownPosts, cancellationToken);
+                    var stats = await GetOverviewStats(thread.Id, posts, shownPosts, cancellationToken);
                     return new ThreadOverView(thread.Id, thread.Subject, firstPost, lastPosts, stats);
                 }).ToArray());
                 var numberOfPages = (threadIds.Count() / pageSize) + 1;
@@ -125,7 +125,7 @@ namespace Services
             return new ThreadStats(replies, images, posters, page);
         }
 
-        private async Task<ThreadOverViewStats> GetOveriewStats(Guid threadId, IQueryable<Domain.Post> posts, IReadOnlyList<PostOverView> shownPosts, CancellationToken cancellationToken)
+        private async Task<ThreadOverViewStats> GetOverviewStats(Guid threadId, IQueryable<Domain.Post> posts, IReadOnlyList<PostOverView> shownPosts, CancellationToken cancellationToken)
         {
             var postCount = posts.Count() - shownPosts.Count;
             var imageCount = await this.fileRepository.GetImageCount(threadId, cancellationToken) - shownPosts.Count(p => p.File.HasValue);
