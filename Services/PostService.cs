@@ -10,7 +10,7 @@ using OneOf;
 using Services.Interfaces;
 using Services.Results;
 using Thread = Domain.Thread;
-using static  Services.TaskOptionExtensions;
+using static Services.TaskOptionExtensions;
 
 namespace Services
 {

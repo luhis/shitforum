@@ -1,6 +1,6 @@
-﻿using Services.Dtos;
+using Services.Dtos;
 
-namespace Services
+namespace Services.Mappers
 {
     public static class PostMapper
     {

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Domain;
 using Domain.Repositories;
 using Services.Interfaces;
+using static Services.TaskOptionExtensions;
 
 namespace Services
 {
@@ -25,7 +26,7 @@ namespace Services
         async Task IBoardService.Delete(Guid boardId, CancellationToken cancellationToken)
         {
             var b = await this.boardRepository.GetById(boardId, cancellationToken);
-            await b.Match(this.boardRepository.Remove, () => Task.CompletedTask);
+            await b.MapToTask(this.boardRepository.Remove);
         }
 
         Task IBoardService.Add(Guid boardId, string boardName, string boardKey)
