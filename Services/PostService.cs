@@ -103,7 +103,7 @@ namespace Services
                 if (postCount == 1)
                 {
                     var thread = await this.threadRepository.GetById(post.ThreadId, cancellationToken);
-                    await thread.Match(some => this.threadRepository.Delete(some), () => Task.CompletedTask);
+                    await thread.MapToTask(some => this.threadRepository.Delete(some));
                 }
 
                 return true;

@@ -9,6 +9,7 @@ using Optional;
 using Services.Dtos;
 using Services.Interfaces;
 using Services.Mappers;
+using static Services.TaskOptionExtensions;
 
 namespace Services
 {
@@ -42,7 +43,7 @@ namespace Services
         async Task<Option<CatalogThreadOverViewSet>> IThreadService.GetOrderedCatalogThreads(string boardKey, CancellationToken cancellationToken)
         {
             var board = await this.boardRepository.GetByKey(boardKey, cancellationToken);
-            return await board.Match(async some =>
+            return await board.MapToTaskY(async some =>
             {
                 var allThreads = GetOrderedThreads(some.Id, Option.None<string>());
                 var domainThreads = await this.threadRepository.GetAll().Where(a => allThreads.Contains(a.Id)).ToListAsync(cancellationToken);
@@ -52,14 +53,14 @@ namespace Services
                     var firstPost = await this.GetFirstPostAsync(posts, cancellationToken);
                     return new CatalogThreadOverView(thread.Id, thread.Subject, some, firstPost);
                 }).ToArray());
-                return Option.Some(new CatalogThreadOverViewSet(some, l));
-            }, () => Task.FromResult(Option.None<CatalogThreadOverViewSet>()));
+                return new CatalogThreadOverViewSet(some, l);
+            });
         }
 
         async Task<Option<ThreadOverViewSet>> IThreadService.GetOrderedThreads(string boardKey, Option<string> filter, int pageSize, int pageNumber, CancellationToken cancellationToken)
         {
             var board = await this.boardRepository.GetByKey(boardKey, cancellationToken);
-            return await board.Match(async some =>
+            return await board.MapToTaskY(async some =>
             {
                 var threadIds = GetOrderedThreads(some.Id, filter);
                 var latestThreads = threadIds.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
@@ -78,8 +79,8 @@ namespace Services
                     return new ThreadOverView(thread.Id, thread.Subject, firstPost, lastPosts, stats);
                 }).ToArray());
                 var numberOfPages = (threadIds.Count() / pageSize) + 1;
-                return Option.Some(new ThreadOverViewSet(some, l, new PageData(pageNumber, numberOfPages)));
-            }, () => Task.FromResult(Option.None<ThreadOverViewSet>()));
+                return new ThreadOverViewSet(some, l, new PageData(pageNumber, numberOfPages));
+            });
         }
 
         private async Task<PostOverView> GetFirstPostAsync(IQueryable<Domain.Post> posts, CancellationToken cancellationToken)
@@ -91,24 +92,21 @@ namespace Services
 
         async Task<Option<ThreadDetailView>> IThreadService.GetThread(Guid threadId, int pageSize, CancellationToken cancellationToken)
         {
-            Task<Option<ThreadDetailView>> None() => Task.FromResult(Option.None<ThreadDetailView>());
-
             var thread = await this.threadRepository.GetById(threadId, cancellationToken);
-            return await thread.Match(async t =>
+            return await thread.MapToTaskX(async t =>
             {
                 var posts = this.postRepository.GetAll().Where(a => a.ThreadId == threadId);
                 var b = await this.boardRepository.GetById(t.BoardId, cancellationToken);
-                return await b.Match(async some =>
+                return await b.MapToTaskY(async some =>
                     {
                         var postsMapped = await Task.WhenAll(posts
                             .OrderBy(a => a.Created).ToList()
                             .Select(async p => PostMapper.Map(p, await this.fileRepository.GetPostFile(p.Id, cancellationToken))));
                         var stats = await GetStats(postsMapped, some.Id, t.Id, pageSize);
-                        return Option.Some(new ThreadDetailView(threadId, t.Subject, stats,
-                            new BoardOverView(some.Id, some.BoardName, some.BoardKey), postsMapped.ToList()));
-                    },
-                    None);
-            }, None);
+                        return new ThreadDetailView(threadId, t.Subject, stats,
+                            new BoardOverView(some.Id, some.BoardName, some.BoardKey), postsMapped.ToList());
+                    });
+            });
         }
 
         private async Task<int> GetThreadPageNumber(Guid boardId, Guid threadId, int pageSize)
