@@ -9,7 +9,6 @@ using Optional;
 using Services.Dtos;
 using Services.Interfaces;
 using Services.Mappers;
-using static Services.TaskOptionExtensions;
 
 namespace Services
 {
@@ -43,7 +42,7 @@ namespace Services
         async Task<Option<CatalogThreadOverViewSet>> IThreadService.GetOrderedCatalogThreads(string boardKey, CancellationToken cancellationToken)
         {
             var board = await this.boardRepository.GetByKey(boardKey, cancellationToken);
-            return await board.MapToTaskY(async some =>
+            return await board.MapToTask(async some =>
             {
                 var allThreads = GetOrderedThreads(some.Id, Option.None<string>());
                 var domainThreads = await this.threadRepository.GetAll().Where(a => allThreads.Contains(a.Id)).ToListAsync(cancellationToken);
@@ -60,7 +59,7 @@ namespace Services
         async Task<Option<ThreadOverViewSet>> IThreadService.GetOrderedThreads(string boardKey, Option<string> filter, int pageSize, int pageNumber, CancellationToken cancellationToken)
         {
             var board = await this.boardRepository.GetByKey(boardKey, cancellationToken);
-            return await board.MapToTaskY(async some =>
+            return await board.MapToTask(async some =>
             {
                 var threadIds = GetOrderedThreads(some.Id, filter);
                 var latestThreads = threadIds.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
@@ -93,11 +92,11 @@ namespace Services
         async Task<Option<ThreadDetailView>> IThreadService.GetThread(Guid threadId, int pageSize, CancellationToken cancellationToken)
         {
             var thread = await this.threadRepository.GetById(threadId, cancellationToken);
-            return await thread.MapToTaskX(async t =>
+            return (await thread.MapToTask(async t =>
             {
                 var posts = this.postRepository.GetAll().Where(a => a.ThreadId == threadId);
                 var b = await this.boardRepository.GetById(t.BoardId, cancellationToken);
-                return await b.MapToTaskY(async some =>
+                return await b.MapToTask(async some =>
                     {
                         var postsMapped = await Task.WhenAll(posts
                             .OrderBy(a => a.Created).ToList()
@@ -106,7 +105,7 @@ namespace Services
                         return new ThreadDetailView(threadId, t.Subject, stats,
                             new BoardOverView(some.Id, some.BoardName, some.BoardKey), postsMapped.ToList());
                     });
-            });
+            })).Flatten();
         }
 
         private async Task<int> GetThreadPageNumber(Guid boardId, Guid threadId, int pageSize)

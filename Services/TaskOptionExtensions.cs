@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Domain;
 using Optional;
 
 namespace Services
@@ -14,14 +13,9 @@ namespace Services
             return o.Match(f, () => Task.FromResult(deff));
         }
 
-        public static Task<Option<TO>> MapToTaskX<T, TO>(this Option<T> o, Func<T, Task<Option<TO>>> f)
+        public static Task<Option<TO>> MapToTask<T, TO>(this Option<T> o, Func<T, Task<TO>> f)
         {
-            return o.Match(f, () => Task.FromResult(Option.None<TO>()));
-        }
-
-        public static Task<Option<TO>> MapToTaskY<T, TO>(this Option<T> o, Func<T, Task<TO>> f)
-        {
-            return o.MapToTaskX(async a => Option.Some(await f(a)));
+            return o.Match(async a => Option.Some(await f(a)), () => Task.FromResult(Option.None<TO>()));
         }
     }
 }
