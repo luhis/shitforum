@@ -1,11 +1,11 @@
-﻿using Domain;
-using Domain.Repositories;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Domain;
+using Domain.Repositories;
 using Services.Interfaces;
 
-namespace Services
+namespace Services.Services
 {
     public class AnalyticsService : IAnalyticsService
     {

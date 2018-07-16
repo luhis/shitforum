@@ -1,18 +1,18 @@
-﻿using Domain;
-using Domain.Repositories;
-using Optional;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Domain;
 using Domain.IpHash;
-using Services.Dtos;
+using Domain.Repositories;
 using OneOf;
+using Optional;
+using Services.Dtos;
 using Services.Interfaces;
 using Services.Mappers;
 using Services.Results;
 using Thread = Domain.Thread;
 
-namespace Services
+namespace Services.Services
 {
     public class PostService : IPostService
     {

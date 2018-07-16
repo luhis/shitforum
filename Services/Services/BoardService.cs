@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Domain;
 using Domain.Repositories;
 using Services.Interfaces;
-using static Services.TaskOptionExtensions;
 
 namespace Services
 {

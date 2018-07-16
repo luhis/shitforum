@@ -8,7 +8,7 @@ using Domain.Repositories;
 using Optional;
 using Services.Interfaces;
 
-namespace Services
+namespace Services.Services
 {
     public class UserService : IUserService
     {
