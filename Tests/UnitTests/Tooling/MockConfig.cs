@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
 using System.Collections.Generic;
 
-namespace UnitTests
+namespace Tests.UnitTests.Tooling
 {
     public static class MockConfig
     {

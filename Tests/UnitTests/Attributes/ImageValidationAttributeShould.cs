@@ -1,13 +1,13 @@
-﻿using FluentAssertions;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using FluentAssertions;
 using ImageValidation;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using Optional;
 using ShitForum.Attributes;
 using ShitForum.Mappers;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using UnitTests.Tooling;
 using Xunit;
 

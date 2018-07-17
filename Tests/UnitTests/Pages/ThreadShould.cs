@@ -22,6 +22,7 @@ using ShitForum.GetIp;
 using ShitForum.IsAdmin;
 using UnitTests.Tooling;
 using ShitForum.Mappers;
+using Tests.UnitTests.Tooling;
 using ThumbNailer;
 
 namespace UnitTests.Pages

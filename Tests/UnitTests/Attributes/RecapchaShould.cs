@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
+using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
@@ -6,11 +11,6 @@ using Moq;
 using ReCaptchaCore;
 using ShitForum.Attributes;
 using ShitForum.GetIp;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
-using FluentAssertions;
 using UnitTests.Tooling;
 using Xunit;
 

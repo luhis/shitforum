@@ -22,6 +22,7 @@ using Services.Interfaces;
 using ShitForum.BannedImageLogger;
 using ShitForum.GetIp;
 using ShitForum.Mappers;
+using Tests.UnitTests.Tooling;
 using UnitTests.Tooling;
 using File = Domain.File;
 using ThumbNailer;

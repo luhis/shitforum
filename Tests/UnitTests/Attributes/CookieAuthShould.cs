@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using Cookies;
+using FluentAssertions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
@@ -6,11 +11,7 @@ using Moq;
 using Optional;
 using ShitForum;
 using ShitForum.Attributes;
-using System;
-using System.Collections.Generic;
-using Cookies;
-using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
+using Tests.UnitTests.Tooling;
 using Xunit;
 
 namespace UnitTests.Attributes

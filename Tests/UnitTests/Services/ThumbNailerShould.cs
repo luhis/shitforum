@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Tests.UnitTests.Tooling;
 using ThumbNailer;
 using Xunit;
 
