@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
-using Services.Dtos;
 using Hashers;
+using Services.Dtos;
 using Xunit;
 
-namespace UnitTests
+namespace UnitTests.Services
 {
     public class TripCodeHasherShould
     {

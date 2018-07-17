@@ -1,21 +1,20 @@
-﻿using Domain;
-using Domain.Repositories;
-using Moq;
-using Optional;
-using Services;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Domain;
 using Domain.IpHash;
-using Services.Dtos;
-using Xunit;
+using Domain.Repositories;
 using FluentAssertions;
+using Moq;
+using Optional;
+using Services.Dtos;
 using Services.Interfaces;
 using Services.Services;
 using UnitTests.Tooling;
+using Xunit;
 using Thread = Domain.Thread;
 
-namespace UnitTests
+namespace UnitTests.Services
 {
     public class PostServiceShould
     {

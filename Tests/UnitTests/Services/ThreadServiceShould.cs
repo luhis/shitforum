@@ -1,19 +1,19 @@
-﻿using Domain;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using Domain;
 using Domain.Repositories;
 using FluentAssertions;
 using Moq;
 using Optional;
 using Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using Services.Interfaces;
 using UnitTests.Tooling;
 using Xunit;
 using Thread = Domain.Thread;
 
-namespace UnitTests
+namespace UnitTests.Services
 {
     public class ThreadServiceShould
     {

@@ -2,7 +2,7 @@
 using ThumbNailer;
 using Xunit;
 
-namespace UnitTests
+namespace UnitTests.Services
 {
     public class ThumbNailerShould
     {
