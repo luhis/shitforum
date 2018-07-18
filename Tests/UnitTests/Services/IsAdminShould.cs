@@ -1,5 +1,6 @@
 ﻿using System;
 using Cookies;
+using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using Optional;
@@ -32,12 +33,24 @@ namespace UnitTests.Services
         }
 
         [Fact]
-        public void Test()
+        public void ReturnFalse()
         {
             var hr = repo.Create<HttpRequest>();
             var context = GetHttpContext(this.repo, hr.Object);
-            cookie.Setup(a => a.ReadAdmin(It.IsAny<HttpRequest>())).Returns(Option.Some<Guid>(Guid.NewGuid()));
-            this.isAdmin.IsAdmin(context);
+            cookie.Setup(a => a.ReadAdmin(It.IsAny<HttpRequest>())).Returns(Option.Some(Guid.NewGuid()));
+            var r = this.isAdmin.IsAdmin(context);
+            r.Should().BeFalse();
+            this.repo.VerifyAll();
+        }
+
+        [Fact]
+        public void ReturnTrue()
+        {
+            var hr = repo.Create<HttpRequest>();
+            var context = GetHttpContext(this.repo, hr.Object);
+            cookie.Setup(a => a.ReadAdmin(It.IsAny<HttpRequest>())).Returns(Option.Some(new Guid("3c68640c-5759-4be2-ab50-d6cd5cd6ba68")));
+            var r = this.isAdmin.IsAdmin(context);
+            r.Should().BeTrue();
             this.repo.VerifyAll();
         }
     }

@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using System.Threading;
 using System;
 using Cookies;
 using ExtremeIpLookup;
+using Hashers;
 using Services.Interfaces;
 
 namespace ShitForum.Analytics
@@ -12,10 +12,16 @@ namespace ShitForum.Analytics
     public class AnalyticsMiddleware
     {
         private readonly RequestDelegate next;
+        private readonly IAnalyticsService svc;
+        private readonly IExtremeIpLookup ipLookup;
+        private readonly ICookieStorage cookies;
 
-        public AnalyticsMiddleware(RequestDelegate next)
+        public AnalyticsMiddleware(RequestDelegate next, IAnalyticsService svc, IExtremeIpLookup ipLookup, ICookieStorage cookies)
         {
             this.next = next;
+            this.svc = svc;
+            this.ipLookup = ipLookup;
+            this.cookies = cookies;
         }
 
         private static Guid GetThumbPrint(ICookieStorage cs, HttpRequest req, HttpResponse res)
@@ -31,16 +37,13 @@ namespace ShitForum.Analytics
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var svc = context.RequestServices.GetService<IAnalyticsService>();
-            var ipLookup = context.RequestServices.GetService<IExtremeIpLookup>();
             var ip = context.Connection.RemoteIpAddress;
             var deats = await ipLookup.GetIpDetailsAsync(ip);
             
             await deats.Match(o =>
             {
-                var cookies = context.RequestServices.GetService<ICookieStorage>();
                 var thumb = GetThumbPrint(cookies, context.Request, context.Response);
-                return svc.Add(new Domain.AnalyticsReport(Guid.NewGuid(), DateTime.UtcNow, o.City, thumb.ToString()), CancellationToken.None);
+                return svc.Add(new Domain.AnalyticsReport(Guid.NewGuid(), DateTime.UtcNow, o.City, Sha256Hasher.Hash(thumb.ToString())), CancellationToken.None);
             }, _ => Task.CompletedTask);
             
             await this.next(context);
