@@ -35,10 +35,7 @@ namespace ShitForum.Pages
 
         public Task<IActionResult> OnGet(CancellationToken cancellationToken)
         {
-            Task<IActionResult> Func()
-            {
-                return RedirectToPage("Login").ToIART();
-            }
+            Task<IActionResult> Func() => this.RedirectToPage("Login").ToIART();
 
             var authCookie = cookieStorage.ReadAdmin(this.HttpContext.Request);
             return authCookie.Match(some =>
@@ -47,7 +44,7 @@ namespace ShitForum.Pages
                 return res.Match(async _ =>
                 {
                     var boards = await this.boardService.GetAll(cancellationToken);
-                    var bannedImages = await fileService.GetAllBannedImages(cancellationToken);
+                    var bannedImages = await this.fileService.GetAllBannedImages(cancellationToken);
                     var banns = await this.userService.GetAllBans(cancellationToken);
 
                     this.Model = new AdminViewModel(bannedImages, banns, boards);

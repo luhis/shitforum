@@ -53,7 +53,7 @@ namespace Services.Services
 
             var post = new Domain.Post(postId, threadId, DateTime.UtcNow, name.Val, comment, isSage, ipAddress.Val);
             await this.postRepository.Add(post).ConfigureAwait(false);
-            await file.Match(some => this.fileRepository.Add(some), () => Task.CompletedTask);
+            await file.MapToTask(some => this.fileRepository.Add(some));
 
             return new Success();
         }
@@ -69,7 +69,7 @@ namespace Services.Services
             await threadRepository.Add(thread).ConfigureAwait(false);
             var post = new Domain.Post(postId, threadId, DateTime.UtcNow, name.Val, comment, isSage, ipAddress.Val);
             await this.postRepository.Add(post).ConfigureAwait(false);
-            await file.Match(some => this.fileRepository.Add(some), () => Task.CompletedTask);
+            await file.MapToTask(some => this.fileRepository.Add(some));
 
             return new Success();
         }
