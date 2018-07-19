@@ -5,7 +5,6 @@ using Cookies;
 using EnsureThat;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Services;
 using Services.Dtos;
 using ShitForum.Attributes;
 using ShitForum.BannedImageLogger;
@@ -113,7 +112,7 @@ namespace ShitForum.Pages
                         }
                     },
                     _ => RedirectToPage("Banned").ToIAR());
-            }, () => new NotFoundResult().ToIART());
+            }, () => this.NotFound().ToIART());
         }
     }
 }

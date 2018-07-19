@@ -5,7 +5,6 @@ using EnsureThat;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Services;
 using Services.Dtos;
 using Services.Interfaces;
 using ShitForum.Attributes;
@@ -31,7 +30,7 @@ namespace ShitForum.Pages
             {
                 this.Post = post;
                 return Page().ToIAR();
-            }, () => new NotFoundResult().ToIAR());
+            }, () => this.NotFound().ToIAR());
         }
         
         public async Task<IActionResult> OnPostAsync(Guid id, CancellationToken cancellationToken)

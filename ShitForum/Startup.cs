@@ -42,7 +42,7 @@ namespace ShitForum
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILogger<Startup> logger, IThumbNailer thumbNailer, ForumContext forumContext)
         {
             if (env.IsDevelopment())
             {
@@ -73,11 +73,9 @@ namespace ShitForum
             app.UseAnalyticsMiddleware();
 
             app.UseMvc();
-
-            var fac = app.ApplicationServices.GetService<ForumContext>();
-            fac.SeedData().Wait();
-
-            var thumbNailer = app.ApplicationServices.GetService<IThumbNailer>();
+            
+            forumContext.SeedData().Wait();
+            
             if (!thumbNailer.IsSettingValid())
             {
                 logger.LogInformation("cannot locate FFMPEG executable.");

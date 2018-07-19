@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using EnsureThat;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Services;
 using Services.Dtos;
 using ShitForum.Attributes;
 using Hashers;
@@ -38,8 +37,8 @@ namespace ShitForum.Pages
                 {
                     this.Post = post;
                     return Page();
-                }, new NotFoundResult().ToIAR);
-            }, () => new NotFoundResult().ToIART());
+                }, this.NotFound().ToIAR);
+            }, () => this.NotFound().ToIART());
         }
 
         public async Task<IActionResult> OnPostAsync(Guid id, CancellationToken cancellationToken)
@@ -52,7 +51,7 @@ namespace ShitForum.Pages
                 var hash = ImageHasher.Hash(some.Data);
                 await fileService.BanImage(hash, Reason, cancellationToken);
                 return base.RedirectToPage("Index").ToIAR();
-            }, () => new NotFoundResult().ToIART());
+            }, () => this.NotFound().ToIART());
         }
     }
 }

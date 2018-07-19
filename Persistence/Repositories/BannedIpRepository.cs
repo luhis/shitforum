@@ -6,6 +6,7 @@ using Domain;
 using Domain.IpHash;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Optional;
 
 namespace Persistence.Repositories
 {
@@ -27,6 +28,12 @@ namespace Persistence.Repositories
         Task<IReadOnlyList<BannedIp>> IBannedIpRepository.GetAll(CancellationToken cancellationToken)
         {
             return this.client.BannedIps.ToReadOnlyAsync(cancellationToken);
+        }
+
+        async Task<Option<DateTime>> IBannedIpRepository.GetByHash(IIpHash hash, CancellationToken cancellationToken)
+        {
+            var ban = await this.client.BannedIps.SingleOrNone(a => a.IpHash == hash.Val, cancellationToken);
+            return ban.Map(b => b.Expiry);
         }
 
         Task<bool> IBannedIpRepository.IsBanned(IIpHash hash, CancellationToken cancellationToken)

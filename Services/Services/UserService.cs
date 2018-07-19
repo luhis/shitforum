@@ -37,5 +37,10 @@ namespace Services.Services
         {
             return this.bannedIpRepository.GetAll(cancellationToken);
         }
+
+        Task<Option<DateTime>> IUserService.GetExpiry(IIpHash hash, CancellationToken cancellationToken)
+        {
+            return this.bannedIpRepository.GetByHash(hash, cancellationToken);
+        }
     }
 }

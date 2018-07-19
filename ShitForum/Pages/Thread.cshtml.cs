@@ -5,7 +5,6 @@ using Cookies;
 using EnsureThat;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Services;
 using Services.Dtos;
 using ShitForum.Attributes;
 using ShitForum.BannedImageLogger;
@@ -69,7 +68,7 @@ namespace ShitForum.Pages
                 var newComm = replyTo == Guid.Empty ? string.Empty : $">>{replyTo}\n";
                 this.Post = new AddPost(threadId, this.cookieStorage.ReadName(this.Request), String.Empty, newComm, null);
                 return Page().ToIAR();
-            }, () => new NotFoundResult().ToIAR());
+            }, () => this.NotFound().ToIAR());
         }
 
         [Recaptcha]
@@ -124,7 +123,7 @@ namespace ShitForum.Pages
                             return Page().ToIAR();
                         });
                 }
-            }, () => new NotFoundResult().ToIART());
+            }, () => this.NotFound().ToIART());
         }
     }
 }

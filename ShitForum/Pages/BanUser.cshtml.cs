@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using EnsureThat;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Services;
 using Services.Dtos;
 using Services.Interfaces;
 using ShitForum.Attributes;
@@ -39,12 +38,12 @@ namespace ShitForum.Pages
             {
                 var p = await this.postService.GetById(id, cancellationToken);
                 return p.Match(post =>
-                { 
+                {
                     this.Post = post;
                     this.Expiry = DateTime.UtcNow.AddDays(7);
                     return Page().ToIAR();
-                }, new NotFoundResult().ToIAR);
-            }, () => new NotFoundResult().ToIART());
+                }, this.NotFound().ToIAR);
+            }, () => this.NotFound().ToIART());
         }
 
         public async Task<IActionResult> OnPostAsync(Guid id, CancellationToken cancellationToken)
@@ -55,7 +54,7 @@ namespace ShitForum.Pages
             {
                 await userService.BanUser(some, Reason, Expiry);
                 return RedirectToPage("Index").ToIAR();
-            }, () => new NotFoundResult().ToIART());
+            }, () => this.NotFound().ToIART());
         }
     }
 }

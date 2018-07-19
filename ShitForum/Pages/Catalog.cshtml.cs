@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain;
 using EnsureThat;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Services;
 using Services.Dtos;
 using Services.Interfaces;
 
@@ -31,7 +29,7 @@ namespace ShitForum.Pages
                 this.Board = threads.Board;
                 return Page().ToIAR();
             },
-            () => new NotFoundResult().ToIAR());
+            () => this.NotFound().ToIAR());
         }
 
         public IEnumerable<CatalogThreadOverView> Threads { get; private set; }

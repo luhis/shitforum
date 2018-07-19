@@ -4,6 +4,7 @@ using System.Diagnostics.Contracts;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain.IpHash;
+using Optional;
 
 namespace Domain.Repositories
 {
@@ -17,5 +18,8 @@ namespace Domain.Repositories
 
         [Pure]
         Task<IReadOnlyList<BannedIp>> GetAll(CancellationToken cancellationToken);
+
+        [Pure]
+        Task<Option<DateTime>> GetByHash(IIpHash hash, CancellationToken cancellationToken);
     }
 }

@@ -15,5 +15,7 @@ namespace Services.Interfaces
         Task<Option<IIpHash>> GetHashForPost(Guid postId, CancellationToken cancellationToken);
 
         Task<IReadOnlyList<BannedIp>> GetAllBans(CancellationToken cancellationToken);
+
+        Task<Option<DateTime>> GetExpiry(IIpHash hash, CancellationToken cancellationToken);
     }
 }
