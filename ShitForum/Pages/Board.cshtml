@@ -35,7 +35,7 @@
         @if (thread.OP.File.HasValue)
         {
             <a asp-page="Thread" asp-route-boardKey="@Model.Threads.Board.BoardKey" asp-route-threadId="@thread.ThreadId" asp-route-subject="@thread.Subject">
-                <img class="m-3" src="@Url.Action("GetPostThumbnail", "Images", new {id = thread.OP.Id})" />
+                <img class="m-3" src="@Url.Action("GetPostThumbnail", "Images", new {postId = thread.OP.Id})" />
             </a>
         }
         <div class="media-body">

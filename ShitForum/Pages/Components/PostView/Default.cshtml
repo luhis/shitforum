@@ -3,8 +3,8 @@
 <div class="media post rounded">
     @if (Model.File.HasValue)
     {
-        <a asp-controller="Images" asp-action="GetPostImage" asp-route-id="@Model.Id">
-            <img class="m-3" src="@Url.Action("GetPostThumbnail", "Images", new {id = Model.Id})" />
+        <a asp-controller="Images" asp-action="GetPostImage" asp-route-postId="@Model.Id">
+            <img class="m-3" src="@Url.Action("GetPostThumbnail", "Images", new {postId = Model.Id})" />
         </a>
     }
     <div class="media-body">

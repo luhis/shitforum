@@ -17,19 +17,19 @@ namespace ShitForum.ApiControllers
         }
 
         [HttpGet]
-        [Route("[action]")]
-        public async Task<ActionResult<FileResult>> GetPostThumbnail(Guid id, CancellationToken cancellationToken)
+        [Route("[action]/{postId}")]
+        public async Task<IActionResult> GetPostThumbnail(Guid postId, CancellationToken cancellationToken)
         {
-            var post = await this.fileRepository.GetPostFile(id, cancellationToken).ConfigureAwait(false);
-            return post.Match(some => File(some.ThumbNailJpeg, "image/jpeg"), () => this.NotFound().ToART<FileResult>());
+            var post = await this.fileRepository.GetPostFile(postId, cancellationToken).ConfigureAwait(false);
+            return post.Match(some => File(some.ThumbNailJpeg, "image/jpeg").ToIAR(), () => new NotFoundResult());
         }
 
         [HttpGet]
-        [Route("[action]")]
-        public async Task<ActionResult<FileResult>> GetPostImage(Guid id, CancellationToken cancellationToken)
+        [Route("[action]/{postId}")]
+        public async Task<IActionResult> GetPostImage(Guid postId, CancellationToken cancellationToken)
         {
-            var post = await this.fileRepository.GetPostFile(id, cancellationToken).ConfigureAwait(false);
-            return post.Match(some => File(some.Data, some.MimeType), () => this.NotFound().ToART<FileResult>());
+            var post = await this.fileRepository.GetPostFile(postId, cancellationToken).ConfigureAwait(false);
+            return post.Match(some => File(some.Data, some.MimeType).ToIAR(), () => new NotFoundResult());
         }
     }
 }
