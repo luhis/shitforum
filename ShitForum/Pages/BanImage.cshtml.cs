@@ -50,7 +50,7 @@ namespace ShitForum.Pages
             {
                 var hash = ImageHasher.Hash(some.Data);
                 await fileService.BanImage(hash, Reason, cancellationToken);
-                return base.RedirectToPage("Index").ToIAR();
+                return this.RedirectToPage("Index").ToIAR();
             }, () => this.NotFound().ToIART());
         }
     }
