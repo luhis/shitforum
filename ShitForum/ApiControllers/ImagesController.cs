@@ -16,16 +16,14 @@ namespace ShitForum.ApiControllers
             this.fileRepository = postRepository;
         }
 
-        [HttpGet]
-        [Route("[action]/{postId}")]
+        [HttpGet("[action]/{postId}")]
         public async Task<IActionResult> GetPostThumbnail(Guid postId, CancellationToken cancellationToken)
         {
             var post = await this.fileRepository.GetPostFile(postId, cancellationToken).ConfigureAwait(false);
             return post.Match(some => File(some.ThumbNailJpeg, "image/jpeg").ToIAR(), () => new NotFoundResult());
         }
-
-        [HttpGet]
-        [Route("[action]/{postId}")]
+        
+        [HttpGet("[action]/{postId}")]
         public async Task<IActionResult> GetPostImage(Guid postId, CancellationToken cancellationToken)
         {
             var post = await this.fileRepository.GetPostFile(postId, cancellationToken).ConfigureAwait(false);
