@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Persistence;
 using System;
+using System.Collections.Generic;
+using MediaToolkit.Util;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ThumbNailer;
 using ShitForum.Analytics;
@@ -18,16 +20,21 @@ namespace ShitForum
             logger.LogInformation($"Starting up ShitForum {DateTime.UtcNow}");
         }
 
+        private static readonly IEnumerable<Action<IServiceCollection>> DIModules = new Action<IServiceCollection>[]
+        {
+            Persistence.DIModule.Add,
+            Services.DIModule.Add,
+            ReCaptchaCore.DIModule.Add,
+            ThumbNailer.DIModule.Add,
+            ShitForum.DIModule.Add,
+            Cookies.DIModule.Add,
+            ExtremeIpLookup.DIModule.Add
+        };
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            Persistence.DIModule.Add(services);
-            Services.DIModule.Add(services);
-            ReCaptchaCore.DIModule.Add(services);
-            ThumbNailer.DIModule.Add(services);
-            ShitForum.DIModule.Add(services);
-            Cookies.DIModule.Add(services);
-            ExtremeIpLookup.DIModule.Add(services);
+            DIModules.ForEach(b => b(services));
 
             services.Configure<RouteOptions>(options => {
                 options.LowercaseUrls = true;
