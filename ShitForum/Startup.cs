@@ -33,12 +33,9 @@ namespace ShitForum
                 options.LowercaseUrls = true;
                 options.AppendTrailingSlash = false;
             });
-            services.AddMvc();
+            services.AddMvc().AddRazorPagesOptions(o => o.Conventions.AddPageRoute("/thread", "board/{boardKey}/{threadId}"));
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.AccessDeniedPath = "/Login";
-                });
+                .AddCookie(options => options.AccessDeniedPath = "/Login");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,15 +59,16 @@ namespace ShitForum
                 StyleSources(c => c.Self().UnsafeInline()).
                 ScriptSources(s => s.Self().CustomSources(google, "https://www.gstatic.com")).
                 FrameSources(c => c.Self().CustomSources(google)));
+            app.UseXContentSecurityPolicy();
             app.UseReferrerPolicy(opts => opts.NoReferrer());
             app.UseStaticFiles();
-            app.UseRedirectValidation();
             app.UseXfo(options => options.Deny());
             app.UseXXssProtection(options => options.EnabledWithBlockMode());
             app.UseXContentTypeOptions();
             app.UseXDownloadOptions();
             app.UseRedirectValidation();
             app.UseAnalyticsMiddleware();
+            app.UseExpectCt();
 
             app.UseMvc();
             
