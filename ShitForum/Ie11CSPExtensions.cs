@@ -5,7 +5,7 @@ namespace ShitForum
 {
     public static class Ie11CspExtensions
     {
-        const string BaseName = "Content-Security-Policy";
+        private const string BaseName = "Content-Security-Policy";
 
         public static void UseXContentSecurityPolicy(this IApplicationBuilder app)
         {
