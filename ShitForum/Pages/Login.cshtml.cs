@@ -25,7 +25,7 @@ namespace ShitForum.Pages
             return authCookie.Match(some =>
             {
                 var res = adminSettings.IsValid(some);
-                return res.Match(_ => RedirectToPage("Admin").ToIAR(), Func);
+                return res.Match(_ => this.RedirectToPage<AdminModel>().ToIAR(), Func);
             }, Func);
         }
 
@@ -37,7 +37,7 @@ namespace ShitForum.Pages
             {
                 var (_, k) = success;
                 cookieStorage.SetAdminCookie(this.HttpContext.Response, k);
-                return RedirectToPage("Admin").ToIAR();
+                return this.RedirectToPage<AdminModel>().ToIAR();
             }, () =>
             {
                 this.ModelState.AddModelError(string.Empty, "Incorrect key");

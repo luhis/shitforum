@@ -47,7 +47,7 @@ namespace ThumbNailer
                 });
 
                 return ms.ToArray();
-        });
+            });
 
         bool IThumbNailer.IsSettingValid() => File.Exists(this.ffmpegLocation);
 
@@ -69,7 +69,7 @@ namespace ThumbNailer
                         File.WriteAllBytes(inputFileName, input);
                         var inputFile = new MediaFile(inputFileName);
 
-                        var options = new ConversionOptions {Seek = TimeSpan.FromSeconds(0)};
+                        var options = new ConversionOptions { Seek = TimeSpan.FromSeconds(0) };
                         var outputFile = new MediaFile(outputFileName);
                         engine.GetThumbnail(inputFile, outputFile, options);
 

@@ -66,7 +66,7 @@ namespace ShitForum.Pages
                 this.IsAdmin = this.isAdmin.IsAdmin(this.HttpContext);
                 this.Thread = thread;
                 var newComm = replyTo == Guid.Empty ? string.Empty : $">>{replyTo}\n";
-                this.Post = new AddPost(threadId, this.cookieStorage.ReadName(this.Request), String.Empty, newComm, null);
+                this.Post = new AddPost(threadId, this.cookieStorage.ReadName(this.Request), string.Empty, newComm, null);
                 return Page().ToIAR();
             }, () => this.NotFound().ToIAR());
         }
@@ -104,14 +104,14 @@ namespace ShitForum.Pages
                             this.cookieStorage.SetNameCookie(this.Response, this.Post.Name);
                             if (options.NoNoko)
                             {
-                                return RedirectToPage("Board", new {boardKey = thread.Board.BoardKey});
+                                return this.RedirectToPage<BoardModel>(new {boardKey = thread.Board.BoardKey});
                             }
                             else
                             {
-                                return RedirectToPage("Thread", new { boardKey = thread.Board.BoardKey, threadId = this.Post.ThreadId }).ToIAR();
+                                return this.RedirectToPage<ThreadModel>(new { boardKey = thread.Board.BoardKey, threadId = this.Post.ThreadId }).ToIAR();
                             }
                         },
-                        _ => RedirectToPage("Banned").ToIAR(),
+                        _ => this.RedirectToPage<BannedModel>().ToIAR(),
                         _ =>
                         {
                             this.ModelState.AddModelError(string.Empty, "Image count exceeded");

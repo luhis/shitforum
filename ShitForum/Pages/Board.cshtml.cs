@@ -13,6 +13,7 @@ using Hashers;
 using Services.Interfaces;
 using ShitForum.Mappers;
 using ShitForum.Models;
+using static ShitForum.PageModelExtensions;
 
 namespace ShitForum.Pages
 {
@@ -97,21 +98,21 @@ namespace ShitForum.Pages
                 var f = uploadMapper.Map(this.Thread.File, postId);
 
                 var result = await this.postService.AddThread(postId, threadId, this.Thread.BoardId, this.Thread.Subject ?? string.Empty, trip, this.Thread.Comment, options.Sage, ipHash, f, cancellationToken);
-
+                
                 return result.Match(
                     _ =>
                     {
                         this.cookieStorage.SetNameCookie(this.Response, this.Thread.Name);
                         if (options.NoNoko)
                         {
-                            return RedirectToPage("Board", new { boardKey = boardKey }).ToIAR();
+                            return this.RedirectToPage<BoardModel>(new { boardKey = boardKey }).ToIAR();
                         }
                         else
                         {
-                            return RedirectToPage("Thread", new { threadId = threadId }).ToIAR();
+                            return this.RedirectToPage<ThreadModel>(new { threadId = threadId }).ToIAR();
                         }
                     },
-                    _ => RedirectToPage("Banned").ToIAR());
+                    _ => this.RedirectToPage<BannedModel>().ToIAR());
             }, () => this.NotFound().ToIART());
         }
     }

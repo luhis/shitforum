@@ -35,7 +35,7 @@ namespace ShitForum.Pages
 
         public Task<IActionResult> OnGet(CancellationToken cancellationToken)
         {
-            Task<IActionResult> Func() => this.RedirectToPage("Login").ToIART();
+            Task<IActionResult> Func() => this.RedirectToPage<LoginModel>().ToIART();
 
             var authCookie = cookieStorage.ReadAdmin(this.HttpContext.Request);
             return authCookie.Match(some =>

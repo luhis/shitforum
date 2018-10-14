@@ -53,7 +53,7 @@ namespace ShitForum.Pages
             return await hash.Match(async some =>
             {
                 await userService.BanUser(some, Reason, Expiry);
-                return RedirectToPage("Index").ToIAR();
+                return this.RedirectToPage<IndexModel>().ToIAR();
             }, () => this.NotFound().ToIART());
         }
     }
