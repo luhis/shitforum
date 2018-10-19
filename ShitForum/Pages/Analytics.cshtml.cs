@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Services.Interfaces;
 using ShitForum.Attributes;
@@ -10,7 +11,7 @@ using ShitForum.Models;
 
 namespace ShitForum.Pages
 {
-    [CookieAuth]
+    [ServiceFilter(typeof(CookieAuthAttribute))]
     public class AnalyticsModel : PageModel
     {
         private readonly IAnalyticsService analyticsService;

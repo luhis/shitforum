@@ -10,7 +10,7 @@ using ShitForum.Attributes;
 
 namespace ShitForum.Pages
 {
-    [CookieAuth]
+    [ServiceFilter(typeof(CookieAuthAttribute))]
     public class BanUserModel : PageModel
     {
         private readonly IUserService userService;

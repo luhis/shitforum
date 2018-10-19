@@ -11,7 +11,7 @@ using Services.Interfaces;
 
 namespace ShitForum.Pages
 {
-    [CookieAuth]
+    [ServiceFilter(typeof(CookieAuthAttribute))]
     public class BanImageModel : PageModel
     {
         private readonly IPostService postService;

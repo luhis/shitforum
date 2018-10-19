@@ -17,7 +17,7 @@ using static ShitForum.PageModelExtensions;
 
 namespace ShitForum.Pages
 {
-    [Recaptcha]
+    [ServiceFilter(typeof(RecaptchaAttribute))]
     public class BoardModel : PageModel
     {
         private readonly IIpHasher ipHasher;
@@ -71,7 +71,7 @@ namespace ShitForum.Pages
 
         public string Filter { get; private set; }
 
-        [Recaptcha]
+        [ServiceFilter(typeof(RecaptchaAttribute))]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPostAsync(string boardKey, string filter, CancellationToken cancellationToken, int pageNumber = 1)
         {
@@ -98,7 +98,7 @@ namespace ShitForum.Pages
                 var f = uploadMapper.Map(this.Thread.File, postId);
 
                 var result = await this.postService.AddThread(postId, threadId, this.Thread.BoardId, this.Thread.Subject ?? string.Empty, trip, this.Thread.Comment, options.Sage, ipHash, f, cancellationToken);
-                
+
                 return result.Match(
                     _ =>
                     {

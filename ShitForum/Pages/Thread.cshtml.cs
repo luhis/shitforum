@@ -17,7 +17,7 @@ using ShitForum.Models;
 
 namespace ShitForum.Pages
 {
-    [Recaptcha]
+    [ServiceFilter(typeof(RecaptchaAttribute))]
     public class ThreadModel : PageModel
     {
         private readonly IIpHasher ipHasher;
@@ -71,7 +71,7 @@ namespace ShitForum.Pages
             }, () => this.NotFound().ToIAR());
         }
 
-        [Recaptcha]
+        [ServiceFilter(typeof(RecaptchaAttribute))]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
         {
@@ -104,7 +104,7 @@ namespace ShitForum.Pages
                             this.cookieStorage.SetNameCookie(this.Response, this.Post.Name);
                             if (options.NoNoko)
                             {
-                                return this.RedirectToPage<BoardModel>(new {boardKey = thread.Board.BoardKey});
+                                return this.RedirectToPage<BoardModel>(new { boardKey = thread.Board.BoardKey });
                             }
                             else
                             {

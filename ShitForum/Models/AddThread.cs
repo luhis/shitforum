@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using ShitForum.Attributes;
 
 namespace ShitForum.Models
@@ -29,7 +30,7 @@ namespace ShitForum.Models
         [Required]
         public string Comment { get; set; }
 
-        [ImageValidation]
+        [ImageValidationAttribute]
         [Required]
         public IFormFile File { get; set; }
     }

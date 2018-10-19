@@ -10,7 +10,7 @@ using ShitForum.Models;
 
 namespace ShitForum.Pages
 {
-    [CookieAuth]
+    [ServiceFilter(typeof(CookieAuthAttribute))]
     public class AdminModel : PageModel
     {
         private readonly ICookieStorage cookieStorage;

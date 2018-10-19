@@ -7,6 +7,7 @@ using ShitForum.GetIp;
 using Hashers;
 using ImageValidation;
 using Persistence;
+using ShitForum.Attributes;
 using ShitForum.IsAdmin;
 using ShitForum.SettingsObjects;
 using ShitForum.Mappers;
@@ -30,6 +31,9 @@ namespace ShitForum
             services.AddSingleton<TripCodeHasher>();
             services.AddSingleton<AdminSettings>();
             services.AddSingleton<ForumSettings>();
+            services.AddSingleton<CookieAuthAttribute>();
+            services.AddSingleton<ImageValidationAttribute>();
+            services.AddSingleton<RecaptchaAttribute>();
         }
     }
 }

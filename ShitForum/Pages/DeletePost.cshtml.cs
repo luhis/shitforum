@@ -11,7 +11,7 @@ using ShitForum.Attributes;
 
 namespace ShitForum.Pages
 {
-    [CookieAuthAttribute]
+    [ServiceFilter(typeof(CookieAuthAttribute))]
     public class DeletePostModel : PageModel
     {
         private readonly IPostService postService;

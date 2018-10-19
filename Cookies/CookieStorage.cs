@@ -9,7 +9,7 @@ namespace Cookies
     {
         public CookieStorage(IHostingEnvironment env)
         {
-            this.options = new CookieOptions() {HttpOnly = true, Secure = !env.IsDevelopment()};
+            this.options = new CookieOptions() { HttpOnly = true, Secure = !env.IsDevelopment() };
         }
 
         private const string CookieName = "name";
@@ -17,7 +17,7 @@ namespace Cookies
         private const string ThumbPrint = "thumbPrint";
         private readonly CookieOptions options;
 
-        void ICookieStorage.SetNameCookie(HttpResponse r,string name)
+        void ICookieStorage.SetNameCookie(HttpResponse r, string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -59,7 +59,7 @@ namespace Cookies
             var c = r.Cookies[CookieAdmin];
             if (!string.IsNullOrWhiteSpace(c))
             {
-                return  Option.Some(new Guid(c));
+                return Option.Some(new Guid(c));
             }
             else
             {

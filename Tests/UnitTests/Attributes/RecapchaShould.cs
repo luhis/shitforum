@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
@@ -18,35 +17,29 @@ namespace UnitTests.Attributes
 {
     public class RecapchaShould
     {
-        private static HttpContext GetHttpContext(MockRepository mr, IServiceProvider sp)
+        private static HttpContext GetHttpContext(MockRepository mr)
         {
             var httpReq = mr.Create<HttpRequest>();
             httpReq.Setup(a => a.Method).Returns("POST");
 
             var httpCtx = mr.Create<HttpContext>();
             httpCtx.Setup(s => s.Request).Returns(httpReq.Object);
-            httpCtx.Setup(s => s.RequestServices).Returns(sp);
             return httpCtx.Object;
         }
 
         private readonly MockRepository mr = new MockRepository(MockBehavior.Strict);
-        private readonly IAsyncPageFilter attr = new RecaptchaAttribute();
 
         [Fact]
         public void Pass()
         {
-            var sp = mr.Create<IServiceProvider>();
             var recapchaMock = mr.Create<IGetCaptchaValue>();
             recapchaMock.Setup(a => a.Get(It.IsAny<HttpRequest>())).Returns("capchaValue");
-            sp.Setup(a => a.GetService(typeof(IGetCaptchaValue))).Returns(recapchaMock.Object);
             var recapchaVerifierMock = mr.Create<IRecaptchaVerifier>();
             recapchaVerifierMock.Setup(a => a.IsValid("capchaValue", IPAddress.Loopback)).ReturnsT(true);
-            sp.Setup(a => a.GetService(typeof(IRecaptchaVerifier))).Returns(recapchaVerifierMock.Object);
             var ipMock = mr.Create<IGetIp>();
             ipMock.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
-            sp.Setup(a => a.GetService(typeof(IGetIp))).Returns(ipMock.Object);
 
-            var httpCtx = GetHttpContext(mr, sp.Object);
+            var httpCtx = GetHttpContext(mr);
 
             var pageContext = new PageContext()
             {
@@ -57,6 +50,8 @@ namespace UnitTests.Attributes
             var ctx = new PageHandlerExecutingContext(
                 pageContext, 
                 new List<IFilterMetadata>(), null, new Dictionary<string, object>(), new object());
+            var attr = new RecaptchaAttribute(recapchaVerifierMock.Object, recapchaMock.Object, ipMock.Object) as IAsyncPageFilter;
+
             attr.OnPageHandlerExecutionAsync(ctx, () => Task.FromResult(new PageHandlerExecutedContext(
                 pageContext, 
                 new List<IFilterMetadata>(), null, new object()))).Wait();
@@ -67,18 +62,14 @@ namespace UnitTests.Attributes
         [Fact]
         public void Fail()
         {
-            var sp = mr.Create<IServiceProvider>();
             var recapchaMock = mr.Create<IGetCaptchaValue>();
             recapchaMock.Setup(a => a.Get(It.IsAny<HttpRequest>())).Returns("capchaValue");
-            sp.Setup(a => a.GetService(typeof(IGetCaptchaValue))).Returns(recapchaMock.Object);
             var recapchaVerifierMock = mr.Create<IRecaptchaVerifier>();
             recapchaVerifierMock.Setup(a => a.IsValid("capchaValue", IPAddress.Loopback)).ReturnsT(false);
-            sp.Setup(a => a.GetService(typeof(IRecaptchaVerifier))).Returns(recapchaVerifierMock.Object);
             var ipMock = mr.Create<IGetIp>();
             ipMock.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
-            sp.Setup(a => a.GetService(typeof(IGetIp))).Returns(ipMock.Object);
 
-            var httpCtx = GetHttpContext(mr, sp.Object);
+            var httpCtx = GetHttpContext(mr);
 
             var pageContext = new PageContext()
             {
@@ -89,6 +80,8 @@ namespace UnitTests.Attributes
             var ctx = new PageHandlerExecutingContext(
                 pageContext,
                 new List<IFilterMetadata>(), null, new Dictionary<string, object>(), new object());
+            var attr = new RecaptchaAttribute(recapchaVerifierMock.Object, recapchaMock.Object, ipMock.Object) as IAsyncPageFilter;
+
             attr.OnPageHandlerExecutionAsync(ctx, () => Task.FromResult(new PageHandlerExecutedContext(
                 pageContext,
                 new List<IFilterMetadata>(), null, new object()))).Wait();
