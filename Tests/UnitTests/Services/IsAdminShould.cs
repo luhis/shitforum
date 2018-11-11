@@ -27,7 +27,7 @@ namespace UnitTests.Services
         public IsAdminShould()
         {
             this.repo = new MockRepository(MockBehavior.Strict);
-            var settings = new AdminSettings(MockConfig.Get());
+            var settings = new AdminSettings(MockConfig.GetAdminSettings());
             this.cookie = repo.Create<ICookieStorage>();
             this.isAdmin = new IsAdmin(cookie.Object, settings);
         }

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using MediaToolkit;
 using MediaToolkit.Options;
 using MediaToolkit.Model;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Optional;
 using Optional.Unsafe;
 using static ThumbNailer.FunctionalUsing;
@@ -22,9 +22,9 @@ namespace ThumbNailer
         private readonly string ffmpegLocation;
         private readonly Func<string, byte[], byte[]> preThumbNailingProcess;
 
-        public Thumbnailer(IConfiguration configuration)
+        public Thumbnailer(IOptions<ThumbNailerSettings> configuration)
         {
-            this.ffmpegLocation = configuration.GetSection("FfmpegLocation").Get<string>();
+            this.ffmpegLocation = configuration.Value.FfmpegLocation;
             var caseOptions = new Dictionary<Option<string>, Func<byte[], byte[]>>()
             {
                 {Option.Some(".webm"), b => GetVideoThumbNail(b, ".webm")},

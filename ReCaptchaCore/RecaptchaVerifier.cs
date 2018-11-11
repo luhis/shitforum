@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 
 namespace ReCaptchaCore
 {
@@ -12,9 +13,9 @@ namespace ReCaptchaCore
 
         private static readonly string Api = "https://www.google.com/recaptcha/api/siteverify";
 
-        public RecaptchaVerifier(RecaptchaSettings settings)
+        public RecaptchaVerifier(IOptions<RecaptchaSettings> settings)
         {
-            this.settings = settings;
+            this.settings = settings.Value;
         }
 
         async Task<bool> IRecaptchaVerifier.IsValid(string response, IPAddress ip)

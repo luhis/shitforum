@@ -1,6 +1,7 @@
 ﻿@page "{boardKey}"
+@using Microsoft.Extensions.Options
 @model ShitForum.Pages.BoardModel
-@inject ReCaptchaCore.RecaptchaSettings RecaptchaSettings
+@inject IOptions<ReCaptchaCore.RecaptchaSettings> RecaptchaSettings
 @inject ImageValidation.IValidateImage ValidateImage
 @{
     ViewData["Title"] = "Board";
@@ -73,7 +74,7 @@
     <div class="form-group">Comment: <textarea class="form-control" asp-for="Thread.Comment"></textarea></div>
     <div class="form-group">File: <input class="form-control-file" asp-for="Thread.File" type="file" accept="@string.Join(",", ValidateImage.AllowedExtensions())" /></div>
     <input asp-for="Thread.BoardId" type="hidden" />
-    <button class="btn btn-primary g-recaptcha" data-callback="onSubmit" data-sitekey="@RecaptchaSettings.PublicKey">
+    <button class="btn btn-primary g-recaptcha" data-callback="onSubmit" data-sitekey="@RecaptchaSettings.Value.PublicKey">
         Post
     </button>
 </form>

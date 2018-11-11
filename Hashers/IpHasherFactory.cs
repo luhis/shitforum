@@ -1,22 +1,21 @@
-using System;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Hashers
 {
     public class IpHasherFactory
     {
-        private readonly IConfiguration config;
+        private readonly IpHasherSettings config;
 
-        public IpHasherFactory(IConfiguration config)
+        public IpHasherFactory(IOptions<IpHasherSettings> config)
         {
-            this.config = config;
+            this.config = config.Value;
         }
 
         public IIpHasher GetHasher()
         {
-            if (this.config.GetSection("IpHash:Enabled").Get<string>() == true.ToString())
+            if (this.config.Enabled)
             {
-                return new SecureHasherHasher(this.config.GetSection("IpHash:Salt").Get<Guid>());
+                return new SecureHasherHasher(this.config.Salt);
             }
             else
             {

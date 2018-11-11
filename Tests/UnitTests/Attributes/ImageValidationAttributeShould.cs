@@ -23,7 +23,7 @@ namespace UnitTests.Attributes
         {
             var file = mr.Create<IFormFile>();
             var vi = mr.Create<IValidateImage>();
-            vi.Setup(a => a.ValidateAsync(It.IsAny<Option<byte[]>>())).ReturnsT(OneOf.OneOf<Pass, SizeExceeded, InvalidImage, BannedImage>.FromT0(new Pass()));
+            vi.Setup(a => a.ValidateAsync(It.IsAny<Option<byte[]>>())).ReturnsT((OneOf.OneOf<Pass, SizeExceeded, InvalidImage, BannedImage>)new Pass());
 
             var sp = mr.Create<IServiceProvider>();
 
@@ -44,7 +44,7 @@ namespace UnitTests.Attributes
         {
             var file = mr.Create<IFormFile>();
             var vi = mr.Create<IValidateImage>();
-            vi.Setup(a => a.ValidateAsync(It.IsAny<Option<byte[]>>())).ReturnsT(OneOf.OneOf<Pass, SizeExceeded, InvalidImage, BannedImage>.FromT1(new SizeExceeded(1024)));
+            vi.Setup(a => a.ValidateAsync(It.IsAny<Option<byte[]>>())).ReturnsT((OneOf.OneOf<Pass, SizeExceeded, InvalidImage, BannedImage>)new SizeExceeded(1024));
 
             var sp = mr.Create<IServiceProvider>();
 

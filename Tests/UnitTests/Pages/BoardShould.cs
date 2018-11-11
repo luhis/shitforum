@@ -43,18 +43,17 @@ namespace UnitTests.Pages
 
         public BoardShould()
         {
-            var conf = MockConfig.Get();
             this.repo = new MockRepository(MockBehavior.Strict);
             this.cookieStorage = this.repo.Create<ICookieStorage>();
             this.getIp = this.repo.Create<IGetIp>();
             this.threadService = this.repo.Create<IThreadService>();
             this.postService = this.repo.Create<IPostService>();
             this.bannedImageLogger = this.repo.Create<IBannedImageLogger>();
-            this.uploadMapper = new UploadMapper(new Thumbnailer(conf));
+            this.uploadMapper = new UploadMapper(new Thumbnailer(MockConfig.GetThumbNailerSettings()));
 
             this.board = new BoardModel(
-                new IpHasherFactory(conf),
-                new TripCodeHasher(conf),
+                new IpHasherFactory(MockConfig.GetHasherSettings()),
+                new TripCodeHasher(MockConfig.GetTripCodeHasherSettings()),
                 cookieStorage.Object,
                 this.getIp.Object,
                 this.threadService.Object,
@@ -116,10 +115,8 @@ namespace UnitTests.Pages
             this.threadService.Setup(a => a.GetOrderedThreads("bee", Option.None<string>(), 100, 1, ct))
                 .ReturnsT(Option.Some(new ThreadOverViewSet(new Board(boardId, "bbbb", "b"), new List<ThreadOverView>(), new PageData(1, 11))));
             this.bannedImageLogger.Setup(a => a.Log(null, IPAddress.Loopback, It.IsAny<IIpHash>()));
-            this.postService.Setup(a =>
-                a.AddThread(It.IsAny<Guid>(), It.IsAny<Guid>(), boardId,
-                    "subject", It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IpUnHashed>(), It.IsAny<Option<File>>(), ct)).
-                ReturnsT(OneOf<Success, Banned>.FromT0(new Success()));
+            this.postService.Setup(a => 
+                a.AddThread(It.IsAny<Guid>(), It.IsAny<Guid>(), boardId, "subject", It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IIpHash>(), It.IsAny<Option<File>>(), ct)).Returns(Task.FromResult<OneOf<Success, Banned>>(new Success()));
 
             board.OnPostAsync("bee", null, ct).Wait();
 

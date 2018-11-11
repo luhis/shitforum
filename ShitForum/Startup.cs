@@ -6,8 +6,11 @@ using Microsoft.Extensions.Logging;
 using Persistence;
 using System;
 using System.Collections.Generic;
+using Hashers;
 using MediaToolkit.Util;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Configuration;
+using ReCaptchaCore;
 using ThumbNailer;
 using ShitForum.Analytics;
 
@@ -15,9 +18,10 @@ namespace ShitForum
 {
     public class Startup
     {
-        public Startup(ILogger<Startup> logger)
+        public Startup(ILogger<Startup> logger, IConfiguration conf)
         {
             logger.LogInformation($"Starting up ShitForum {DateTime.UtcNow}");
+            this.conf = conf;
         }
 
         private static readonly IEnumerable<Action<IServiceCollection>> DIModules = new Action<IServiceCollection>[]
@@ -31,10 +35,17 @@ namespace ShitForum
             ExtremeIpLookup.DIModule.Add
         };
 
+        private readonly IConfiguration conf;
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             DIModules.ForEach(b => b(services));
+            services.Configure<RecaptchaSettings>(conf.GetSection("Recaptcha"));
+            services.Configure<IpHasherSettings>(conf.GetSection("IpHash"));
+            services.Configure<ThumbNailerSettings>(conf);
+            services.Configure<TripCodeHasherSettings>(conf);
+            services.Configure<AdminSettingsRaw>(conf);
 
             services.Configure<RouteOptions>(options => {
                 options.LowercaseUrls = true;

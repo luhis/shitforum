@@ -8,7 +8,6 @@ namespace ReCaptchaCore
         {
             services.AddSingleton<IGetCaptchaValue, GetCaptchaValue>();
             services.AddSingleton<IRecaptchaVerifier, RecaptchaVerifier>();
-            services.AddSingleton<RecaptchaSettings>();
         }
     }
 }

@@ -10,7 +10,7 @@ namespace UnitTests.Services
     {
         public TripCodeHasherShould()
         {
-            var conf = MockConfig.Get();
+            var conf = MockConfig.GetTripCodeHasherSettings();
             this.hasher = new TripCodeHasher(conf);
         }
 

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Services.Dtos;
 
 namespace Hashers
@@ -14,9 +14,9 @@ namespace Hashers
 
         private readonly IReadOnlyDictionary<string, Func<string, string>> rules;
 
-        public TripCodeHasher(IConfiguration config)
+        public TripCodeHasher(IOptions<TripCodeHasherSettings> config)
         {
-            this.salt = config.GetSection("TripCodeSalt").Get<Guid>();
+            this.salt = config.Value.TripCodeSalt;
             this.rules = new Dictionary<string, Func<string, string>>()
             {
                 {"##", s =>

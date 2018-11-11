@@ -11,8 +11,7 @@ namespace UnitTests.Services
 
         public ThumbNailerShould()
         {
-            var conf = MockConfig.Get();
-            this.thumbnailer = new Thumbnailer(conf);
+            this.thumbnailer = new Thumbnailer(MockConfig.GetThumbNailerSettings());
         }
 
         [Fact]

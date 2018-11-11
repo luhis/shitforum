@@ -42,7 +42,7 @@ namespace UnitTests.Pages
 
         public ThreadShould()
         {
-            var conf = MockConfig.Get();
+            var conf = MockConfig.GetAdminSettings();
             this.repo = new MockRepository(MockBehavior.Strict);
             this.cookieStorage = this.repo.Create<ICookieStorage>();
             this.getIp = this.repo.Create<IGetIp>();
@@ -50,11 +50,11 @@ namespace UnitTests.Pages
             this.postService = this.repo.Create<IPostService>();
             this.bannedImageLogger = this.repo.Create<IBannedImageLogger>();
             this.iIsAdmin = this.repo.Create<IIsAdmin>();
-            this.uploadMapper = new UploadMapper(new Thumbnailer(conf));
+            this.uploadMapper = new UploadMapper(new Thumbnailer(MockConfig.GetThumbNailerSettings()));
 
             this.thread = new ThreadModel(
-                new IpHasherFactory(conf),
-                new TripCodeHasher(conf),
+                new IpHasherFactory(MockConfig.GetHasherSettings()),
+                new TripCodeHasher(MockConfig.GetTripCodeHasherSettings()),
                 this.cookieStorage.Object,
                 this.getIp.Object,
                 this.threadService.Object,
@@ -110,7 +110,7 @@ namespace UnitTests.Pages
             this.threadService.Setup(a => a.GetThread(threadId, 100, ct)).ReturnsT(Option.Some(new ThreadDetailView(threadId, "aaa", new ThreadStats(10, 1, 10, 1), new BoardOverView(Guid.NewGuid(), "bbbb", "b"), new List<PostOverView>())));
             this.bannedImageLogger.Setup(a => a.Log(null, IPAddress.Loopback, It.IsAny<IIpHash>()));
             this.postService.Setup(a => a.Add(It.IsAny<Guid>(), threadId, It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IIpHash>(), It.IsAny<Option<Domain.File>>(), ct))
-                .ReturnsT(OneOf<Success, Banned, ImageCountExceeded, PostCountExceeded>.FromT0(new Success()));
+                .ReturnsT((OneOf<Success, Banned, ImageCountExceeded, PostCountExceeded>)new Success());
             thread.OnPostAsync(ct).Wait();
 
             this.repo.VerifyAll();

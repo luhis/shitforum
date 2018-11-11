@@ -43,7 +43,7 @@ namespace UnitTests.Attributes
             var ctx = new PageHandlerExecutingContext(
                 pageContext,
                 new List<IFilterMetadata>(), null, new Dictionary<string, object>(), new object());
-            var attr = new CookieAuthAttribute(recapchaVerifierMock.Object, new AdminSettings(MockConfig.Get())) as IPageFilter;
+            var attr = new CookieAuthAttribute(recapchaVerifierMock.Object, new AdminSettings(MockConfig.GetAdminSettings())) as IPageFilter;
 
             attr.OnPageHandlerExecuting(ctx);
 
@@ -67,7 +67,7 @@ namespace UnitTests.Attributes
             var ctx = new PageHandlerExecutingContext(
                 pageContext,
                 new List<IFilterMetadata>(), null, new Dictionary<string, object>(), new object());
-            var attr = new CookieAuthAttribute(recapchaVerifierMock.Object, new AdminSettings(MockConfig.Get())) as IPageFilter;
+            var attr = new CookieAuthAttribute(recapchaVerifierMock.Object, new AdminSettings(MockConfig.GetAdminSettings())) as IPageFilter;
 
             attr.OnPageHandlerExecuting(ctx);
             ctx.Result.Should().BeOfType<ForbidResult>();
@@ -90,7 +90,7 @@ namespace UnitTests.Attributes
             var ctx = new PageHandlerExecutingContext(
                 pageContext,
                 new List<IFilterMetadata>(), null, new Dictionary<string, object>(), new object());
-            var attr = new CookieAuthAttribute(recapchaVerifierMock.Object, new AdminSettings(MockConfig.Get())) as IPageFilter;
+            var attr = new CookieAuthAttribute(recapchaVerifierMock.Object, new AdminSettings(MockConfig.GetAdminSettings())) as IPageFilter;
 
             attr.OnPageHandlerExecuting(ctx);
             ctx.Result.Should().BeNull();
