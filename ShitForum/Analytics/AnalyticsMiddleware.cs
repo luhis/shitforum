@@ -5,6 +5,7 @@ using System;
 using Cookies;
 using ExtremeIpLookup;
 using Hashers;
+using Microsoft.Extensions.Logging;
 using Services.Interfaces;
 
 namespace ShitForum.Analytics
@@ -15,13 +16,15 @@ namespace ShitForum.Analytics
         private readonly IAnalyticsService svc;
         private readonly IExtremeIpLookup ipLookup;
         private readonly ICookieStorage cookies;
+        private readonly ILogger logger;
 
-        public AnalyticsMiddleware(RequestDelegate next, IAnalyticsService svc, IExtremeIpLookup ipLookup, ICookieStorage cookies)
+        public AnalyticsMiddleware(RequestDelegate next, IAnalyticsService svc, IExtremeIpLookup ipLookup, ICookieStorage cookies, ILogger<AnalyticsMiddleware> logger)
         {
             this.next = next;
             this.svc = svc;
             this.ipLookup = ipLookup;
             this.cookies = cookies;
+            this.logger = logger;
         }
 
         private static Guid GetThumbPrint(ICookieStorage cs, HttpRequest req, HttpResponse res)
@@ -38,14 +41,24 @@ namespace ShitForum.Analytics
         public async Task InvokeAsync(HttpContext context)
         {
             var ip = context.Connection.RemoteIpAddress;
-            var deats = await ipLookup.GetIpDetailsAsync(ip);
-            
-            await deats.Match(o =>
+
+            try
             {
-                var thumb = GetThumbPrint(cookies, context.Request, context.Response);
-                return svc.Add(new Domain.AnalyticsReport(Guid.NewGuid(), DateTime.UtcNow, o.City, Sha256Hasher.Hash(thumb.ToString())), CancellationToken.None);
-            }, _ => Task.CompletedTask);
-            
+                var deats = await ipLookup.GetIpDetailsAsync(ip);
+
+                await deats.Match(o =>
+                {
+                    var thumb = GetThumbPrint(cookies, context.Request, context.Response);
+                    return svc.Add(
+                        new Domain.AnalyticsReport(Guid.NewGuid(), DateTime.UtcNow, o.City,
+                            Sha256Hasher.Hash(thumb.ToString())), CancellationToken.None);
+                }, _ => Task.CompletedTask);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error running analytics");
+            }
+
             await this.next(context);
         }
     }
