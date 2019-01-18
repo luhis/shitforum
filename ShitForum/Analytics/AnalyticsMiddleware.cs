@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using System.Threading;
 using System;
+using System.Net;
 using Cookies;
 using ExtremeIpLookup;
 using Hashers;
@@ -41,7 +42,6 @@ namespace ShitForum.Analytics
         public async Task InvokeAsync(HttpContext context)
         {
             var ip = context.Connection.RemoteIpAddress;
-
             try
             {
                 var deats = await ipLookup.GetIpDetailsAsync(ip);

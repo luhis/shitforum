@@ -6,9 +6,12 @@ using Microsoft.Extensions.Logging;
 using Persistence;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Hashers;
 using MediaToolkit.Util;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using ReCaptchaCore;
 using ThumbNailer;
@@ -70,6 +73,11 @@ namespace ShitForum
                 app.UseHsts(a => a.MaxAge(365));
             }
 
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
             var google = "https://www.google.com";
             app.UseCsp(a => a.
                 DefaultSources(b => b.Self()).
@@ -79,7 +87,20 @@ namespace ShitForum
                 FrameSources(c => c.Self().CustomSources(google)));
             app.UseXContentSecurityPolicy();
             app.UseReferrerPolicy(opts => opts.NoReferrer());
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                OnPrepareResponse =
+                    r =>
+                    {
+                        string path = r.File.PhysicalPath;
+                        var cacheExtensions = new[] { ".css", ".js", ".gif", ".jpg", ".png", ".svg" };
+                        if (cacheExtensions.Any(path.EndsWith))
+                        {
+                            var maxAge = TimeSpan.FromDays(7);
+                            r.Context.Response.Headers.Add("Cache-Control", "max-age=" + maxAge.TotalSeconds.ToString("0"));
+                        }
+                    }
+            });
             app.UseXfo(options => options.Deny());
             app.UseXXssProtection(options => options.EnabledWithBlockMode());
             app.UseXContentTypeOptions();
