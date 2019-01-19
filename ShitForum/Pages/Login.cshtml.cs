@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ShitForum.Pages
 {
+    [ValidateAntiForgeryToken]
     public class LoginModel : PageModel
     {
         private readonly ICookieStorage cookieStorage;
@@ -28,8 +29,7 @@ namespace ShitForum.Pages
                 return res.Match(_ => this.RedirectToPage<AdminModel>().ToIAR(), Func);
             }, Func);
         }
-
-        [ValidateAntiForgeryToken]
+        
         public IActionResult OnPost(Guid key, CancellationToken cancellationToken)
         {
             var res = adminSettings.IsValid(key);

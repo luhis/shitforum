@@ -8,12 +8,12 @@ namespace Services
     {
         public static void Add(IServiceCollection services)
         {
-            services.AddSingleton<IThreadService, ThreadService>();
-            services.AddSingleton<IPostService, PostService>();
-            services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<IFileService, FileService>();
-            services.AddSingleton<IBoardService, BoardService>();
-            services.AddSingleton<IAnalyticsService, AnalyticsService>();
+            services.AddScoped<IThreadService, ThreadService>();
+            services.AddScoped<IPostService, PostService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IBoardService, BoardService>();
+            services.AddScoped<IAnalyticsService, AnalyticsService>();
         }
     }
 }

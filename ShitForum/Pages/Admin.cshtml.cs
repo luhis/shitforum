@@ -10,6 +10,7 @@ using ShitForum.Models;
 
 namespace ShitForum.Pages
 {
+    [ValidateAntiForgeryToken]
     [ServiceFilter(typeof(CookieAuthAttribute))]
     public class AdminModel : PageModel
     {
@@ -53,14 +54,12 @@ namespace ShitForum.Pages
             }, Func);
         }
 
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPostDelete(Guid boardId, CancellationToken cancellationToken)
         {
             await this.boardService.Delete(boardId, cancellationToken);
             return RedirectToPage();
         }
         
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPostAddBoard(CancellationToken cancellationToken)
         {
             if (this.ModelState.IsValid)

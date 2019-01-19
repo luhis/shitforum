@@ -37,8 +37,8 @@ namespace UnitTests.MiddleWare
             ipLookup.Setup(a => a.GetIpDetailsAsync(IPAddress.Loopback)).ReturnsT(new ResultObject() {Status = "fail"});
             var logger = mr.Create<ILogger<AnalyticsMiddleware>>();
             var cs = mr.Create<ICookieStorage>();
-            var attr = new AnalyticsMiddleware(_ => Task.CompletedTask, analyticsService.Object, ipLookup.Object, cs.Object, logger.Object);
-            attr.InvokeAsync(GetHttpContext(mr).Object).Wait();
+            var attr = new AnalyticsMiddleware(_ => Task.CompletedTask);
+            attr.InvokeAsync(GetHttpContext(mr).Object, analyticsService.Object, ipLookup.Object, cs.Object, logger.Object).Wait();
             mr.VerifyAll();
         }
 
@@ -56,9 +56,9 @@ namespace UnitTests.MiddleWare
             var httpContext = GetHttpContext(mr);
             httpContext.Setup(s => s.Request).Returns(mr.Create<HttpRequest>().Object);
             httpContext.Setup(s => s.Response).Returns(mr.Create<HttpResponse>().Object);
-            var attr = new AnalyticsMiddleware(_ => Task.CompletedTask, analyticsService.Object, ipLookup.Object, cs.Object, logger.Object);
+            var attr = new AnalyticsMiddleware(_ => Task.CompletedTask);
 
-            attr.InvokeAsync(httpContext.Object).Wait();
+            attr.InvokeAsync(httpContext.Object, analyticsService.Object, ipLookup.Object, cs.Object, logger.Object).Wait();
             mr.VerifyAll();
         }
     }

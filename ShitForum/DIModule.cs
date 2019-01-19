@@ -21,7 +21,7 @@ namespace ShitForum
 
         public static void Add(IServiceCollection services)
         {
-            services.AddSingleton<IValidateImage, ValidateImage>();
+            services.AddScoped<IValidateImage, ValidateImage>();
             services.AddSingleton<IUploadMapper, UploadMapper>();
             services.AddSingleton<DbContextOptions>(GetDbOptions);
             services.AddSingleton<IIsAdmin, IsAdmin.IsAdmin>();

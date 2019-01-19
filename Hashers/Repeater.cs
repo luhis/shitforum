@@ -1,10 +1,7 @@
 using System;
-using System.Net;
-using Domain.IpHash;
 
 namespace Hashers
 {
-
     public static class Repeater
     {
         public static T DoXTimes<T>(T input, Func<T, T> f, int times)

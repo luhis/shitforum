@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using System.Threading;
 using System;
-using System.Net;
 using Cookies;
 using ExtremeIpLookup;
 using Hashers;
@@ -14,18 +13,10 @@ namespace ShitForum.Analytics
     public class AnalyticsMiddleware
     {
         private readonly RequestDelegate next;
-        private readonly IAnalyticsService svc;
-        private readonly IExtremeIpLookup ipLookup;
-        private readonly ICookieStorage cookies;
-        private readonly ILogger logger;
 
-        public AnalyticsMiddleware(RequestDelegate next, IAnalyticsService svc, IExtremeIpLookup ipLookup, ICookieStorage cookies, ILogger<AnalyticsMiddleware> logger)
+        public AnalyticsMiddleware(RequestDelegate next)
         {
             this.next = next;
-            this.svc = svc;
-            this.ipLookup = ipLookup;
-            this.cookies = cookies;
-            this.logger = logger;
         }
 
         private static Guid GetThumbPrint(ICookieStorage cs, HttpRequest req, HttpResponse res)
@@ -39,7 +30,7 @@ namespace ShitForum.Analytics
             });
         }
 
-        public async Task InvokeAsync(HttpContext context)
+        public async Task InvokeAsync(HttpContext context, IAnalyticsService analyticsService, IExtremeIpLookup ipLookup, ICookieStorage cookies, ILogger<AnalyticsMiddleware> logger)
         {
             var ip = context.Connection.RemoteIpAddress;
             try
@@ -49,7 +40,7 @@ namespace ShitForum.Analytics
                 await deats.Match(o =>
                 {
                     var thumb = GetThumbPrint(cookies, context.Request, context.Response);
-                    return svc.Add(
+                    return analyticsService.Add(
                         new Domain.AnalyticsReport(Guid.NewGuid(), DateTime.UtcNow, o.City,
                             Sha256Hasher.Hash(thumb.ToString())), CancellationToken.None);
                 }, _ => Task.CompletedTask);

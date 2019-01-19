@@ -8,14 +8,14 @@ namespace Persistence
     {
         public static void Add(IServiceCollection services)
         {
-            services.AddSingleton<IThreadRepository, ThreadRepository>();
-            services.AddSingleton<IBoardRepository, BoardRepository>();
-            services.AddSingleton<IPostRepository, PostRepository>();
-            services.AddSingleton<IBannedIpRepository, BannedIpRepository>();
-            services.AddSingleton<IBannedImageRepository, BannedImageRepository>();
-            services.AddSingleton<IFileRepository, FileRepository>();
-            services.AddSingleton<IAnalyticsRepository, AnalyticsRepository>();
-            services.AddSingleton<ForumContext>();
+            services.AddScoped<IThreadRepository, ThreadRepository>();
+            services.AddScoped<IBoardRepository, BoardRepository>();
+            services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<IBannedIpRepository, BannedIpRepository>();
+            services.AddScoped<IBannedImageRepository, BannedImageRepository>();
+            services.AddScoped<IFileRepository, FileRepository>();
+            services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
+            services.AddDbContext<ForumContext>();
         }
     }
 }

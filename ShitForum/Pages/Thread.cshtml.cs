@@ -17,6 +17,7 @@ using ShitForum.Models;
 
 namespace ShitForum.Pages
 {
+    [ValidateAntiForgeryToken]
     [ServiceFilter(typeof(RecaptchaAttribute))]
     public class ThreadModel : PageModel
     {
@@ -70,9 +71,7 @@ namespace ShitForum.Pages
                 return Page().ToIAR();
             }, () => this.NotFound().ToIAR());
         }
-
-        [ServiceFilter(typeof(RecaptchaAttribute))]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
         {
             var ip = this.getIp.GetIp(this.Request);
