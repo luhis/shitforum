@@ -6,16 +6,16 @@
 @{
     ViewData["Title"] = "Thread";
 }
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a asp-page="Index">Home</a></li>
-        <li class="breadcrumb-item"><a asp-page="Board">@Model.Thread.Board.BoardName</a></li>
-        <li class="breadcrumb-item active" aria-current="page">@Model.Thread.ThreadId - @Model.Thread.Subject</li>
-    </ol>
+<nav class="breadcrumb" aria-label="breadcrumbs">
+    <ul>
+        <li><a asp-page="Index">Home</a></li>
+        <li><a asp-page="Board">@Model.Thread.Board.BoardName</a></li>
+        <li class="is-active" aria-current="page">@Model.Thread.ThreadId - @Model.Thread.Subject</li>
+    </ul>
 </nav>
 <hr />
-<div class="row">
-    <div class="col">
+<div class="columns">
+    <div class="column">
         <span>[<a asp-page="Board" asp-route-id="@Model.Thread.Board.BoardId">Board</a>]</span>
         <span>[<a asp-page="Catalog" asp-route-id="@Model.Thread.Board.BoardId">Catalog</a>]</span>
     </div>
@@ -29,8 +29,8 @@
 
 @foreach (var post in Model.Thread.Posts)
 {
-    <div class="row">
-        <div class="col">
+    <div class="columns">
+        <div class="column">
             @post.Name
             <vc:date-time-view p="post" />
             No. <a asp-route-id="@Model.Thread.ThreadId" asp-route-replyto="@post.Id"><vc:friendly-guid g="post.Id" /></a>
@@ -54,10 +54,44 @@
 
 <div asp-validation-summary="All"></div>
 <form id="post-form" method="post" enctype="multipart/form-data">
-    <div class="form-group">Name: <input class="form-control" asp-for="Post.Name" /></div>
-    <div class="form-group">Options: <input class="form-control" asp-for="Post.Options" /></div>
-    <div class="form-group">Comment: <textarea class="form-control" asp-for="Post.Comment"></textarea></div>
-    <div class="form-group">File: <input class="form-control-file" asp-for="Post.File" type="file" accept="@string.Join(",", ValidateImage.AllowedExtensions())" /></div>
+    <div class="field">
+        <label class="label">Name</label>
+        <div class="control">
+            <input class="input" asp-for="Post.Name" />
+        </div>
+    </div>
+    <div class="field">
+        <label class="label">Options</label>
+        <div class="control">
+            <input class="input" asp-for="Post.Options" />
+        </div>
+    </div>
+    <div class="field">
+        <label class="label">
+            Comment
+        </label>
+        <div class="control">
+            <textarea class="textarea" asp-for="Post.Comment"></textarea>
+        </div>
+    </div>
+    <div class="field">
+        <label class="label">
+            File
+        </label>
+        <div class="file">
+            <label class="file-label">
+                <input class="file-input" asp-for="Post.File" type="file" accept="@string.Join(",", ValidateImage.AllowedExtensions())" />
+                <span class="file-cta">
+                    <span class="file-icon">
+                        <i class="fas fa-upload"></i>
+                    </span>
+                    <span class="file-label">
+                        Choose a file…
+                    </span>
+                </span>
+            </label>
+        </div>
+    </div>
     <input asp-for="Post.ThreadId" type="hidden" />
-    <button class="btn btn-primary g-recaptcha" data-callback="onSubmit" data-sitekey="@RecaptchaSettings.Value.PublicKey">Post</button>
+    <button class="button g-recaptcha" data-callback="onSubmit" data-sitekey="@RecaptchaSettings.Value.PublicKey">Post</button>
 </form>

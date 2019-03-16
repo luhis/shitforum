@@ -7,11 +7,11 @@
     ViewData["Title"] = "Board";
 }
 
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a asp-page="Index">Home</a></li>
-        <li class="breadcrumb-item active" aria-current="page">@Model.Threads.Board.BoardName</li>
-    </ol>
+<nav class="breadcrumb" aria-label="breadcrumbs">
+    <ul>
+        <li><a asp-page="Index">Home</a></li>
+        <li class="is-active" aria-current="page">@Model.Threads.Board.BoardName</li>
+    </ul>
 </nav>
 <hr />
 <form asp-page="Board" method="get">
@@ -23,8 +23,8 @@
 
 @foreach (var thread in Model.Threads.Threads)
 {
-    <div class="row">
-        <div class="col">
+    <div class="columns">
+        <div class="column">
             @thread.OP.Name
             <vc:date-time-view p="thread.OP" />
             No. <a asp-page="Thread" asp-route-boardKey="@Model.Threads.Board.BoardKey" asp-route-threadId="@thread.ThreadId" asp-route-subject="@thread.Subject">
@@ -47,16 +47,16 @@
             <p class="post-comment">@thread.OP.Comment</p>
         </div>
     </div>
-    <div class="row">
-        <div class="col">
+    <div class="columns">
+        <div class="column">
             @($"{thread.Stats.PostCount} replies and {thread.Stats.ImageCount} images omitted.")
             <a asp-page="Thread" asp-route-boardKey="@Model.Threads.Board.BoardKey" asp-route-threadId="@thread.ThreadId">Click here</a> to view.
         </div>
     </div>
     foreach (var p in thread.FinalPosts)
     {
-        <div class="row">
-            <div class="col"></div>
+        <div class="columns">
+            <div class="column"></div>
         </div>
         <vc:post-view p="p" />
     }
@@ -68,13 +68,51 @@
 
 <div asp-validation-summary="All"></div>
 <form id="post-form" method="post" enctype="multipart/form-data">
-    <div class="form-group">Name: <input class="form-control" asp-for="Thread.Name" /></div>
-    <div class="form-group">Options: <input class="form-control" asp-for="Thread.Options" /></div>
-    <div class="form-group">Subject: <input class="form-control" asp-for="Thread.Subject" /></div>
-    <div class="form-group">Comment: <textarea class="form-control" asp-for="Thread.Comment"></textarea></div>
-    <div class="form-group">File: <input class="form-control-file" asp-for="Thread.File" type="file" accept="@string.Join(",", ValidateImage.AllowedExtensions())" /></div>
+    <div class="field">
+        <label class="label">
+            Name
+        </label>
+        <input class="input" asp-for="Thread.Name" />
+    </div>
+    <div class="field">
+        <label class="label">
+            Options
+        </label>
+        <input class="input" asp-for="Thread.Options" />
+    </div>
+    <div class="field">
+        <label class="label">
+            Subject
+        </label>
+        <input class="input" asp-for="Thread.Subject" />
+    </div>
+    <div class="field">
+        <label class="label">
+            Comment
+        </label>
+        <textarea class="textarea" asp-for="Thread.Comment"></textarea>
+    </div>
+    <div class="field">
+        <label class="label">
+            File
+        </label>
+        
+        <div class="file">
+            <label class="file-label">
+                <input class="file-input" asp-for="Thread.File" type="file" accept="@string.Join(",", ValidateImage.AllowedExtensions())" />
+                <span class="file-cta">
+                    <span class="file-icon">
+                        <i class="fas fa-upload"></i>
+                    </span>
+                    <span class="file-label">
+                        Choose a file…
+                    </span>
+                </span>
+            </label>
+        </div>
+    </div>
     <input asp-for="Thread.BoardId" type="hidden" />
-    <button class="btn btn-primary g-recaptcha" data-callback="onSubmit" data-sitekey="@RecaptchaSettings.Value.PublicKey">
+    <button class="button g-recaptcha" data-callback="onSubmit" data-sitekey="@RecaptchaSettings.Value.PublicKey">
         Post
     </button>
 </form>

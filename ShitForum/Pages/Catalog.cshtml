@@ -3,33 +3,35 @@
 @{
     ViewData["Title"] = "Board";
 }
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a asp-page="Index">Home</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Catalog @Model.Board.BoardName</li>
-    </ol>
+<nav class="breadcrumb" aria-label="breadcrumbs">
+    <ul>
+        <li><a asp-page="Index">Home</a></li>
+        <li class="is-active" aria-current="page">Catalog @Model.Board.BoardName</li>
+    </ul>
 </nav>
 <hr />
 [<a asp-page="Board" asp-route-id="@Model.Board.Id">Return</a>]
 <hr />
-<div class="row">
+<div class="columns">
     @foreach (var thread in Model.Threads)
     {
-        <div class="col-md-4 col-sm-6">
             <div class="card">
-                <a asp-page="Thread" asp-route-threadId="@thread.ThreadId" asp-route-subject="@thread.Subject">
-                    <img class="card-img-top" src="@Url.Action("GetPostThumbnail", "Images", new { postId = thread.OP.Id })" alt="@thread.Subject">
-                </a>
-                <div class="card-body">
-                    <span class="card-title">
-                        @thread.Subject
-                        @thread.OP.Name
+                <div class="card-image">
+                    <figure class="image is-4by3">
+                        <a asp-page="Thread" asp-route-threadId="@thread.ThreadId" asp-route-subject="@thread.Subject">
+                            <img src="@Url.Action("GetPostThumbnail", "Images", new { postId = thread.OP.Id })" alt="@thread.Subject">
+                        </a>
+                    </figure>
+                    <div class="media-content">
+                        <p class="title is-4">@thread.Subject</p>
+                        <p class="subtitle is-6">@thread.OP.Name</p>
                         <vc:date-time-view p="thread.OP" />
                         No. <a asp-page="Thread" asp-route-threadId="@thread.ThreadId"><vc:friendly-guid g="thread.ThreadId" /></a>
-                    </span>
-                    <p class="card-text">@thread.OP.Comment</p>
+                    </div>
+                </div>
+                <div class="content">
+                    @thread.OP.Comment
                 </div>
             </div>
-        </div>
     }
 </div>

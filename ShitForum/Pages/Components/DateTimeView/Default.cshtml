@@ -2,9 +2,9 @@
 @{
     var s = Model.ToString("s");
 }
-<span class="d-none d-lg-inline">
+<span class="is-hidden-mobile">
     @(s)UTC
 </span>
-<span class="d-lg-none">
+<span class="is-hidden-desktop">
     @s.Substring(2).Replace("T", " ")
 </span>

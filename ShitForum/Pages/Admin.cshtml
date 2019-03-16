@@ -3,50 +3,50 @@
 @{
     ViewData["Title"] = "Admin";
 }
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a asp-page="Index">Home</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Admin</li>
-    </ol>
+<nav class="breadcrumb" aria-label="breadcrumbs">
+    <ul>
+        <li><a asp-page="Index">Home</a></li>
+        <li class="is-active" aria-current="page">Admin</li>
+    </ul>
 </nav>
 
 <h2>Admin</h2>
 
 <hr />
-<div class="row">
-    <div class="col"><h6>Banned IPs - @(Model.Model.BannedUsers.Count)</h6></div>
+<div class="columns">
+    <div class="column"><h6>Banned IPs - @(Model.Model.BannedUsers.Count)</h6></div>
 </div>
 @foreach (var a in Model.Model.BannedUsers)
 {
-    <div class="row">
-        <div class="col-4">@a.IpHash</div>
-        <div class="col-4">@a.Expiry</div>
-        <div class="col-4">@a.Reason</div>
+    <div class="columns">
+        <div class="column">@a.IpHash</div>
+        <div class="column">@a.Expiry</div>
+        <div class="column">@a.Reason</div>
     </div>
 }
 <hr />
-<div class="row">
-    <div class="col"><h6>Banned Images - @(Model.Model.BannedImages.Count)</h6></div>
+<div class="columns">
+    <div class="column"><h6>Banned Images - @(Model.Model.BannedImages.Count)</h6></div>
 </div>
 @foreach (var a in Model.Model.BannedImages)
 {
-    <div class="row">
-        <div class="col-6">@a.Hash</div>
-        <div class="col-6">@a.Reason</div>
+    <div class="columns">
+        <div class="column">@a.Hash</div>
+        <div class="column">@a.Reason</div>
     </div>
 }
 <hr />
-<div class="row">
-    <div class="col">
+<div class="columns">
+    <div class="column">
         <h6>Boards - @(Model.Model.Boards.Count)</h6>
     </div>
 </div>
 @foreach (var board in Model.Model.Boards)
 {
-    <div class="row">
-        <div class="col-4">@board.BoardKey</div>
-        <div class="col-4">@board.BoardName</div>
-        <div class="col-4">
+    <div class="columns">
+        <div class="column">@board.BoardKey</div>
+        <div class="column">@board.BoardName</div>
+        <div class="column">
             <form method="post">
                 <input type="hidden" name="boardId" value="@board.Id" />
                 <button class="btn btn-primary" asp-page-handler="Delete">Delete</button>

@@ -8,6 +8,7 @@ appsettings.*.json
 *.7z
 *.min.js
 *.min.css
+*.woff2
 
 # User-specific files
 *.suo

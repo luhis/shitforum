@@ -4,13 +4,13 @@
     ViewData["Title"] = "BanUser";
 }
 
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a asp-page="Index">Home</a></li>
-        <li class="breadcrumb-item"><a asp-page="Board" asp-route-boardKey="@Model.Post.Board.BoardKey">@Model.Post.Board.BoardName</a></li>
-        <li class="breadcrumb-item"><a asp-page="Thread" asp-route-boardKey="@Model.Post.Board.BoardKey" asp-route-threadId="@Model.Post.ThreadId">@Model.Post.ThreadId</a></li>
-        <li class="breadcrumb-item active" aria-current="page">@Model.Post.Post.Id</li>
-    </ol>
+<nav class="breadcrumb" aria-label="breadcrumbs">
+    <ul>
+        <li><a asp-page="Index">Home</a></li>
+        <li><a asp-page="Board" asp-route-boardKey="@Model.Post.Board.BoardKey">@Model.Post.Board.BoardName</a></li>
+        <li><a asp-page="Thread" asp-route-boardKey="@Model.Post.Board.BoardKey" asp-route-threadId="@Model.Post.ThreadId">@Model.Post.ThreadId</a></li>
+        <li class="is-active" aria-current="page">@Model.Post.Post.Id</li>
+    </ul>
 </nav>
 
 <h2>Ban User</h2>

@@ -8,15 +8,13 @@ namespace Hashers
 {
     public class TripCodeHasher
     {
-        private readonly Guid salt;
-
         private static string[] Break(string s, string breakOn) => s.Split(breakOn.ToCharArray(), 2);
 
         private readonly IReadOnlyDictionary<string, Func<string, string>> rules;
 
         public TripCodeHasher(IOptions<TripCodeHasherSettings> config)
         {
-            this.salt = config.Value.TripCodeSalt;
+            var salt = config.Value.TripCodeSalt;
             this.rules = new Dictionary<string, Func<string, string>>()
             {
                 {"##", s =>

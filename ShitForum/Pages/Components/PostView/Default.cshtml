@@ -1,13 +1,19 @@
 ﻿@model Services.Dtos.PostOverView
 
-<div class="media post rounded">
-    @if (Model.File.HasValue)
-    {
-        <a asp-controller="Images" asp-action="GetPostImage" asp-route-postId="@Model.Id">
-            <img class="m-3" src="@Url.Action("GetPostThumbnail", "Images", new {postId = Model.Id})" />
-        </a>
-    }
-    <div class="media-body">
-        <p class="post-comment">@Model.Comment</p>
+<article class="media">
+@if (Model.File.HasValue)
+{
+    <a asp-controller="Images" asp-action="GetPostImage" asp-route-postId="@Model.Id">
+        <figure class="media-left">
+            <p class="image is-128x128">
+                <img src="@Url.Action("GetPostThumbnail", "Images", new {postId = Model.Id})"/>
+            </p>
+        </figure>
+    </a>
+}
+    <div class="media-content">
+        <div class="content">
+            <p class="post-comment">@Model.Comment</p>
+        </div>
     </div>
-</div>
+</article>
