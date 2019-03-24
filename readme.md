@@ -24,3 +24,5 @@ Now configure nginx to run the website
 Configure the service to keep the applicaiton running
 Use Let's Encrypt for certificates
 Configure NGINX for larger uploads, remove the server header, and add GZIP
+
+[![CircleCI](https://circleci.com/gh/luhis/shitforum.svg?style=svg)](https://circleci.com/gh/luhis/shitforum)
