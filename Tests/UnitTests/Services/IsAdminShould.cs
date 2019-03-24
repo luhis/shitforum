@@ -6,7 +6,7 @@ using Moq;
 using Optional;
 using ShitForum;
 using ShitForum.IsAdmin;
-using Tests.UnitTests.Tooling;
+using UnitTests.Tooling;
 using Xunit;
 
 namespace UnitTests.Services

@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Hashers;
 using Services.Dtos;
-using Tests.UnitTests.Tooling;
+using UnitTests.Tooling;
 using Xunit;
 
 namespace UnitTests.Services

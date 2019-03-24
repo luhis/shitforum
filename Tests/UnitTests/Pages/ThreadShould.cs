@@ -22,7 +22,6 @@ using ShitForum.GetIp;
 using ShitForum.IsAdmin;
 using UnitTests.Tooling;
 using ShitForum.Mappers;
-using Tests.UnitTests.Tooling;
 using ThumbNailer;
 
 namespace UnitTests.Pages
@@ -50,7 +49,7 @@ namespace UnitTests.Pages
             this.postService = this.repo.Create<IPostService>();
             this.bannedImageLogger = this.repo.Create<IBannedImageLogger>();
             this.iIsAdmin = this.repo.Create<IIsAdmin>();
-            this.uploadMapper = new UploadMapper(new Thumbnailer(MockConfig.GetThumbNailerSettings()));
+            this.uploadMapper = new UploadMapper(new ThumbNailer.ThumbNailer(MockConfig.GetThumbNailerSettings()));
 
             this.thread = new ThreadModel(
                 new IpHasherFactory(MockConfig.GetHasherSettings()),

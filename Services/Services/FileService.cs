@@ -7,7 +7,7 @@ using Domain.Repositories;
 using Optional;
 using Services.Interfaces;
 
-namespace Services
+namespace Services.Services
 {
     public class FileService : IFileService
     {
@@ -22,7 +22,7 @@ namespace Services
 
         Task<Option<File>> IFileService.GetPostFile(Guid postId, CancellationToken cancellationToken)
         {
-            return fileRepository.GetPostFile(postId, cancellationToken);
+            return this.fileRepository.GetPostFile(postId, cancellationToken);
         }
 
         Task IFileService.BanImage(ImageHash imageHash, string reason, CancellationToken cancellationToken)

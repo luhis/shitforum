@@ -6,7 +6,7 @@ namespace ThumbNailer
     {
         public static void Add(IServiceCollection services)
         {
-            services.AddSingleton<IThumbNailer, Thumbnailer>();
+            services.AddSingleton<IThumbNailer, ThumbNailer>();
         }
     }
 }

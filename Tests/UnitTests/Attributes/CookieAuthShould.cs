@@ -11,7 +11,7 @@ using Moq;
 using Optional;
 using ShitForum;
 using ShitForum.Attributes;
-using Tests.UnitTests.Tooling;
+using UnitTests.Tooling;
 using Xunit;
 
 namespace UnitTests.Attributes

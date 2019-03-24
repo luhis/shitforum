@@ -10,7 +10,7 @@ using Services.Dtos;
 using Services.Interfaces;
 using Services.Mappers;
 
-namespace Services
+namespace Services.Services
 {
     public class ThreadService : IThreadService
     {
@@ -44,7 +44,7 @@ namespace Services
             var board = await this.boardRepository.GetByKey(boardKey, cancellationToken);
             return await board.MapToTask(async some =>
             {
-                var allThreads = GetOrderedThreads(some.Id, Option.None<string>());
+                var allThreads = this.GetOrderedThreads(some.Id, Option.None<string>());
                 var domainThreads = await this.threadRepository.GetAll().Where(a => allThreads.Contains(a.Id)).ToListAsync(cancellationToken);
                 var l = await Task.WhenAll(domainThreads.Select(async thread =>
                 {
@@ -61,20 +61,20 @@ namespace Services
             var board = await this.boardRepository.GetByKey(boardKey, cancellationToken);
             return await board.MapToTask(async some =>
             {
-                var threadIds = GetOrderedThreads(some.Id, filter);
+                var threadIds = this.GetOrderedThreads(some.Id, filter);
                 var latestThreads = threadIds.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
                 var threads = await this.threadRepository.GetAll().Where(a => latestThreads.Contains(a.Id)).ToListAsync(cancellationToken);
                 var l = await Task.WhenAll(threads.Select(async thread =>
                 {
                     var posts = this.postRepository.GetAll().Where(p => p.ThreadId == thread.Id);
-                    var firstPost = await GetFirstPostAsync(posts, cancellationToken);
+                    var firstPost = await this.GetFirstPostAsync(posts, cancellationToken);
                     var lastPosts = (await Task.WhenAll(posts.Skip(1).OrderByDescending(a => a.Created).Take(5).ToArray().Select(async p =>
                     {
                         var file = await this.fileRepository.GetPostFile(p.Id, cancellationToken);
                         return PostMapper.Map(p, file);
                     }))).OrderBy(a => a.Created).ToList();
                     var shownPosts = lastPosts.Concat(new[] { firstPost }).ToList();
-                    var stats = await GetOverviewStats(thread.Id, posts, shownPosts, cancellationToken);
+                    var stats = await this.GetOverviewStats(thread.Id, posts, shownPosts, cancellationToken);
                     return new ThreadOverView(thread.Id, thread.Subject, firstPost, lastPosts, stats);
                 }).ToArray());
                 var numberOfPages = (threadIds.Count() / pageSize) + 1;
@@ -101,7 +101,7 @@ namespace Services
                         var postsMapped = await Task.WhenAll(posts
                             .OrderBy(a => a.Created).ToList()
                             .Select(async p => PostMapper.Map(p, await this.fileRepository.GetPostFile(p.Id, cancellationToken))));
-                        var stats = await GetStats(postsMapped, some.Id, t.Id, pageSize);
+                        var stats = await this.GetStats(postsMapped, some.Id, t.Id, pageSize);
                         return new ThreadDetailView(threadId, t.Subject, stats,
                             new BoardOverView(some.Id, some.BoardName, some.BoardKey), postsMapped.ToList());
                     });
@@ -119,7 +119,7 @@ namespace Services
             var replies = posts.Count - 1;
             var images = posts.Count(a => a.File.HasValue) - 1;
             var posters = posts.Select(p => p.IpHash).Distinct().Count();
-            var page = await GetThreadPageNumber(boardId, threadId, pageSize);
+            var page = await this.GetThreadPageNumber(boardId, threadId, pageSize);
             return new ThreadStats(replies, images, posters, page);
         }
 

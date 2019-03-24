@@ -14,14 +14,14 @@ using static ThumbNailer.FunctionalUsing;
 
 namespace ThumbNailer
 {
-    public class Thumbnailer : IThumbNailer
+    public class ThumbNailer : IThumbNailer
     {
         private const int Size = 150;
 
         private readonly string ffmpegLocation;
         private readonly Func<string, byte[], byte[]> preThumbNailingProcess;
 
-        public Thumbnailer(IOptions<ThumbNailerSettings> configuration)
+        public ThumbNailer(IOptions<ThumbNailerSettings> configuration)
         {
             this.ffmpegLocation = configuration.Value.FfmpegLocation;
             var caseOptions = new Dictionary<Option<string>, Func<byte[], byte[]>>()

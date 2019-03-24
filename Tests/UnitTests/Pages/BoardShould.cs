@@ -22,7 +22,6 @@ using Services.Interfaces;
 using ShitForum.BannedImageLogger;
 using ShitForum.GetIp;
 using ShitForum.Mappers;
-using Tests.UnitTests.Tooling;
 using UnitTests.Tooling;
 using File = Domain.File;
 using ThumbNailer;
@@ -49,7 +48,7 @@ namespace UnitTests.Pages
             this.threadService = this.repo.Create<IThreadService>();
             this.postService = this.repo.Create<IPostService>();
             this.bannedImageLogger = this.repo.Create<IBannedImageLogger>();
-            this.uploadMapper = new UploadMapper(new Thumbnailer(MockConfig.GetThumbNailerSettings()));
+            this.uploadMapper = new UploadMapper(new ThumbNailer.ThumbNailer(MockConfig.GetThumbNailerSettings()));
 
             this.board = new BoardModel(
                 new IpHasherFactory(MockConfig.GetHasherSettings()),

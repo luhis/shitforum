@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
-using Tests.UnitTests.Tooling;
 using ThumbNailer;
+using UnitTests.Tooling;
 using Xunit;
 
 namespace UnitTests.Services
@@ -11,7 +11,7 @@ namespace UnitTests.Services
 
         public ThumbNailerShould()
         {
-            this.thumbNailer = new Thumbnailer(MockConfig.GetThumbNailerSettings());
+            this.thumbNailer = new ThumbNailer.ThumbNailer(MockConfig.GetThumbNailerSettings());
         }
 
         [Fact]

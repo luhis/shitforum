@@ -1,13 +1,11 @@
 using System;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Memory;
 using System.Collections.Generic;
 using Hashers;
 using Microsoft.Extensions.Options;
 using ShitForum;
 using ThumbNailer;
 
-namespace Tests.UnitTests.Tooling
+namespace UnitTests.Tooling
 {
     public static class MockConfig
     {

@@ -6,10 +6,11 @@ using Domain.Repositories;
 using Moq;
 using Services;
 using Services.Interfaces;
+using Services.Services;
 using UnitTests.Tooling;
 using Xunit;
 
-namespace UnitTests
+namespace UnitTests.Services
 {
     public class BoardServiceShould
     {
@@ -21,17 +22,17 @@ namespace UnitTests
         public BoardServiceShould()
         {
             this.repo = new MockRepository(MockBehavior.Strict);
-            this.br = repo.Create<IBoardRepository>();
+            this.br = this.repo.Create<IBoardRepository>();
             this.fs = new BoardService(this.br.Object);
         }
 
         [Fact]
         public void GetAll()
         {
-            this.br.Setup(a => a.GetAll(ct))
+            this.br.Setup(a => a.GetAll(this.ct))
                 .ReturnsT(new List<Board>() { new Board(Guid.NewGuid(), "a", "b") });
-            var r = this.fs.GetAll(ct).Result;
-            repo.VerifyAll();
+            var r = this.fs.GetAll(this.ct).Result;
+            this.repo.VerifyAll();
         }
     }
 }

@@ -8,10 +8,11 @@ using Moq;
 using Optional;
 using Services;
 using Services.Interfaces;
+using Services.Services;
 using UnitTests.Tooling;
 using Xunit;
 
-namespace UnitTests
+namespace UnitTests.Services
 {
     public class FileServiceShould
     {
@@ -24,36 +25,36 @@ namespace UnitTests
         public FileServiceShould()
         {
             this.repo = new MockRepository(MockBehavior.Strict);
-            this.fr = repo.Create<IFileRepository>();
-            this.bir = repo.Create<IBannedImageRepository>();
+            this.fr = this.repo.Create<IFileRepository>();
+            this.bir = this.repo.Create<IBannedImageRepository>();
             this.fs =  new FileService(this.fr.Object, this.bir.Object);
         }
 
         [Fact]
         public void GetAll()
         {
-            this.bir.Setup(a => a.GetAll(ct))
+            this.bir.Setup(a => a.GetAll(this.ct))
                 .ReturnsT(new List<BannedImage>() {new BannedImage(Guid.NewGuid(), "", "")});
-            var r = this.fs.GetAllBannedImages(ct).Result;
-            repo.VerifyAll();
+            var r = this.fs.GetAllBannedImages(this.ct).Result;
+            this.repo.VerifyAll();
         }
 
         [Fact]
         public void GetById()
         {
             var postId = Guid.NewGuid();
-            this.fr.Setup(a => a.GetPostFile(postId, ct)).ReturnsT(new Option<File>());
-            var r = this.fs.GetPostFile(postId, ct).Result;
-            repo.VerifyAll();
+            this.fr.Setup(a => a.GetPostFile(postId, this.ct)).ReturnsT(new Option<File>());
+            var r = this.fs.GetPostFile(postId, this.ct).Result;
+            this.repo.VerifyAll();
         }
 
         [Fact]
         public void BanImage()
         {
             var ih = new ImageHash("aaaa");
-            this.bir.Setup(a => a.Ban(ih, "reason", ct)).Returns(Task.CompletedTask);
-            this.fs.BanImage(ih, "reason", ct).Wait();
-            repo.VerifyAll();
+            this.bir.Setup(a => a.Ban(ih, "reason", this.ct)).Returns(Task.CompletedTask);
+            this.fs.BanImage(ih, "reason", this.ct).Wait();
+            this.repo.VerifyAll();
         }
     }
 }
