@@ -7,18 +7,18 @@ namespace UnitTests.Services
 {
     public class ThumbNailerShould
     {
-        private readonly IThumbNailer thumbnailer;
+        private readonly IThumbNailer thumbNailer;
 
         public ThumbNailerShould()
         {
-            this.thumbnailer = new Thumbnailer(MockConfig.GetThumbNailerSettings());
+            this.thumbNailer = new Thumbnailer(MockConfig.GetThumbNailerSettings());
         }
 
         [Fact]
         public void ThumbNailJpg()
         {
             var img = System.IO.File.ReadAllBytes("../../../Images/jezza.jpg");
-            var thumb = thumbnailer.Make(img, ".jpg");
+            var thumb = this.thumbNailer.Make(img, ".jpg");
             thumb.Should().NotBeNull();
             thumb.Length.Should().BeGreaterThan(0);
         }
@@ -27,7 +27,7 @@ namespace UnitTests.Services
         public void ThumbnailWebm()
         {
             var img = System.IO.File.ReadAllBytes("../../../Images/dunno.webm");
-            var thumb = thumbnailer.Make(img, ".webm");
+            var thumb = this.thumbNailer.Make(img, ".webm");
             thumb.Should().NotBeNull();
             thumb.Length.Should().BeGreaterThan(0);
         }
