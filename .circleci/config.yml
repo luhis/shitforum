@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       - image: microsoft/dotnet:sdk
-    working_directory: /
+    working_directory: /build/
     steps:
       - checkout
       - run:
