@@ -10,5 +10,6 @@ jobs:
           name: Run result
           command: |
             pushd ./Tests/UnitTests/
+            dotnet restore
             dotnet test
             popd
