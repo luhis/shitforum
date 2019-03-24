@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Hashers;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using ShitForum;
 using ThumbNailer;
@@ -9,27 +10,34 @@ namespace UnitTests.Tooling
 {
     public static class MockConfig
     {
+        private static readonly IConfiguration Configuration = new ConfigurationBuilder()
+            .AddJsonFile("./appsettings.json", optional: false, reloadOnChange: false).Build();
+
         public static IOptions<AdminSettingsRaw> GetAdminSettings()
         {
-            var s = new AdminSettingsRaw() { Gods = new List<Guid>(){ Guid.Parse("3c68640c-5759-4be2-ab50-d6cd5cd6ba68") } };
+            var s = new AdminSettingsRaw();
+            Configuration.Bind(s);
             return Options.Create(s);
         }
 
         public static IOptions<IpHasherSettings> GetHasherSettings()
         {
-            var s = new IpHasherSettings() { Enabled = true, Salt = Guid.Parse("20849c9c-6960-44a6-9f2d-51cc17ef0ee5") };
+            var s = new IpHasherSettings();
+            Configuration.GetSection("IpHash").Bind(s);
             return Options.Create(s);
         }
 
         public static IOptions<ThumbNailerSettings> GetThumbNailerSettings()
         {
-            var s = new ThumbNailerSettings() { FfmpegLocation = "C:\\ProgramData\\chocolatey\\lib\\ffmpeg\\tools\\ffmpeg\\bin\\ffmpeg.exe" };
+            var s = new ThumbNailerSettings();
+            Configuration.Bind(s);
             return Options.Create(s);
         }
 
         public static IOptions<TripCodeHasherSettings> GetTripCodeHasherSettings()
         {
-            var s = new TripCodeHasherSettings() { TripCodeSalt = Guid.Parse("20849c9c-6960-44a6-9f2d-51cc17ef0ee4") };
+            var s = new TripCodeHasherSettings();
+            Configuration.Bind(s);
             return Options.Create(s);
         }
     }
