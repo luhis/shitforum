@@ -33,8 +33,4 @@
     <ProjectReference Include="..\..\ShitForum\ShitForum.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Images\" />
-  </ItemGroup>
-
 </Project>

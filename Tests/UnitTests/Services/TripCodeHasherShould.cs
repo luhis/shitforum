@@ -10,11 +10,12 @@ namespace UnitTests.Services
     {
         public TripCodeHasherShould()
         {
-            var conf = MockConfig.GetTripCodeHasherSettings();
+            var conf = this.mockConfig.GetTripCodeHasherSettings();
             this.hasher = new TripCodeHasher(conf);
         }
 
         private readonly TripCodeHasher hasher;
+        private readonly MockConfig mockConfig = new MockConfig();
 
         [Fact]
         public void NotCrash()

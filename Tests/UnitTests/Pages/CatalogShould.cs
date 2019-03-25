@@ -14,7 +14,7 @@ namespace UnitTests.Pages
     {
         private readonly MockRepository repo;
         private readonly Mock<IThreadService> threadService;
-        private readonly CatalogModel thread;
+        private readonly CatalogModel catalog;
         private readonly CancellationToken ct = CancellationToken.None;
 
         public CatalogShould()
@@ -22,7 +22,7 @@ namespace UnitTests.Pages
             this.repo = new MockRepository(MockBehavior.Strict);
             this.threadService = this.repo.Create<IThreadService>();
 
-            this.thread = new CatalogModel(
+            this.catalog = new CatalogModel(
                 this.threadService.Object)
             { PageContext = new Microsoft.AspNetCore.Mvc.RazorPages.PageContext(), };
         }
@@ -37,7 +37,7 @@ namespace UnitTests.Pages
                     new CatalogThreadOverView(Guid.NewGuid(), "subject", new Domain.Board(boardId, "b", "board"), 
                         new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "IP", "comment", Option.None<Domain.File>())) })
             ));
-            thread.OnGet("bee", ct).Wait();
+            this.catalog.OnGet("bee", ct).Wait();
 
             this.repo.VerifyAll();
         }

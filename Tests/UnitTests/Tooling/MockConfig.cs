@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Hashers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -8,36 +7,42 @@ using ThumbNailer;
 
 namespace UnitTests.Tooling
 {
-    public static class MockConfig
+    public class MockConfig
     {
-        private static readonly IConfiguration Configuration = new ConfigurationBuilder()
-            .AddJsonFile("./appsettings.json", optional: false, reloadOnChange: false).Build();
+        private readonly IConfiguration configuration;
 
-        public static IOptions<AdminSettingsRaw> GetAdminSettings()
+        public MockConfig()
+        {
+            this.configuration = new ConfigurationBuilder()
+                .AddJsonFile("./appsettings.json", optional: false, reloadOnChange: false)
+                .Build();
+        }
+
+        public IOptions<AdminSettingsRaw> GetAdminSettings()
         {
             var s = new AdminSettingsRaw();
-            Configuration.Bind(s);
+            this.configuration.Bind(s);
             return Options.Create(s);
         }
 
-        public static IOptions<IpHasherSettings> GetHasherSettings()
+        public IOptions<IpHasherSettings> GetHasherSettings()
         {
             var s = new IpHasherSettings();
-            Configuration.GetSection("IpHash").Bind(s);
+            this.configuration.GetSection("IpHash").Bind(s);
             return Options.Create(s);
         }
 
-        public static IOptions<ThumbNailerSettings> GetThumbNailerSettings()
+        public IOptions<ThumbNailerSettings> GetThumbNailerSettings()
         {
             var s = new ThumbNailerSettings();
-            Configuration.Bind(s);
+            this.configuration.Bind(s);
             return Options.Create(s);
         }
 
-        public static IOptions<TripCodeHasherSettings> GetTripCodeHasherSettings()
+        public IOptions<TripCodeHasherSettings> GetTripCodeHasherSettings()
         {
             var s = new TripCodeHasherSettings();
-            Configuration.Bind(s);
+            this.configuration.Bind(s);
             return Options.Create(s);
         }
     }

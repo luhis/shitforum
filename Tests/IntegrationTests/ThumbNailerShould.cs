@@ -1,17 +1,17 @@
 ﻿using FluentAssertions;
 using ThumbNailer;
-using UnitTests.Tooling;
 using Xunit;
 
-namespace UnitTests.Services
+namespace IntegrationTests
 {
     public class ThumbNailerShould
     {
         private readonly IThumbNailer thumbNailer;
+        private readonly MockConfig mockConfig = new MockConfig();
 
         public ThumbNailerShould()
         {
-            this.thumbNailer = new ThumbNailer.ThumbNailer(MockConfig.GetThumbNailerSettings());
+            this.thumbNailer = new ThumbNailer.ThumbNailer(this.mockConfig.GetThumbNailerSettings());
         }
 
         [Fact]

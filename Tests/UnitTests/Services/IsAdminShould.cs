@@ -23,11 +23,13 @@ namespace UnitTests.Services
         private readonly MockRepository repo;
         private readonly IIsAdmin isAdmin;
         private readonly Mock<ICookieStorage> cookie;
+        private readonly MockConfig mockConfig = new MockConfig();
+
 
         public IsAdminShould()
         {
             this.repo = new MockRepository(MockBehavior.Strict);
-            var settings = new AdminSettings(MockConfig.GetAdminSettings());
+            var settings = new AdminSettings(mockConfig.GetAdminSettings());
             this.cookie = repo.Create<ICookieStorage>();
             this.isAdmin = new IsAdmin(cookie.Object, settings);
         }

@@ -39,6 +39,7 @@ namespace UnitTests.Pages
         private readonly Mock<IBannedImageLogger> bannedImageLogger;
         private readonly IUploadMapper uploadMapper;
         private readonly CancellationToken ct = CancellationToken.None;
+        private readonly MockConfig mockConfig = new MockConfig();
 
         public BoardShould()
         {
@@ -48,12 +49,11 @@ namespace UnitTests.Pages
             this.threadService = this.repo.Create<IThreadService>();
             this.postService = this.repo.Create<IPostService>();
             this.bannedImageLogger = this.repo.Create<IBannedImageLogger>();
-            this.uploadMapper = new UploadMapper(new ThumbNailer.ThumbNailer(MockConfig.GetThumbNailerSettings()));
+            this.uploadMapper = new UploadMapper(new ThumbNailer.ThumbNailer(this.mockConfig.GetThumbNailerSettings()));
 
             this.board = new BoardModel(
-                new IpHasherFactory(MockConfig.GetHasherSettings()),
-                new TripCodeHasher(MockConfig.GetTripCodeHasherSettings()),
-                cookieStorage.Object,
+                new IpHasherFactory(this.mockConfig.GetHasherSettings()),
+                new TripCodeHasher(this.mockConfig.GetTripCodeHasherSettings()), this.cookieStorage.Object,
                 this.getIp.Object,
                 this.threadService.Object,
                 this.postService.Object,
@@ -67,7 +67,7 @@ namespace UnitTests.Pages
         {
             var boardId = Guid.NewGuid();
 
-            this.threadService.Setup(a => a.GetOrderedThreads("bee", Option.None<string>(), 100, 1, ct)).ReturnsT(
+            this.threadService.Setup(a => a.GetOrderedThreads("bee", Option.None<string>(), 100, 1, this.ct)).ReturnsT(
                 Option.Some(
                     new ThreadOverViewSet(
                         new Board(boardId, "random", "bee"),
@@ -75,11 +75,11 @@ namespace UnitTests.Pages
                         {
                             new ThreadOverView(Guid.NewGuid(), "subject",
                                 new PostOverView(Guid.NewGuid(), new DateTime(2000, 12, 25), "name", "IP", "comment",
-                                    Option.None<Domain.File>()), new List<PostOverView> { }, new ThreadOverViewStats(1, 1))
+                                    Option.None<File>()), new List<PostOverView> { }, new ThreadOverViewStats(1, 1))
                         }, new PageData(1, 11))));
 
             this.cookieStorage.Setup(a => a.ReadName(It.IsAny<HttpRequest>())).Returns("Matt");
-            board.OnGet("bee", null, ct).Wait();
+            this.board.OnGet("bee", null, this.ct).Wait();
 
             this.repo.VerifyAll();
         }
@@ -89,15 +89,15 @@ namespace UnitTests.Pages
         {
             var boardId = Guid.NewGuid();
 
-            board.Thread = new AddThread(boardId, "Matt", "sage", "subject", "comment", null);
+            this.board.Thread = new AddThread(boardId, "Matt", "sage", "subject", "comment", null);
             this.cookieStorage.Setup(a => a.SetNameCookie(It.IsAny<HttpResponse>(), "Matt"));
             this.getIp.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
-            this.postService.Setup(a => a.AddThread(It.IsAny<Guid>(), It.IsAny<Guid>(), boardId, "subject", It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IIpHash>(), Option.None<File>(), ct)).Returns(Task.FromResult<OneOf<Success, Banned>>(new Success()));
-            this.threadService.Setup(a => a.GetOrderedThreads("bee", Option.None<string>(), 100, 1, ct))
+            this.postService.Setup(a => a.AddThread(It.IsAny<Guid>(), It.IsAny<Guid>(), boardId, "subject", It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IIpHash>(), Option.None<File>(), this.ct)).Returns(Task.FromResult<OneOf<Success, Banned>>(new Success()));
+            this.threadService.Setup(a => a.GetOrderedThreads("bee", Option.None<string>(), 100, 1, this.ct))
                 .ReturnsT(Option.Some(new ThreadOverViewSet(new Board(boardId, "bbbb", "b"), new List<ThreadOverView>(), new PageData(1, 11))));
             this.bannedImageLogger.Setup(a => a.Log(null, IPAddress.Loopback, It.IsAny<IIpHash>()));
 
-            board.OnPostAsync("bee", null, ct).Wait();
+            this.board.OnPostAsync("bee", null, this.ct).Wait();
 
             this.repo.VerifyAll();
         }
@@ -108,16 +108,16 @@ namespace UnitTests.Pages
             var boardId = Guid.NewGuid();
             var file = FileMock.GetIFormFileMock(this.repo);
 
-            board.Thread = new AddThread(boardId, "Matt", "sage", "subject", "comment", file.Object);
+            this.board.Thread = new AddThread(boardId, "Matt", "sage", "subject", "comment", file.Object);
             this.getIp.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
             this.cookieStorage.Setup(a => a.SetNameCookie(It.IsAny<HttpResponse>(), "Matt"));
-            this.threadService.Setup(a => a.GetOrderedThreads("bee", Option.None<string>(), 100, 1, ct))
+            this.threadService.Setup(a => a.GetOrderedThreads("bee", Option.None<string>(), 100, 1, this.ct))
                 .ReturnsT(Option.Some(new ThreadOverViewSet(new Board(boardId, "bbbb", "b"), new List<ThreadOverView>(), new PageData(1, 11))));
             this.bannedImageLogger.Setup(a => a.Log(null, IPAddress.Loopback, It.IsAny<IIpHash>()));
             this.postService.Setup(a => 
-                a.AddThread(It.IsAny<Guid>(), It.IsAny<Guid>(), boardId, "subject", It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IIpHash>(), It.IsAny<Option<File>>(), ct)).Returns(Task.FromResult<OneOf<Success, Banned>>(new Success()));
+                a.AddThread(It.IsAny<Guid>(), It.IsAny<Guid>(), boardId, "subject", It.IsAny<TripCodedName>(), "comment", true, It.IsAny<IIpHash>(), It.IsAny<Option<File>>(), this.ct)).Returns(Task.FromResult<OneOf<Success, Banned>>(new Success()));
 
-            board.OnPostAsync("bee", null, ct).Wait();
+            this.board.OnPostAsync("bee", null, this.ct).Wait();
 
             this.repo.VerifyAll();
         }
@@ -127,11 +127,11 @@ namespace UnitTests.Pages
         {
             var boardId = Guid.NewGuid();
 
-            board.Thread = new AddThread(boardId, "", "", "", "", null);
-            board.ModelState.AddModelError("file", "blah");
+            this.board.Thread = new AddThread(boardId, "", "", "", "", null);
+            this.board.ModelState.AddModelError("file", "blah");
 
             this.getIp.Setup(a => a.GetIp(It.IsAny<HttpRequest>())).Returns(IPAddress.Loopback);
-            this.threadService.Setup(a => a.GetOrderedThreads("bee", Option.None<string>(), 100, 1, ct)).ReturnsT(
+            this.threadService.Setup(a => a.GetOrderedThreads("bee", Option.None<string>(), 100, 1, this.ct)).ReturnsT(
                 Option.Some(
                     new ThreadOverViewSet(
                         new Board(boardId, "random", "bee"),
@@ -144,7 +144,7 @@ namespace UnitTests.Pages
             this.bannedImageLogger.Setup(a =>
                 a.Log(It.IsAny<ModelStateEntry>(), IPAddress.Loopback, It.IsAny<IIpHash>()));
 
-            board.OnPostAsync("bee", null, ct).Wait();
+            this.board.OnPostAsync("bee", null, this.ct).Wait();
 
             this.repo.VerifyAll();
         }
