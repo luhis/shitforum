@@ -1,4 +1,4 @@
-using System.IO;
+using System.Reflection;
 using Microsoft.AspNetCore.Http;
 using Moq;
 
@@ -9,9 +9,12 @@ namespace UnitTests.Tooling
         public static Mock<IFormFile> GetIFormFileMock(MockRepository mr)
         {
             var m = mr.Create<IFormFile>();
-            m.Setup(a => a.FileName).Returns("jezza.jpg");
-            var f = System.IO.File.ReadAllBytes("../../../images/jezza.jpg");
-            m.Setup(a => a.OpenReadStream()).Returns(new MemoryStream(f));
+            var fileName = "jezza.jpg";
+            var myAssembly = Assembly.GetExecutingAssembly();
+            var myStream = myAssembly.GetManifestResourceStream($"UnitTests.Images.{fileName}");
+
+            m.Setup(a => a.FileName).Returns(fileName);
+            m.Setup(a => a.OpenReadStream()).Returns(myStream);
             return m;
         }
     }
