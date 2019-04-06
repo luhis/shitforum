@@ -92,7 +92,7 @@ namespace ShitForum
                 OnPrepareResponse =
                     r =>
                     {
-                        string path = r.File.PhysicalPath;
+                        var path = r.File.PhysicalPath;
                         var cacheExtensions = new[] { ".css", ".js", ".gif", ".jpg", ".png", ".svg" };
                         if (cacheExtensions.Any(path.EndsWith))
                         {
